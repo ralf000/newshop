@@ -1,15 +1,16 @@
 <h3>Добавить новый товар</h3>
-<form action="<?= htmlentities($_SERVER['REQUEST_URI']) ?>" method="post" enctype="multipart/form-data">
+<form id="addprod" action="add" method="post" enctype="multipart/form-data">
     <div class="form-group">
         <label for="cat">Категория</label>
         <div class="input-group">
             <select id="cat" class="form-control" name="cat">
-                <option value="1">Кофеварки</option>
-                <option value="2">Кофемашины</option>
-                <option value="3">Френчпрессы</option>
+                <? foreach ($this->categoryList as $c):?>
+                <option value="<?=$c['id']?>"><?=$c['category_name']?></option>
+                <? endforeach;?>
             </select>
             <span class="input-group-btn">
-                <button class="btn btn-default" type="button"><span class="glyphicon glyphicon-plus"></span> Новая категория</button>
+                <button class="btn btn-default" type="button"><span class="glyphicon glyphicon-plus"></span></button>
+                <button class="btn btn-default" type="button" id="delCat"><span class="glyphicon glyphicon-minus"></span></button>
             </span>
         </div>
     </div>
@@ -17,13 +18,13 @@
         <label for="subcat">Подкатегория</label>
         <div class="input-group">
             <select id="subcat" class="form-control" name="subcat">
-                <option value="1">Капсульные</option>
-                <option value="2">Рожковые</option>
-                <option value="3">Капельные</option>
-                <option value="4">Для кофе по-турецки</option>
+                <? foreach ($this->subCategoryList as $s): ?>
+                     <option value="<?= $s['id'] ?>"><?= $s['subcategory_name'] ?></option>
+                 <? endforeach; ?>
             </select>
             <span class="input-group-btn">
-                <button class="btn btn-default" type="button"><span class="glyphicon glyphicon-plus"></span> Новая подкатегория</button>
+                <button class="btn btn-default" type="button"><span class="glyphicon glyphicon-plus"></span></button>
+                <button class="btn btn-default" type="button" id="delSubCat"><span class="glyphicon glyphicon-minus"></span></button>
             </span>
         </div>
     </div>
@@ -61,6 +62,17 @@
             Опубликовать?
         </label>
     </div>
-    <button type="submit" class="btn btn-default">Отправить</button>
+    <button type="submit" class="btn btn-default" name="addprod">Отправить</button>
+</form>
+
+<form id="newcarform" action="newCat" method="post">
+    <input type="text" name="newcat" id="newcat" />
+    <button type="submit" class="btn btn-default" name="newcarform">Добавить</button>
+</form>
+
+<form id="newsubcarform" action="newSubCat" method="post">
+    <input type="hidden" name="categoryid" value="" id="categoryid"/>
+    <input type="text" name="newsubcat" id="newsubcat" />
+    <button type="submit" class="btn btn-default" name="newsubcarform">Добавить</button>
 </form>
 

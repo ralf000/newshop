@@ -13,6 +13,8 @@
      include $class . '.class.php';
  });
 
+ ini_set('session.use_only_cookies', true);
+
  /* Инициализация и запуск FrontController */
  $controller = FrontController::getInstance();
  $controller->route();

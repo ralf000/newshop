@@ -1,11 +1,10 @@
 <?php
 
-class CategoryModel extends TableModelAbstract{
-    
-    private $category_name, $published;
+ class CategoryTableModel extends TableModelAbstract {
 
+     private $category_name, $published;
 
-    public function addRecord() {
+     public function addRecord() {
          try {
              $query = $this->db->prepare("INSERT INTO $this->table (`category_name`,`published`) VALUES (:category_name, :published)");
              $query->execute([':category_name' => $this->category_name, ':published' => $this->published]);
@@ -24,5 +23,16 @@ class CategoryModel extends TableModelAbstract{
              die($e->getMessage());
          }
      }
- }
 
+     public function setData() {
+         $newCat              = Validate::validateVar('newcat', 'INPUT_POST', 'str');
+         if (Validate::validateValue($this->db, $this->table, 'category_name', $newCat))
+             $this->category_name = $newCat;
+         $this->published     = Validate::validateVar('published', 'INPUT_POST', 'int');
+         if (empty($this->published))
+             $this->published     = 1;
+         return (!$this->category_name) ? FALSE : TRUE;
+     }
+
+ }
+ 
