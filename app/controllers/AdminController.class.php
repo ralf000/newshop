@@ -16,7 +16,7 @@
          $model  = new ProductTableModel();
          $model->setTable('product');
          $model->readAllRecords();
-         $output = $model->render('../views/admin/index.php');
+         $output = $model->render('../views/admin/index.php', 'admin');
          $fc->setPage($output);
      }
 
@@ -38,7 +38,7 @@
              $catsAndSub             = $this->getCatsAndSubCats();
              $model->categoryList    = $catsAndSub['cats']; //used magic __set
              $model->subCategoryList = $catsAndSub['subcats']; //used magic __set
-             $output                 = $model->render('../views/admin/add.php');
+             $output                 = $model->render('../views/admin/add.php', 'admin');
              $fc->setPage($output);
          }
      }

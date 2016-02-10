@@ -32,12 +32,9 @@
              if ($model->setData('reg')) {
                  $model->registration();
 //                 if ($model->login()) {
-                     header('Location: ' . $_SERVER['REQUEST_URI']);
-                     $this->message = [
-                         'type' => 'info',
-                         'msg' => 'На ваш электронный ящик отправлено письмо, содержащее ссылку для активации аккаунта'
-                     ];
-                     exit;
+                 Session::setMsg('На ваш электронный ящик отправлено письмо, содержащее ссылку для активации аккаунта', 'info');
+                 header('Location: /');
+                 exit;
 //                 }
 //                 else
 //                     header('Location: /user/login');
@@ -57,6 +54,8 @@
              $model->setTable('user');
              $model->setData();
              $model->login();
+             header('Location: ' . $_SERVER['REQUEST_URI']);
+             exit;
          } else {
              if ($_SESSION['user_id'])
                  header('Location: /');

@@ -14,7 +14,7 @@
  });
  
  Session::init();
-
+ 
  /* Инициализация и запуск FrontController */
  $controller = FrontController::getInstance();
  $controller->route();

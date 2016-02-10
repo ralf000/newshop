@@ -14,7 +14,7 @@
      public function login() {
          $user = $this->checkCreds();
          if ($user) {
-             $this->user          = $user;
+             $this->user = $user;
              Session::init();
              $this->setToken();
              Session::set('user_id', $this->user['id']);
@@ -32,20 +32,14 @@
      public function registration() {
          try {
              if ($this->checkUniq()) {
-                 $st       = $this->db->prepare("INSERT INTO $this->table (`username`, `full_name`, `email`, `password_hash`, `validate_key`, `create_time`) VALUES (:username, :full_name, :email, :password_hash, :validate_key, :create_time)");
-                 $st->execute([':username' => $this->login, ':full_name' => $this->fullName, ':email' => $this->email, ':password_hash' => $this->hs($this->password), ':validate_key' => $this->validateKey, ':create_time' => date('Y-m-d H:i:s')]);
-                 $this->id = $this->db->lastInsertId();
+                 $this->addRecord();
                  if ($this->photo)
                      $this->updatePhoto();
                  //send mail for check user's email
-                 $siteName = Helper::getSiteConfig()['siteName'];
-                 $siteHost = Helper::getSiteConfig()['siteHost'];
-                 $subject = 'Подтверждение регистрации на сайте '.$siteName;
-                 $content = '
-                         <p>Здравствуйте! Благодарим вас за регистрацию на сайте '.$siteName.'</p>
-                         <p>Для подтверждения регистрации пройдите по ссылке:</p>
-                         <a href="'.$siteHost.'/user/validate/email/'.$this->email.'/key/'.$this->validateKey.'">Подтвердить email</a>';
-                 Mailer::emailSender($this->email, $subject, $content);
+                 $this->sendValidateCode();
+             }else {
+                 Session::setMsg('Введённые логин или email уже заняты. Пожалуйста введите другие', 'warning');
+                 return FALSE;
              }
          } catch (Exception $ex) {
              $ex->getMessage();
@@ -59,6 +53,7 @@
              if (!(isset($sessUserId))) {
                  Session::destroy();
                  unset($this->user);
+                 Session::setMsg('Произошла ошибка. Пожалуйста авторизуйтесь заново', 'warning');
                  return FALSE;
              }
          }
@@ -72,7 +67,9 @@
      }
 
      public function addRecord() {
-         
+         $st       = $this->db->prepare("INSERT INTO $this->table (`username`, `full_name`, `email`, `password_hash`, `validate_key`, `create_time`) VALUES (:username, :full_name, :email, :password_hash, :validate_key, :create_time)");
+         $st->execute([':username' => $this->login, ':full_name' => $this->fullName, ':email' => $this->email, ':password_hash' => $this->hs($this->password), ':validate_key' => $this->validateKey, ':create_time' => date('Y-m-d H:i:s')]);
+         $this->id = $this->db->lastInsertId();
      }
 
      public function updateRecord() {
@@ -84,7 +81,7 @@
              $this->id   = $this->user['id'];
          $this->path = $this->path . $this->id;
          try {
-             if ($this->photo){
+             if ($this->photo) {
                  $st = $this->db->prepare("UPDATE $this->table SET `photo` = :photo WHERE `id` = :id");
                  $st->execute([':photo' => $this->path . '/main_' . Helper::strToLat($this->photo), ':id' => $this->id]);
                  Helper::moveFile('photo', TRUE, $this->id, 'userimg');
@@ -120,12 +117,14 @@
              $st->execute([':username' => $this->login]);
              if ($st->rowCount() === 1) {
                  $user = $st->fetch(PDO::FETCH_ASSOC);
-                 if (!$user['validated']){
-                     //сообщение о необходимости пройти валидацию
+                 if (!$user['validated']) {
+                     Session::setMsg('Для входа необходимо активировать ваш аккаунт при помощи письма, отправленного на ваш электронный ящик ранее', 'warning');
                      return FALSE;
                  }
                  if ($this->confirmPassword($user['password_hash'], $this->password))
                      return $user;
+                 else
+                     Session::setMsg('Неверный логин или пароль', 'danger');
              }
              //сообщение о неверном юзере или пароле
              return FALSE;
@@ -165,28 +164,31 @@
              return $this->password === $this->dpassword ? TRUE : FALSE;
          }
      }
-     
-     public function setValidateUserData(array $params = []){
-         $this->email    = filter_var($params['email'], FILTER_SANITIZE_EMAIL);
+
+     public function setValidateUserData(array $params = []) {
+         $this->email       = filter_var($params['email'], FILTER_SANITIZE_EMAIL);
          $this->validateKey = filter_var($params['key']);
      }
-     
-     public function checkValidKey(){
-         if (! (empty($this->email) && empty($this->validateKey))){
+
+     public function checkValidKey() {
+         if (!(empty($this->email) && empty($this->validateKey))) {
              $user = $this->getUserEmail('id, username, email, validate_key, create_time');
-             if ($user['validate_key'] && $user['validate_key'] === $this->validateKey
-                     && $user['create_time'] && time() <= strtotime($user['create_time'].' + 2 week'))
+             if ($user['validate_key'] && $user['validate_key'] === $this->validateKey && $user['create_time'] && time() <= strtotime($user['create_time'] . ' + 2 week'))
                  $this->userActivate();
-             //здесь должно быть сообщение об ошибке и перенаправление
+             else {
+                 Session::setMsg('Невозможность активировать данный аккаунт. Пожалуйста зарегистрируйтесь заново', 'warning');
+                 header('Location: user/registration');
+                 exit;
+             }
          }
      }
-     
-     private function getUserEmail($fields = '*'){
+
+     private function getUserEmail($fields = '*') {
          try {
-             $st = $this->db->prepare("SELECT $fields FROM $this->table WHERE `email` = :email");
+             $st   = $this->db->prepare("SELECT $fields FROM $this->table WHERE `email` = :email");
              $st->execute([':email' => $this->email]);
              $user = $st->fetch(PDO::FETCH_ASSOC);
-             if ($user){
+             if ($user) {
                  $this->user = $user;
                  return $user;
              }
@@ -194,8 +196,8 @@
              $ex->getMessage();
          }
      }
-     
-     private function userActivate(){
+
+     private function userActivate() {
          if (empty($this->user['id']))
              throw new Exception('Не задан id пользователя');
          try {
@@ -205,6 +207,17 @@
          } catch (Exception $ex) {
              $ex->getMessage();
          }
+     }
+     
+     private function sendValidateCode(){
+         $siteName = Helper::getSiteConfig()['siteName'];
+         $siteHost = Helper::getSiteConfig()['siteHost'];
+         $subject  = 'Подтверждение регистрации на сайте ' . $siteName;
+         $content  = '
+                         <p>Здравствуйте! Благодарим вас за регистрацию на сайте ' . $siteName . '</p>
+                         <p>Для подтверждения регистрации пройдите по ссылке:</p>
+                         <a href="' . $siteHost . '/user/validate/email/' . $this->email . '/key/' . $this->validateKey . '">Подтвердить email</a>';
+         Mailer::emailSender($this->email, $subject, $content);
      }
 
      public function getUser() {

@@ -2,7 +2,7 @@
 
  class FrontController implements IController {
 
-     private $_controller, $_action, $_params, $_head, $_header, $_body, $_footer, $_page, $_beforeEvent;
+     private $_controller, $_action, $_params, $_head, $_header, $_body, $_footer, $_page, $_beforeEvent, $_afterEvent;
      private static $_instance;
 
      static function getInstance() {
@@ -13,7 +13,8 @@
 
      private function __construct() {
          $this->_beforeEvent = 'beforeEvent';
-         
+         $this->_afterEvent = 'afterEvent';
+
          $request           = filter_input(INPUT_SERVER, 'REQUEST_URI', FILTER_SANITIZE_URL);
          $urlComponents     = parse_url($request);
          $path              = explode('/', trim($urlComponents['path'], '/'));
@@ -47,20 +48,24 @@
                  if ($rc->hasMethod($this->getAction())) {
                      $controller = $rc->newInstance();
                      // invoke methods before action
-                     if ($rc->hasMethod($this->getBeforeEvent())){
+                     if ($rc->hasMethod($this->getBeforeEvent())) {
                          //event must returned true
-                        $beforeEvent     = $rc->getMethod($this->getBeforeEvent());
-                        if ($beforeEvent->invoke($controller, $this->getAction())){
-                            $method = $rc->getMethod($this->getAction());
+                         $beforeEvent = $rc->getMethod($this->getBeforeEvent());
+                         if ($beforeEvent->invoke($controller, $this->getAction())) {
+                             $method = $rc->getMethod($this->getAction());
                              $method->invoke($controller);
-                         }else{
+//                             //show messages
+//                             $afterEvent = $rc->getMethod($this->getAfterEvent());
+//                             if ($message = $afterEvent->invoke($controller))
+//                                     
+                         } else {
                              header('Location: /');
                              exit;
-                         }      
+                         }
                      }
                  } else {
                      http_response_code(404);
-                     echo "Action ".$this->getAction() ." not found";
+                     echo "Action " . $this->getAction() . " not found";
                      exit;
                  }
              } else {
@@ -70,7 +75,7 @@
              }
          } else {
              http_response_code(404);
-             echo "Controller ".$this->getController() ." not found";
+             echo "Controller " . $this->getController() . " not found";
              exit;
          }
      }
@@ -82,8 +87,12 @@
      public function getAction() {
          return $this->_action;
      }
-     
+
      public function getBeforeEvent() {
+         return $this->_beforeEvent;
+     }
+     
+     public function getAfterEvent() {
          return $this->_beforeEvent;
      }
 
@@ -124,3 +133,4 @@
      }
 
  }
+ 

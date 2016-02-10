@@ -7,11 +7,11 @@
      protected $table      = '';
      protected $recordsById;
      protected $allRecords = [];
-     protected $params = [];
+     protected $params     = [];
 
-     const IMG_UPLOAD_DIR  = 'upload/images/';
+     const IMG_UPLOAD_DIR     = 'upload/images/';
      const USERIMG_UPLOAD_DIR = 'upload/images/users/';
-     const FILE_UPLOAD_DIR = 'upload/files/';
+     const FILE_UPLOAD_DIR    = 'upload/files/';
 
      public function __construct() {
          try {
@@ -35,9 +35,9 @@
          if ($this->id == NULL)
              throw new Exception('укажите id записи для её отображения');
          try {
-             $query             = $this->db->prepare("SELECT $fileds FROM $this->table WHERE `" . $foreignKey . "` = :id");
+             $query                         = $this->db->prepare("SELECT $fileds FROM $this->table WHERE `" . $foreignKey . "` = :id");
              $query->execute([':id' => $this->id]);
-             $this->recordsById = $query->fetchAll(PDO::FETCH_ASSOC);
+             $this->recordsById             = $query->fetchAll(PDO::FETCH_ASSOC);
              $this->recordsById['rowCount'] = $query->rowCount();
          } catch (PDOException $e) {
              $e->getMessage();
@@ -92,7 +92,7 @@
      public function getAllRecords() {
          return $this->allRecords;
      }
-
+     
      function __set($key, $value) {
          $method = 'set' . ucfirst($key);
          if (is_callable(array($this, $method))) {
