@@ -70,6 +70,14 @@
          $sth = $this->db->prepare($sql);
          return $sth->execute(array(":user_id" => $user_id));
      }
-
+     
+     public static function setRoleForUser($db, $userId, $role = 'Client'){
+         try {
+             $st = $db->prepare("INSERT INTO `user_role` (`user_id`, `role_id`) VALUES (?, (SELECT `role_id` FROM `roles` WHERE `role_name` = ?))");
+             $st->execute([$userId, $role]);
+         } catch (Exception $ex) {
+             $ex->getMessage();
+         }
+     }
  }
  

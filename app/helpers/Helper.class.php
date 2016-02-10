@@ -18,13 +18,15 @@
          echo '</code></pre>';
      }
 
-     static public function moveFile($inputName, $isMain, $productId = NULL, $fileType = 'img', $path = '') {
-         if (!$productId)
-             $productId = date('d_m_Y');
+     static public function moveFile($inputName, $isMain, $id = NULL, $fileType = 'img') {
+         if (!$id)
+             $id = date('d_m_Y');
          if ($fileType === 'img' || $fileType === 'image')
-             $path = TableModelAbstract::IMG_UPLOAD_DIR . $productId;
-         elseif ($fileType === 'other')
-             $path = TableModelAbstract::FILE_UPLOAD_DIR . $productId;
+             $path = TableModelAbstract::IMG_UPLOAD_DIR . $id;
+         elseif ($fileType === 'userimg')
+             $path = TableModelAbstract::USERIMG_UPLOAD_DIR . $id;
+         else
+             $path = TableModelAbstract::FILE_UPLOAD_DIR . $id;
          if (!is_dir($path)) {
              if (!mkdir($path, 0777, TRUE))
                  die('Не удалось создать директорию ' . $path);
@@ -103,8 +105,11 @@
              $index = rand(0, count($arr) - 1);
              $pass .= $arr[$index];
          }
-         return $pass;
+         return md5($pass);
      }
-
+     
+     static function getSiteConfig(){
+         return parse_ini_file(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'config/site.ini');
+     }
  }
  

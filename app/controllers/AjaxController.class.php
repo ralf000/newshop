@@ -1,6 +1,8 @@
 <?php
 
- class AjaxController implements IController {
+ class AjaxController extends AbstractController {
+     
+     protected function requiredRoles() {}
 
      public function getCategoriesAction() {
          // Передаем заголовки
@@ -20,7 +22,7 @@
          header('Cache-Control: no-store, no-cache');
          header('Expires: ' . date('r'));
 
-         $catId = Validate::validateVar('catid', 'INPUT_GET', 'int');
+         $catId = Validate::validateInputVar('catid', 'INPUT_GET', 'int');
 
          $model = new SubCategoryTableModel();
          $model->setTable('subcategory');
@@ -34,7 +36,7 @@
          header('Cache-Control: no-store, no-cache');
          header('Expires: ' . date('r'));
 
-         $id = Validate::validateVar('catid', 'INPUT_GET', 'int');
+         $id = Validate::validateInputVar('catid', 'INPUT_GET', 'int');
 
          $this->deleteSubCategoryAction('category_id', $id);
 
@@ -51,7 +53,7 @@
          header('Expires: ' . date('r'));
 
          if (isset($_GET['subcatid']) && !empty($_GET['subcatid'])) {
-             $id    = Validate::validateVar('subcatid', 'INPUT_GET', 'int');
+             $id    = Validate::validateInputVar('subcatid', 'INPUT_GET', 'int');
              $this->deleteProductsAction('subcategory_id', $id);
              $field = 'id';
          } else {

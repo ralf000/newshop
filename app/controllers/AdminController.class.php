@@ -1,6 +1,15 @@
 <?php
 
- class AdminController implements IController {
+ class AdminController extends AbstractController {
+     
+     protected function requiredRoles() {
+         return [
+             'index' => [1,2,3],
+             'add' => [1,2,5],
+             'newCat' => [1,2],
+             'newSubCat' => [1,2]
+         ];
+     }
 
      public function indexAction() {
          $fc     = FrontController::getInstance();

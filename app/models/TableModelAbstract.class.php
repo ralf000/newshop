@@ -10,6 +10,7 @@
      protected $params = [];
 
      const IMG_UPLOAD_DIR  = 'upload/images/';
+     const USERIMG_UPLOAD_DIR = 'upload/images/users/';
      const FILE_UPLOAD_DIR = 'upload/files/';
 
      public function __construct() {
@@ -59,7 +60,7 @@
          }
      }
 
-     abstract function setData();
+     abstract function setData($formType = '', $method = '');
 
 //     protected function fetchToArr($rawFetch, $fetchMethod = 'FETCH_ASSOC') {
 //         while ($row = $rawFetch->fetch(PDO::$fetchMethod)) {

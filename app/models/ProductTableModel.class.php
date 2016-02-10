@@ -35,16 +35,16 @@
          }
      }
 
-     public function setData() {
+     public function setData($formType = '', $method = '') {
          $method            = 'INPUT_POST';
-         $this->cat         = Validate::validateVar('cat', $method);
-         $this->subcat      = Validate::validateVar('subcat', $method);
-         $this->title       = Validate::validateVar('title', $method, 'str');
-         $this->description = Validate::validateVar('desc', $method);
-         $this->spec        = Validate::validateVar('spec', $method);
-         $this->price       = Validate::validateVar('price', $method, 'int');
-         $this->quantity    = Validate::validateVar('quant', $method, 'int');
-         $this->published   = Validate::validateVar('published', $method, 'int');
+         $this->cat         = Validate::validateInputVar('cat', $method);
+         $this->subcat      = Validate::validateInputVar('subcat', $method);
+         $this->title       = Validate::validateInputVar('title', $method, 'str');
+         $this->description = Validate::validateInputVar('desc', $method);
+         $this->spec        = Validate::validateInputVar('spec', $method);
+         $this->price       = Validate::validateInputVar('price', $method, 'int');
+         $this->quantity    = Validate::validateInputVar('quant', $method, 'int');
+         $this->published   = Validate::validateInputVar('published', $method, 'int');
          if (empty($this->published))
              $this->published   = 0;
      }

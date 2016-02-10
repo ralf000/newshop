@@ -1,26 +1,32 @@
 <?php
 
- class PrivilegedUser extends User {
+ class PrivilegedUser extends UserTableModel {
 
      private $roles;
 
      public function __construct() {
          parent::__construct();
      }
+     
+     public static function getUserRoleById($db, $userId){
+         $st = $db->prepare("SELECT user_role.user_id, user_role.role_id, roles.role_name FROM user_role INNER JOIN roles ON user_role.role_id = roles.role_id WHERE user_role.user_id = ?");
+         $st->execute([$userId]);
+         return $st->fetch(PDO::FETCH_ASSOC);
+     }
 
      // Изменяем метод класса User
-     public static function getByUsername($username) {
-         $sql    = "SELECT * FROM user WHERE username = :username";
-         $sth    = $this->db->prepare($sql);
-         $sth->execute([":username" => $username]);
+     public static function getByUserId($db, $userId) {
+         $sql    = "SELECT `username`, `password_hash`, `email` FROM user WHERE username = :username";
+         $sth    = $db->prepare($sql);
+         $sth->execute([":username" => $userId]);
          $result = $sth->fetchAll();
 
          if (!empty($result)) {
              $privUser             = new PrivilegedUser();
-             $privUser->user_id    = $result[0]["id"];
-             $privUser->username   = $username;
+             $privUser->id    = $userId;
+             $privUser->login   = $result[0]['username'];
              $privUser->password   = $result[0]["password_hash"];
-             $privUser->email_addr = $result[0]["email"];
+             $privUser->email = $result[0]["email"];
              $privUser->initRoles();
              return $privUser;
          } else {

@@ -2,7 +2,7 @@
 
  class FrontController implements IController {
 
-     private $_controller, $_action, $_params, $_head, $_header, $_body, $_footer, $_page;
+     private $_controller, $_action, $_params, $_head, $_header, $_body, $_footer, $_page, $_beforeEvent;
      private static $_instance;
 
      static function getInstance() {
@@ -12,6 +12,8 @@
      }
 
      private function __construct() {
+         $this->_beforeEvent = 'beforeEvent';
+         
          $request           = filter_input(INPUT_SERVER, 'REQUEST_URI', FILTER_SANITIZE_URL);
          $urlComponents     = parse_url($request);
          $path              = explode('/', trim($urlComponents['path'], '/'));
@@ -24,7 +26,7 @@
              $keys   = $values = [];
              for ($i = 1, $max = count($path); $i <= $max; $i++) {
                  if ($i % 2 === 1)
-                     $keys[]   = $path[0];
+                     $keys[]   = $path[$i - 1];
                  else
                      $values[] = $path[$i - 1];
              }
@@ -44,22 +46,45 @@
              if ($rc->implementsInterface('IController')) {
                  if ($rc->hasMethod($this->getAction())) {
                      $controller = $rc->newInstance();
-                     $method     = $rc->getMethod($this->getAction());
-                     $method->invoke($controller);
-                 } else
-                     throw new Exception('Action');
-             } else
-                 throw new Exception('Interface');
-         } else
-             throw new Exception('Controller');
+                     // invoke methods before action
+                     if ($rc->hasMethod($this->getBeforeEvent())){
+                         //event must returned true
+                        $beforeEvent     = $rc->getMethod($this->getBeforeEvent());
+                        if ($beforeEvent->invoke($controller, $this->getAction())){
+                            $method = $rc->getMethod($this->getAction());
+                             $method->invoke($controller);
+                         }else{
+                             header('Location: /');
+                             exit;
+                         }      
+                     }
+                 } else {
+                     http_response_code(404);
+                     echo "Action ".$this->getAction() ." not found";
+                     exit;
+                 }
+             } else {
+                 http_response_code(404);
+                 echo "Interface not found";
+                 exit;
+             }
+         } else {
+             http_response_code(404);
+             echo "Controller ".$this->getController() ." not found";
+             exit;
+         }
      }
 
      function getController() {
          return $this->_controller;
      }
 
-     function getAction() {
+     public function getAction() {
          return $this->_action;
+     }
+     
+     public function getBeforeEvent() {
+         return $this->_beforeEvent;
      }
 
      function getParams() {
@@ -73,11 +98,11 @@
      function getBody() {
          return $this->_body;
      }
-     
-     function setPage($page){
+
+     function setPage($page) {
          $this->_page = $page;
      }
-             
+
      function getPage() {
          return $this->_page;
      }
@@ -99,4 +124,3 @@
      }
 
  }
- 

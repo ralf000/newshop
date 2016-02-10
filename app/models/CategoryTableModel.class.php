@@ -24,11 +24,11 @@
          }
      }
 
-     public function setData() {
-         $newCat              = Validate::validateVar('newcat', 'INPUT_POST', 'str');
+     public function setData($formType = '', $method = '') {
+         $newCat              = Validate::validateInputVar('newcat', 'INPUT_POST', 'str');
          if (Validate::validateValue($this->db, $this->table, 'category_name', $newCat))
              $this->category_name = $newCat;
-         $this->published     = Validate::validateVar('published', 'INPUT_POST', 'int');
+         $this->published     = Validate::validateInputVar('published', 'INPUT_POST', 'int');
          if (empty($this->published))
              $this->published     = 1;
          return (!$this->category_name) ? FALSE : TRUE;

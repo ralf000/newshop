@@ -24,10 +24,10 @@
          }
      }
 
-     public function setData() {
-         $this->subCategory_name = Validate::validateVar('newsubcat', 'INPUT_POST', 'str');
-         $this->published        = Validate::validateVar('published', 'INPUT_POST', 'int');
-         $this->category_id      = Validate::validateVar('categoryid', 'INPUT_POST', 'int');
+     public function setData($formType = '', $method = '') {
+         $this->subCategory_name = Validate::validateInputVar('newsubcat', 'INPUT_POST', 'str');
+         $this->published        = Validate::validateInputVar('published', 'INPUT_POST', 'int');
+         $this->category_id      = Validate::validateInputVar('categoryid', 'INPUT_POST', 'int');
          if (empty($this->published))
              $this->published        = 1;
      }

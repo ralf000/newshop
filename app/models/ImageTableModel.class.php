@@ -26,7 +26,7 @@
          
      }
 
-     function setData() {
+     function setData($formType = '', $method = '') {
          $this->mainImage = $_FILES['mainimage']['name'];
          $this->images    = $_FILES['images']['name'];
      }

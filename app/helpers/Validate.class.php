@@ -1,6 +1,6 @@
 <?php
  class Validate {
-
+     
      /**
       * Фильтрует переменную, переданную методами post или get
       * @param string $name имя переменной (ключ в массиве post или get)
@@ -8,7 +8,7 @@
       * @param string $type тип переменной
       * @return mixed отфильтрованная переменная
       */
-     static function validateVar($name, $method, $type = 'FILTER_DEFAULT') {
+     static function validateInputVar($name, $method, $type = 'FILTER_DEFAULT') {
          switch ($type) {
              case 'int': $filter = FILTER_SANITIZE_NUMBER_INT; break;
              case 'str': $filter = FILTER_SANITIZE_STRING; break;
