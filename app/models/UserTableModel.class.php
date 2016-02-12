@@ -123,10 +123,8 @@
                  }
                  if ($this->confirmPassword($user['password_hash'], $this->password))
                      return $user;
-                 else
-                     Session::setMsg('Неверный логин или пароль', 'danger');
              }
-             //сообщение о неверном юзере или пароле
+              Session::setMsg('Неверный логин или пароль', 'danger');
              return FALSE;
          } catch (Exception $ex) {
              $ex->getMessage();

@@ -6,6 +6,7 @@
          . PATH_SEPARATOR . 'app/services'
          . PATH_SEPARATOR . 'app/helpers'
          . PATH_SEPARATOR . 'app/tests'
+         . PATH_SEPARATOR . 'app/widgets'
  );
 
  /* Автозагрузчик классов */

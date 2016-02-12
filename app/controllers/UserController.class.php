@@ -12,16 +12,7 @@
      }
 
      public function indexAction() {
-         $fc    = FrontController::getInstance();
-         $model = new UserTableModel();
-         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-             $model->logout();
-             header('Location: /user');
-             exit;
-         } else {
-             $output = $model->render('../views/user/index.php');
-             $fc->setPage($output);
-         }
+         
      }
 
      public function registrationAction() {
@@ -53,8 +44,13 @@
          if ($_SERVER['REQUEST_METHOD'] === 'POST') {
              $model->setTable('user');
              $model->setData();
-             $model->login();
-             header('Location: ' . $_SERVER['REQUEST_URI']);
+             if ($model->login()) {
+                 $ref = Session::get('referer');
+                 Session::delete('referer');
+                 header('Location: ' . $ref ? $ref : '/admin');
+             } else {
+                 header('Location: ' . $_SERVER['REQUEST_URI']);
+             }
              exit;
          } else {
              if ($_SESSION['user_id'])
@@ -64,9 +60,20 @@
          }
      }
 
+     public function logoutAction() {
+         $fc    = FrontController::getInstance();
+         $model = new UserTableModel();
+         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+             $model->logout();
+             header('Location: /user');
+             exit;
+         } else {
+             $output = $model->render('../views/user/index.php');
+             $fc->setPage($output);
+         }
+     }
+
      public function validateAction() {
-         if ($_SESSION['user_id'])
-             header('Location: /');
          $fc     = FrontController::getInstance();
          $model  = new UserTableModel();
          $model->setTable('user');

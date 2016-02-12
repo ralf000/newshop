@@ -13,7 +13,7 @@
 
      private function __construct() {
          $this->_beforeEvent = 'beforeEvent';
-         $this->_afterEvent = 'afterEvent';
+         $this->_afterEvent  = 'afterEvent';
 
          $request           = filter_input(INPUT_SERVER, 'REQUEST_URI', FILTER_SANITIZE_URL);
          $urlComponents     = parse_url($request);
@@ -54,18 +54,13 @@
                          if ($beforeEvent->invoke($controller, $this->getAction())) {
                              $method = $rc->getMethod($this->getAction());
                              $method->invoke($controller);
-//                             //show messages
-//                             $afterEvent = $rc->getMethod($this->getAfterEvent());
-//                             if ($message = $afterEvent->invoke($controller))
-//                                     
                          } else {
-                             header('Location: /');
-                             exit;
+                             $this->redirToAuth();
                          }
                      }
                  } else {
                      http_response_code(404);
-                     echo "Action " . $this->getAction() . " not found";
+                     echo "Action «" . $this->getAction() . "» not found";
                      exit;
                  }
              } else {
@@ -80,6 +75,23 @@
          }
      }
 
+     private function redirToAuth() {
+         Session::set('referer', $_SERVER['REQUEST_URI']);
+         if (!Session::get('user_id')) {
+             if ($this->getController() === 'AdminController') {
+                 header('Location: /admin/login');
+                 exit;
+             } else {
+                 header('Location: /user/login');
+                 exit;
+             }
+         } else {
+             $model  = new Model();
+             $output = $model->render('../views/status/403.php', 'status');
+             $this->setPage($output);
+         }
+     }
+
      function getController() {
          return $this->_controller;
      }
@@ -91,7 +103,7 @@
      public function getBeforeEvent() {
          return $this->_beforeEvent;
      }
-     
+
      public function getAfterEvent() {
          return $this->_beforeEvent;
      }

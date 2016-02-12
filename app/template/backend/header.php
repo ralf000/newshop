@@ -1,3 +1,5 @@
+<body class="hold-transition skin-blue sidebar-mini">
+    <div class="wrapper">
 <header class="main-header">
     <!-- Logo -->
     <a href="index2.html" class="logo">
@@ -28,7 +30,7 @@
                                 <li><!-- start message -->
                                     <a href="#">
                                         <div class="pull-left">
-                                            <img src="dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
+                                            <img src="/app/template/backend/dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
                                         </div>
                                         <h4>
                                             Support Team
@@ -40,7 +42,7 @@
                                 <li>
                                     <a href="#">
                                         <div class="pull-left">
-                                            <img src="dist/img/user3-128x128.jpg" class="img-circle" alt="User Image">
+                                            <img src="/app/template/backend/dist/img/user3-128x128.jpg" class="img-circle" alt="User Image">
                                         </div>
                                         <h4>
                                             AdminLTE Design Team
@@ -52,7 +54,7 @@
                                 <li>
                                     <a href="#">
                                         <div class="pull-left">
-                                            <img src="dist/img/user4-128x128.jpg" class="img-circle" alt="User Image">
+                                            <img src="/app/template/backend/cdist/img/user4-128x128.jpg" class="img-circle" alt="User Image">
                                         </div>
                                         <h4>
                                             Developers
@@ -64,7 +66,7 @@
                                 <li>
                                     <a href="#">
                                         <div class="pull-left">
-                                            <img src="dist/img/user3-128x128.jpg" class="img-circle" alt="User Image">
+                                            <img src="/app/template/backend/dist/img/user3-128x128.jpg" class="img-circle" alt="User Image">
                                         </div>
                                         <h4>
                                             Sales Department
@@ -76,7 +78,7 @@
                                 <li>
                                     <a href="#">
                                         <div class="pull-left">
-                                            <img src="dist/img/user4-128x128.jpg" class="img-circle" alt="User Image">
+                                            <img src="/app/template/backend/dist/img/user4-128x128.jpg" class="img-circle" alt="User Image">
                                         </div>
                                         <h4>
                                             Reviewers
@@ -204,13 +206,13 @@
                 <!-- User Account: style can be found in dropdown.less -->
                 <li class="dropdown user user-menu">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                        <img src="dist/img/user2-160x160.jpg" class="user-image" alt="User Image">
+                        <img src="/app/template/backend/dist/img/user2-160x160.jpg" class="user-image" alt="User Image">
                         <span class="hidden-xs">Alexander Pierce</span>
                     </a>
                     <ul class="dropdown-menu">
                         <!-- User image -->
                         <li class="user-header">
-                            <img src="dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
+                            <img src="/app/template/backend/dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
                             <p>
                                 Alexander Pierce - Web Developer
                                 <small>Member since Nov. 2012</small>
@@ -231,10 +233,12 @@
                         <!-- Menu Footer-->
                         <li class="user-footer">
                             <div class="pull-left">
-                                <a href="#" class="btn btn-default btn-flat">Profile</a>
+                                <a href="profile" class="btn btn-default btn-flat">Профиль</a>
                             </div>
                             <div class="pull-right">
-                                <a href="#" class="btn btn-default btn-flat">Sign out</a>
+                                <form action="logout" method="post">
+                                    <button type="submit" class="btn btn-default btn-flat">Выйти</button>
+                                </form>
                             </div>
                         </li>
                     </ul>
