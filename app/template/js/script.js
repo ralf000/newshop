@@ -54,6 +54,10 @@ function addHandlers() {
             }
         });
     });
+    
+    $('#changePhoto').click('on', function () {
+        
+    });
 }
 
 function getCategoriesAjax() {

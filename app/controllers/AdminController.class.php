@@ -84,8 +84,15 @@
 
      public function profileAction() {
          $fc     = FrontController::getInstance();
-         $model  = new UserTableModel();
-         $model->setTable('user');
+         $model  = new AdminModel();
+         $model->setWidgetsData($this->getAllWidgets());
+         $userModel = new UserTableModel();
+         $userModel->setId(Session::get('user_id'));
+         $userModel->setTable('user');
+         $userModel->readRecordsById('id', '`id`,`username`, `full_name`, `photo`, `email`');
+         $userModel->readUserAddress();
+         $userModel->readUserPhones();
+         $model->setData(['user' => $userModel->getRecordsById()[0], 'userContacts' => $userModel->getUserContacts()]);
          $output = $model->render('../views/admin/profile.php', 'admin');
          $fc->setPage($output);
      }

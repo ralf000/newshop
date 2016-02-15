@@ -2,7 +2,7 @@
 
  class UserTableModel extends TableModelAbstract {
 
-     private $login, $password, $dpassword, $fullName, $email, $photo, $validateKey, $path;
+     private $login, $password, $dpassword, $fullName, $email, $photo, $validateKey, $path, $userContacts;
      protected $user, $id;
 
      public function __construct($login = '', $password = '') {
@@ -70,6 +70,30 @@
          $st       = $this->db->prepare("INSERT INTO $this->table (`username`, `full_name`, `email`, `password_hash`, `validate_key`, `create_time`) VALUES (:username, :full_name, :email, :password_hash, :validate_key, :create_time)");
          $st->execute([':username' => $this->login, ':full_name' => $this->fullName, ':email' => $this->email, ':password_hash' => $this->hs($this->password), ':validate_key' => $this->validateKey, ':create_time' => date('Y-m-d H:i:s')]);
          $this->id = $this->db->lastInsertId();
+     }
+     
+     public function readUserAddress(){
+         if (empty($this->id))
+             throw new Exception('Не задан id пользователя');
+         try {
+             $st = $this->db->prepare("SELECT `address`, `postal_code` FROM address WHERE `user_id` = ?");
+             $st->execute([$this->id]);
+             $this->userContacts['address'] = $st->fetchAll(PDO::FETCH_ASSOC);
+         } catch (Exception $ex) {
+             $ex->getMessage();
+         }
+     }
+     
+     public function readUserPhones(){
+         if (empty($this->id))
+             throw new Exception('Не задан id пользователя');
+         try {
+             $st = $this->db->prepare("SELECT `number`, `number_type` FROM `phone` WHERE `user_id` = ?");
+             $st->execute([$this->id]);
+             $this->userContacts['phones'] = $st->fetchAll(PDO::FETCH_ASSOC);
+         } catch (Exception $ex) {
+             $ex->getMessage();
+         }
      }
 
      public function updateRecord() {
@@ -221,6 +245,9 @@
      public function getUser() {
          return $this->user;
      }
-
+     
+     public function getUserContacts(){
+         return $this->userContacts;
+     }
  }
  
