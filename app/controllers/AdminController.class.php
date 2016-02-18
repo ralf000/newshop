@@ -12,15 +12,15 @@
      }
 
      public function indexAction() {
-         $fc     = FrontController::getInstance();
-         $model  = new AdminModel();
+         $fc        = FrontController::getInstance();
+         $model     = new AdminModel();
          $model->setWidgetsData($this->getAllWidgets());
          $userModel = new UserTableModel();
          $userModel->setId(Session::get('user_id'));
          $userModel->setTable('user');
          $userModel->readRecordsById('id', '`id`,`username`, `full_name`, `photo`, `email`');
          $model->setData(['user' => $userModel->getRecordsById()[0]]);
-         $output = $model->render('../views/admin/index.php', 'admin');
+         $output    = $model->render('../views/admin/index.php', 'admin');
          $fc->setPage($output);
      }
 
@@ -38,11 +38,12 @@
              header('Location: /admin/');
              exit;
          } else {
+//             $adminModel             = new AdminModel();
              $catsAndSub             = [];
              $catsAndSub             = $this->getCatsAndSubCats();
              $model->categoryList    = $catsAndSub['cats']; //used magic __set
              $model->subCategoryList = $catsAndSub['subcats']; //used magic __set
-             $output                 = $model->render('../views/admin/add.php', 'admin');
+             $output                 = (new AdminModel())->render('../views/admin/add.php', 'admin');
              $fc->setPage($output);
          }
      }
@@ -83,8 +84,8 @@
      }
 
      public function profileAction() {
-         $fc     = FrontController::getInstance();
-         $model  = new AdminModel();
+         $fc        = FrontController::getInstance();
+         $model     = new AdminModel();
          $model->setWidgetsData($this->getAllWidgets());
          $userModel = new UserTableModel();
          $userModel->setId(Session::get('user_id'));
@@ -93,7 +94,7 @@
          $userModel->readUserAddress();
          $userModel->readUserPhones();
          $model->setData(['user' => $userModel->getRecordsById()[0], 'userContacts' => $userModel->getUserContacts()]);
-         $output = $model->render('../views/admin/profile.php', 'admin');
+         $output    = $model->render('../views/admin/profile.php', 'admin');
          $fc->setPage($output);
      }
 
@@ -154,10 +155,10 @@
              'ordersPerMonth'   => $ordersPerMonth,
              'clientsPerMonth'  => $clientsPerMonth,
              'commentsPerMonth' => $commentsPerMonth,
-             'persentsProds' => ($productsPerMonts) ? 100 / ($products / $productsPerMonts) : 0,
-             'persentsOrders' => ($ordersPerMonth) ? 100 / ($orders / $ordersPerMonth) : 0,
-             'persentsClients' => ($clientsPerMonth) ? 100 / ($clients / $clientsPerMonth) : 0,
-             'persentsComm' => ($commentsPerMonth) ? 100 / ($comments / $commentsPerMonth) : 0,
+             'persentsProds'    => ($productsPerMonts) ? 100 / ($products / $productsPerMonts) : 0,
+             'persentsOrders'   => ($ordersPerMonth) ? 100 / ($orders / $ordersPerMonth) : 0,
+             'persentsClients'  => ($clientsPerMonth) ? 100 / ($clients / $clientsPerMonth) : 0,
+             'persentsComm'     => ($commentsPerMonth) ? 100 / ($comments / $commentsPerMonth) : 0,
          ];
      }
 

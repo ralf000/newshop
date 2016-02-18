@@ -1,8 +1,10 @@
 <?php
 
  class AjaxController extends AbstractController {
-     
-     protected function requiredRoles() {}
+
+     protected function requiredRoles() {
+         
+     }
 
      public function getCategoriesAction() {
          // Передаем заголовки
@@ -77,6 +79,33 @@
          $model->setId($id);
          if ($model->deleteRecord($field))
              return TRUE;
+     }
+
+     public function changePhotoAction() {
+         header('Content-Type: application/json; charset=utf-8');
+         header('Cache-Control: no-store, no-cache');
+         header('Expires: ' . date('r'));
+         $this->clearAvatarAction();
+         
+         $model  = new UserTableModel();
+         $model->setTable('user');
+         $userId = Session::get('user_id');
+         $model->setId($userId);
+         $model->setPath(TableModelAbstract::USERIMG_UPLOAD_DIR);
+         $model->setPhoto($_FILES['files']['name'][0]);
+         $model->updateAvatar();
+
+         $upload_handler = new UploadHandler([
+             'upload_dir'          => TableModelAbstract::USERIMG_UPLOAD_DIR,
+             'max_number_of_files' => 1,
+             'user_dirs'           => true,
+             'isAvatar'            => true,
+         ]);
+     }
+
+     private function clearAvatarAction() {
+         $dir = TableModelAbstract::USERIMG_UPLOAD_DIR . Session::get('user_id');
+         Helper::clearDir($dir);
      }
 
  }

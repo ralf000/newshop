@@ -71,24 +71,24 @@
          $st->execute([':username' => $this->login, ':full_name' => $this->fullName, ':email' => $this->email, ':password_hash' => $this->hs($this->password), ':validate_key' => $this->validateKey, ':create_time' => date('Y-m-d H:i:s')]);
          $this->id = $this->db->lastInsertId();
      }
-     
-     public function readUserAddress(){
+
+     public function readUserAddress() {
          if (empty($this->id))
              throw new Exception('Не задан id пользователя');
          try {
-             $st = $this->db->prepare("SELECT `address`, `postal_code` FROM address WHERE `user_id` = ?");
+             $st                            = $this->db->prepare("SELECT `address`, `postal_code` FROM address WHERE `user_id` = ?");
              $st->execute([$this->id]);
              $this->userContacts['address'] = $st->fetchAll(PDO::FETCH_ASSOC);
          } catch (Exception $ex) {
              $ex->getMessage();
          }
      }
-     
-     public function readUserPhones(){
+
+     public function readUserPhones() {
          if (empty($this->id))
              throw new Exception('Не задан id пользователя');
          try {
-             $st = $this->db->prepare("SELECT `number`, `number_type` FROM `phone` WHERE `user_id` = ?");
+             $st                           = $this->db->prepare("SELECT `number`, `number_type` FROM `phone` WHERE `user_id` = ?");
              $st->execute([$this->id]);
              $this->userContacts['phones'] = $st->fetchAll(PDO::FETCH_ASSOC);
          } catch (Exception $ex) {
@@ -109,6 +109,20 @@
                  $st = $this->db->prepare("UPDATE $this->table SET `photo` = :photo WHERE `id` = :id");
                  $st->execute([':photo' => $this->path . '/main_' . Helper::strToLat($this->photo), ':id' => $this->id]);
                  Helper::moveFile('photo', TRUE, $this->id, 'userimg');
+             }
+         } catch (Exception $ex) {
+             $ex->getMessage();
+         }
+     }
+
+     public function updateAvatar() {
+         if (empty($this->id))
+             $this->id   = $this->user['id'];
+         $this->path = $this->path . $this->id;
+         try {
+             if ($this->photo) {
+                 $st = $this->db->prepare("UPDATE $this->table SET `photo` = ? WHERE `id` = ?");
+                 $st->execute([$this->path . '/avatar/' . Helper::strToLat($this->photo), intval($this->id)]);
              }
          } catch (Exception $ex) {
              $ex->getMessage();
@@ -148,7 +162,7 @@
                  if ($this->confirmPassword($user['password_hash'], $this->password))
                      return $user;
              }
-              Session::setMsg('Неверный логин или пароль', 'danger');
+             Session::setMsg('Неверный логин или пароль', 'danger');
              return FALSE;
          } catch (Exception $ex) {
              $ex->getMessage();
@@ -230,8 +244,8 @@
              $ex->getMessage();
          }
      }
-     
-     private function sendValidateCode(){
+
+     private function sendValidateCode() {
          $siteName = Helper::getSiteConfig()['siteName'];
          $siteHost = Helper::getSiteConfig()['siteHost'];
          $subject  = 'Подтверждение регистрации на сайте ' . $siteName;
@@ -242,12 +256,21 @@
          Mailer::emailSender($this->email, $subject, $content);
      }
 
+     public function setPath($path) {
+         $this->path = $path;
+     }
+
+     public function setPhoto($photo) {
+         $this->photo = $photo;
+     }
+
      public function getUser() {
          return $this->user;
      }
-     
-     public function getUserContacts(){
+
+     public function getUserContacts() {
          return $this->userContacts;
      }
+
  }
  

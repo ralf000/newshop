@@ -20,7 +20,7 @@
 
      static public function moveFile($inputName, $isMain, $id = NULL, $fileType = 'img') {
          if (!$id)
-             $id = date('d_m_Y');
+             $id   = date('d_m_Y');
          if ($fileType === 'img' || $fileType === 'image')
              $path = TableModelAbstract::IMG_UPLOAD_DIR . $id;
          elseif ($fileType === 'userimg')
@@ -31,7 +31,7 @@
              if (!mkdir($path, 0777, TRUE))
                  die('Не удалось создать директорию ' . $path);
          }
-         $prefix    = $isMain ? 'main_' : '';
+         $prefix = $isMain ? 'main_' : '';
 
          if (!empty($_FILES[$inputName]['name'])) {
              //for multiple
@@ -82,7 +82,7 @@
          # Заменяем
          return $string  = strtr($string, $replace);
      }
-     
+
      static public function generate($number) {
          $arr  = array('a', 'b', 'c', 'd', 'e', 'f',
              'g', 'h', 'i', 'j', 'k', 'l',
@@ -107,9 +107,18 @@
          }
          return md5($pass);
      }
-     
-     static function getSiteConfig(){
+
+     static function getSiteConfig() {
          return parse_ini_file(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'config/site.ini');
      }
+
+     static function clearDir($dir) {
+         if ($objs = glob($dir . "/*")) {
+             foreach ($objs as $obj) {
+                 is_dir($obj) ? self::clearDir($obj) : unlink($obj);
+             }
+         }
+     }
+
  }
  

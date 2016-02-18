@@ -54,9 +54,9 @@ function addHandlers() {
             }
         });
     });
-    
-    $('#changePhoto').click('on', function () {
-        
+
+    $('.close').click('on', function () {
+        $(this).closest('.box').fadeOut(200);
     });
 }
 
@@ -83,7 +83,7 @@ function getSubCategoriesAjax(catId) {
             subCat.empty();
             if (!$.isEmptyObject(data)) {
                 for (var name in data) {
-                    if (typeof(data[name]) === 'object')
+                    if (typeof (data[name]) === 'object')
                         subCat.append('<option value="' + data[name].id + '">' + data[name].subcategory_name + '</option>');
                 }
             }
@@ -96,5 +96,6 @@ $(function () {
     $('#categoryid').val($('#cat option:selected').val());
     addHandlers();
     getSubCategoriesAjax(catId);
+
 });
 

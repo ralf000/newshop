@@ -44,13 +44,7 @@
                      . 'backend'
                      . DIRECTORY_SEPARATOR
                      . 'head.php');
-             require(dirname(__DIR__)
-                     . DIRECTORY_SEPARATOR
-                     . 'template'
-                     . DIRECTORY_SEPARATOR
-                     . 'inc'
-                     . DIRECTORY_SEPARATOR
-                     . 'message.inc.php');
+             require(Path::PATH_TO_INC. 'message.inc.php');
              require(dirname(__FILE__)
                      . DIRECTORY_SEPARATOR
                      . $file);
@@ -65,13 +59,7 @@
                      . 'template'
                      . DIRECTORY_SEPARATOR
                      . 'head.php');
-             require(dirname(__DIR__)
-                     . DIRECTORY_SEPARATOR
-                     . 'template'
-                     . DIRECTORY_SEPARATOR
-                     . 'inc'
-                     . DIRECTORY_SEPARATOR
-                     . 'message.inc.php');
+             require(Path::PATH_TO_INC. 'message.inc.php');
              require(dirname(__FILE__)
                      . DIRECTORY_SEPARATOR
                      . $file);

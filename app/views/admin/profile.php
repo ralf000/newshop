@@ -1,7 +1,5 @@
 <? $userAddress = $this->getData()['userContacts']['address']; ?>
 <? $userPhones  = $this->getData()['userContacts']['phones']; ?>
-<!-- Content Wrapper. Contains page content -->
-<div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
         <h1>
@@ -23,7 +21,7 @@
                 <!-- Profile Image -->
                 <div class="box box-primary">
                     <div class="box-body box-profile">
-                        <a href="#changePhotoPopup" id="changePhoto" data-toggle="modal" data-target="#changePhotoPopUp"><img class="profile-user-img img-responsive img-circle" src="<?= $user['photo'] ?>" alt="change photo"></a>
+                        <a href="#changePhotoPopup" id="changePhoto" data-toggle="modal" data-target="#changePhotoPopUp"><img class="profile-user-img img-responsive img-circle" src="../<?= $user['photo'] ?>" alt="change photo"></a>
                         <h3 class="profile-username text-center"><?= $user['full_name'] ?></h3>
                         <!--<p class="text-muted text-center">Software Engineer</p>-->
 
@@ -178,24 +176,4 @@
         </div><!-- /.row -->
 
     </section><!-- /.content -->
-</div><!-- /.content-wrapper -->
-
-<div class="modal fade" id="changePhotoPopUp" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title" id="myModalLabel">Сменить аватар</h4>
-            </div>
-            <div class="modal-body">
-                <form action="changePhoto" method="post" enctype="multipart/form-data">
-                    <input type="file" name="photo" id="photo" />
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
-                <button type="button" class="btn btn-primary" id="changePhotoBtn">Сохранить изменения</button>
-            </div>
-        </div>
-    </div>
-</div>
+<? require_once Path::PATH_TO_INC.'imageUploadModal.inc.php';?>
