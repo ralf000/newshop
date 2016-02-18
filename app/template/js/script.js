@@ -54,10 +54,6 @@ function addHandlers() {
             }
         });
     });
-
-    $('.close').click('on', function () {
-        $(this).closest('.box').fadeOut(200);
-    });
 }
 
 function getCategoriesAjax() {
