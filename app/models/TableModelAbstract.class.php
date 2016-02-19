@@ -3,23 +3,10 @@
  abstract class TableModelAbstract extends Model implements CRUDInterface {
 
      protected $id;
-     protected $db;
      protected $table      = '';
      protected $recordsById;
      protected $allRecords = [];
      protected $params     = [];
-
-     const IMG_UPLOAD_DIR     = 'upload/images/';
-     const USERIMG_UPLOAD_DIR = 'upload/images/users/';
-     const FILE_UPLOAD_DIR    = 'upload/files/';
-
-     public function __construct() {
-         try {
-             $this->db = DB::init()->connect();
-         } catch (Exception $ex) {
-             $ex->getMessage();
-         }
-     }
 
      public function readAllRecords($fileds = '*') {
          try {

@@ -1,3 +1,5 @@
+<? $title = $this->getData()['title'] ? $this->getData()['title'] : ''; ?>
+<? $subTitle = $this->getData()['subTitle'] ? $this->getData()['subTitle'] : ''; ?>
 <? $user = $this->getData()['user']; ?>
 <body class="hold-transition skin-blue sidebar-mini">
     <div class="wrapper">
@@ -5,7 +7,7 @@
             <!-- Logo -->
             <a href="/admin" class="logo">
                 <!-- mini logo for sidebar mini 50x50 pixels -->
-                <span class="logo-mini"><b>A</b>LT</span>
+                <span class="logo-mini"><b>N</b></span>
                 <!-- logo for regular state and mobile devices -->
                 <span class="logo-lg"><b>New</b>Shop</span>
             </a>
@@ -19,13 +21,13 @@
                     <ul class="nav navbar-nav">
                         <li class="dropdown user user-menu">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                <img src="../<?= $user['photo'] ?>" class="user-image" alt="User Image">
+                                <img src="/<?=$user['photo'] ?>" class="user-image" alt="User Image">
                                 <span class="hidden-xs"><?= $user['full_name'] ?></span>
                             </a>
                             <ul class="dropdown-menu">
                                 <!-- User image -->
                                 <li class="user-header">
-                                    <img src="<?= $user['photo'] ?>" class="img-circle" alt="User Image">
+                                    <img src="/<?= $user['photo'] ?>" class="img-circle" alt="User Image">
                                     <p>
                                         <?= $user['full_name'] ?>
         <!--                                <small>Member since Nov. 2012</small>-->
@@ -49,7 +51,7 @@
                                         <a href="/admin/profile" class="btn btn-default btn-flat">Профиль</a>
                                     </div>
                                     <div class="pull-right">
-                                        <form action="logout" method="post">
+                                        <form action="/admin/logout" method="post">
                                             <button type="submit" class="btn btn-default btn-flat">Выйти</button>
                                         </form>
                                     </div>
@@ -66,3 +68,15 @@
         </header>
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
+            <!-- Content Header (Page header) -->
+            <section class="content-header">
+                <h1>
+                    <?=$title?>
+                    <small><?=$subTitle?></small>
+                </h1>
+                <?=$this->breadCrumbs()?>
+<!--                <ol class="breadcrumb">
+                    <li><a href="/admin"><i class="fa fa-dashboard"></i> Главная</a></li>
+                    <li class="active"></li>
+                </ol>-->
+            </section>

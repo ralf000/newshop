@@ -195,7 +195,7 @@
              $this->email       = Validate::validateInputVar('email', $method, 'email');
              $this->photo       = $_FILES['photo']['name'];
              $this->validateKey = Helper::generate(10);
-             $this->path        = TableModelAbstract::USERIMG_UPLOAD_DIR;
+             $this->path        = Path::USERIMG_UPLOAD_DIR;
              $this->dpassword   = Validate::validateInputVar('dpass', $method, 'str');
              return $this->password === $this->dpassword ? TRUE : FALSE;
          }

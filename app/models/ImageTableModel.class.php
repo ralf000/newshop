@@ -7,7 +7,7 @@
      public function __construct($lastInsertId) {
          parent::__construct();
          $this->productId = $lastInsertId;
-         $this->path      = TableModelAbstract::IMG_UPLOAD_DIR . $this->productId . '/';
+         $this->path      = Path::IMG_UPLOAD_DIR . $this->productId . '/';
      }
 
      public function addRecord() {
@@ -33,10 +33,10 @@
 
      function addAllImages() {
          if (!empty($this->mainImage)) {
-             $this->addImage($this->path . Helper::strToLat($this->mainImage), TRUE);
+             $this->addImage($this->path .'main_' . Helper::strToLat($this->mainImage), TRUE);
              Helper::moveFile('mainimage', TRUE, $this->productId);
          }
-         if (!empty($this->images) && is_array($this->images)) {
+         if (!empty($this->images[0]) && is_array($this->images)) {
              foreach ($this->images as $img) {
                  $this->addImage($this->path . Helper::strToLat($img), FALSE);
              }

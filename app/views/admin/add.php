@@ -1,14 +1,5 @@
-<section class="content-header">
-    <h1>
-        Добавить новый товар
-        <!--<small>Preview</small>-->
-    </h1>
-    <ol class="breadcrumb">
-        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li><a href="#">Forms</a></li>
-        <li class="active">General Elements</li>
-    </ol>
-</section>
+<link rel="stylesheet" href="/app/template/css/jquery.fileupload.css">
+<link rel="stylesheet" href="/app/template/css/jquery.fileupload-ui.css">
 <section class="content">
     <div class="box box-primary">
         <form id="addprod" action="add" method="post" enctype="multipart/form-data" role="form">
@@ -22,7 +13,7 @@
                              <? endforeach; ?>
                         </select>
                         <span class="input-group-btn">
-                            <button class="btn btn-default" type="button"><span class="glyphicon glyphicon-plus"></span></button>
+                            <a class="btn btn-default" href="#addCategoryPopup"><span class="glyphicon glyphicon-plus" data-toggle="modal" data-target="#addCategoryPopup"></span></a>
                             <button class="btn btn-default" type="button" id="delCat"><span class="glyphicon glyphicon-minus"></span></button>
                         </span>
                     </div>
@@ -36,7 +27,7 @@
                              <? endforeach; ?>
                         </select>
                         <span class="input-group-btn">
-                            <button class="btn btn-default" type="button"><span class="glyphicon glyphicon-plus"></span></button>
+                            <a class="btn btn-default" href="#addSubCategoryPopup"><span class="glyphicon glyphicon-plus" data-toggle="modal" data-target="#addSubCategoryPopup"></span></a>
                             <button class="btn btn-default" type="button" id="delSubCat"><span class="glyphicon glyphicon-minus"></span></button>
                         </span>
                     </div>
@@ -62,14 +53,25 @@
                     <input type="text" name="quant" id="quant" class="form-control" placeholder="Количество"/>
                 </div>
                 <div class="form-group">
-                    <label for="mainimage">Главное изображение</label>
-                    <input type="file" name="mainimage" id="mainimage" class="form-control"/>
-                    <p class="help-block">Основное изображение товара</p>
+                    <!--<label for="mainimage">Главное изображение</label>-->
+<!--                                        <input type="file" name="mainimage" id="mainimage" class="form-control"/>
+                    <p class="help-block">Основное изображение товара</p>-->
+
+                    <span class="btn btn-default fileinput-button">
+                        <i class="fa fa-image"></i>
+                        <span>Главное изображение</span>
+                        <input id="mainimage" type="file" name="mainimage" accept="image/png,image/jpeg,image/gif">
+                    </span>
+                    <div id="files" class="files"></div>
                 </div>
+
                 <div class="form-group">
-                    <label for="images">Остальные изображения</label>
-                    <input type="file" name="images[]" id="images" class="form-control" multiple/>
-                    <p class="help-block">Изображения для галереи товара</p>
+                    <span class="btn btn-default fileinput-button second">
+                        <i class="fa fa-image"></i>
+                        <span>Остальные изображения</span>
+                        <input id="images" type="file" name="images[]" accept="image/png,image/jpeg,image/gif" multiple>
+                    </span>
+                    <div id="files2" class="files"></div>
                 </div>
                 <div class="checkbox">
                     <label>
@@ -79,20 +81,11 @@
                 </div>
             </div>
             <div class="box-footer">
-                <button type="submit" class="btn btn-default" name="addprod">Отправить</button>
+                <button type="submit" class="btn btn-primary" name="addprod">Отправить</button>
             </div>
         </form>
-
-        <form id="newcarform" action="newCat" method="post">
-            <input type="text" name="newcat" id="newcat" />
-            <button type="submit" class="btn btn-default" name="newcarform">Добавить</button>
-        </form>
-
-        <form id="newsubcarform" action="newSubCat" method="post">
-            <input type="hidden" name="categoryid" value="" id="categoryid"/>
-            <input type="text" name="newsubcat" id="newsubcat" />
-            <button type="submit" class="btn btn-default" name="newsubcarform">Добавить</button>
-        </form>
+        <? require Path::PATH_TO_INC . 'addCategoryModal.inc.php' ?>
+        <? require_once Path::PATH_TO_INC . 'addSubCategoryModal.inc.php' ?>
     </div>
 </section>
 
@@ -100,43 +93,39 @@
 
 
 
-<div class="box box-primary">
-    <div class="box-header with-border">
-        <h3 class="box-title">Quick Example</h3>
-    </div><!-- /.box-header -->
-    <!-- form start -->
-    <form role="form">
-        <div class="box-body">
-            <div class="form-group">
-                <label for="exampleInputEmail1">Email address</label>
-                <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Enter email">
-            </div>
-            <div class="form-group">
-                <label for="exampleInputPassword1">Password</label>
-                <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
-            </div>
-            <div class="form-group">
-                <label for="exampleInputFile">File input</label>
-                <input type="file" id="exampleInputFile">
-                <p class="help-block">Example block-level help text here.</p>
-            </div>
-            <div class="checkbox">
-                <label>
-                    <input type="checkbox"> Check me out
-                </label>
-            </div>
-        </div><!-- /.box-body -->
 
-        <div class="box-footer">
-            <button type="submit" class="btn btn-primary">Submit</button>
-        </div>
-    </form>
-</div>
 <script>
-      $(function () {
+    function readURL(input, evt, box) {
+        var files = evt.target.files;
+
+        for (var i = 0, f; f = files[i]; i++) {
+            if (!f.type.match('image.*'))
+                continue;
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                $('<img/>').attr('src', e.target.result).addClass('thumb').appendTo(box);
+            };
+            reader.readAsDataURL(f);
+            box.fadeIn();
+        }
+    }
+    $(".cleanImg").on('click', function (e) {
+        $(this).next('.files').empty().hide();
+    });
+    $("#mainimage").change(function (e) {
+        $('#files').empty().hide();
+        readURL($(this), e, $('#files'));
+    });
+    $("#images").change(function (e) {
+        $('#files2').empty().hide();
+        readURL($(this), e, $('#files2'));
+    });
+    $(function () {
+        $(".cleanImg").hide();
+        $('#files').add('#files2').hide();
         CKEDITOR.replace('desc');
         CKEDITOR.replace('spec');
-      });
+    });
 </script>
 <script src="https://cdn.ckeditor.com/4.4.3/standard/ckeditor.js"></script>
 

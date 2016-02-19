@@ -40,8 +40,8 @@
          $this->cat         = Validate::validateInputVar('cat', $method);
          $this->subcat      = Validate::validateInputVar('subcat', $method);
          $this->title       = Validate::validateInputVar('title', $method, 'str');
-         $this->description = Validate::validateInputVar('desc', $method);
-         $this->spec        = Validate::validateInputVar('spec', $method);
+         $this->description = Validate::validateInputVar('desc', $method, 'html');
+         $this->spec        = Validate::validateInputVar('spec', $method, 'html');
          $this->price       = Validate::validateInputVar('price', $method, 'int');
          $this->quantity    = Validate::validateInputVar('quant', $method, 'int');
          $this->published   = Validate::validateInputVar('published', $method, 'int');

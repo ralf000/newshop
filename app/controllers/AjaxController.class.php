@@ -91,20 +91,22 @@
          $model->setTable('user');
          $userId = Session::get('user_id');
          $model->setId($userId);
-         $model->setPath(TableModelAbstract::USERIMG_UPLOAD_DIR);
+         $model->setPath(Path::USERIMG_UPLOAD_DIR);
          $model->setPhoto($_FILES['files']['name'][0]);
          $model->updateAvatar();
 
          $upload_handler = new UploadHandler([
-             'upload_dir'          => TableModelAbstract::USERIMG_UPLOAD_DIR,
+             'upload_dir'          => Path::USERIMG_UPLOAD_DIR,
              'max_number_of_files' => 1,
              'user_dirs'           => true,
              'isAvatar'            => true,
          ]);
      }
-
+     
+     public function mainImageAction(){}
+     
      private function clearAvatarAction() {
-         $dir = TableModelAbstract::USERIMG_UPLOAD_DIR . Session::get('user_id');
+         $dir = Path::USERIMG_UPLOAD_DIR . Session::get('user_id');
          Helper::clearDir($dir);
      }
 

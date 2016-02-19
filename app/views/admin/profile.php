@@ -1,17 +1,5 @@
 <? $userAddress = $this->getData()['userContacts']['address']; ?>
 <? $userPhones  = $this->getData()['userContacts']['phones']; ?>
-    <!-- Content Header (Page header) -->
-    <section class="content-header">
-        <h1>
-            Профиль пользователя
-        </h1>
-        <ol class="breadcrumb">
-            <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-            <li><a href="#">Examples</a></li>
-            <li class="active">User profile</li>
-        </ol>
-    </section>
-
     <!-- Main content -->
     <section class="content">
 
@@ -21,7 +9,7 @@
                 <!-- Profile Image -->
                 <div class="box box-primary">
                     <div class="box-body box-profile">
-                        <a href="#changePhotoPopup" id="changePhoto" data-toggle="modal" data-target="#changePhotoPopUp"><img class="profile-user-img img-responsive img-circle" src="../<?= $user['photo'] ?>" alt="change photo"></a>
+                        <a href="#changePhotoPopup" id="changePhoto" data-toggle="modal" data-target="#changePhotoPopUp"><img class="profile-user-img img-responsive img-circle" src="/<?= $user['photo'] ?>" alt="change photo"></a>
                         <h3 class="profile-username text-center"><?= $user['full_name'] ?></h3>
                         <!--<p class="text-muted text-center">Software Engineer</p>-->
 

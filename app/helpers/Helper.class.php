@@ -22,11 +22,11 @@
          if (!$id)
              $id   = date('d_m_Y');
          if ($fileType === 'img' || $fileType === 'image')
-             $path = TableModelAbstract::IMG_UPLOAD_DIR . $id;
+             $path = Path::IMG_UPLOAD_DIR . $id;
          elseif ($fileType === 'userimg')
-             $path = TableModelAbstract::USERIMG_UPLOAD_DIR . $id;
+             $path = Path::USERIMG_UPLOAD_DIR . $id;
          else
-             $path = TableModelAbstract::FILE_UPLOAD_DIR . $id;
+             $path = Path::FILE_UPLOAD_DIR . $id;
          if (!is_dir($path)) {
              if (!mkdir($path, 0777, TRUE))
                  die('Не удалось создать директорию ' . $path);

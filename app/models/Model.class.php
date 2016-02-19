@@ -1,6 +1,17 @@
 <?php
 
  class Model {
+     
+     protected $db;
+
+
+     public function __construct() {
+         try {
+             $this->db = DB::init()->connect();
+         } catch (Exception $ex) {
+             $ex->getMessage();
+         }
+     }
 
      function render($file, $template = '') {
          ob_start();
@@ -12,6 +23,7 @@
                      . 'backend'
                      . DIRECTORY_SEPARATOR
                      . 'head.php');
+             require(Path::PATH_TO_INC. 'message.inc.php');
              require(dirname(__DIR__)
                      . DIRECTORY_SEPARATOR
                      . 'template'
@@ -71,6 +83,6 @@
          }
          return ob_get_clean();
      }
-
- }
+     
+  }
  

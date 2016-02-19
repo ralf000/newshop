@@ -13,21 +13,16 @@
 
      public function indexAction() {
          $fc        = FrontController::getInstance();
-         $model     = new AdminModel();
-         $model->setWidgetsData($this->getAllWidgets());
-         $userModel = new UserTableModel();
-         $userModel->setId(Session::get('user_id'));
-         $userModel->setTable('user');
-         $userModel->readRecordsById('id', '`id`,`username`, `full_name`, `photo`, `email`');
-         $model->setData(['user' => $userModel->getRecordsById()[0]]);
+         $model     = new AdminModel('Административная панель', 'управление сайтом');
+         $model->setWidgetsData((new AdminWidgets)->getCntWidgets());
          $output    = $model->render('../views/admin/index.php', 'admin');
          $fc->setPage($output);
      }
 
      public function addAction() {
-         $fc    = FrontController::getInstance();
-         $model = new ProductTableModel();
+         $fc         = FrontController::getInstance();
          if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+             $model      = new ProductTableModel();
              $model->setTable('product');
              $model->setData();
              $model->addRecord();
@@ -35,16 +30,18 @@
              $imageModel->setTable('image');
              $imageModel->setData();
              $imageModel->addAllImages();
+             Session::setMsg('Товар успешно добавлен в базу', 'success');
              header('Location: /admin/');
              exit;
          } else {
-//             $adminModel             = new AdminModel();
+             $adminModel             = new AdminModel('Добавление новых товаров');
              $catsAndSub             = [];
              $catsAndSub             = $this->getCatsAndSubCats();
-             $model->categoryList    = $catsAndSub['cats']; //used magic __set
-             $model->subCategoryList = $catsAndSub['subcats']; //used magic __set
-             $output                 = (new AdminModel())->render('../views/admin/add.php', 'admin');
+             $adminModel->categoryList    = $catsAndSub['cats']; //used magic __set
+             $adminModel->subCategoryList = $catsAndSub['subcats']; //used magic __set
+             $output                 = $adminModel->render('../views/admin/add.php', 'admin');
              $fc->setPage($output);
+             $adminModel->breadCrumbs();
          }
      }
 
@@ -85,15 +82,8 @@
 
      public function profileAction() {
          $fc        = FrontController::getInstance();
-         $model     = new AdminModel();
+         $model     = new AdminModel('Профиль пользователя');
          $model->setWidgetsData($this->getAllWidgets());
-         $userModel = new UserTableModel();
-         $userModel->setId(Session::get('user_id'));
-         $userModel->setTable('user');
-         $userModel->readRecordsById('id', '`id`,`username`, `full_name`, `photo`, `email`');
-         $userModel->readUserAddress();
-         $userModel->readUserPhones();
-         $model->setData(['user' => $userModel->getRecordsById()[0], 'userContacts' => $userModel->getUserContacts()]);
          $output    = $model->render('../views/admin/profile.php', 'admin');
          $fc->setPage($output);
      }
@@ -132,33 +122,6 @@
          return [
              'cats'    => array_reverse($categoryModel->getAllRecords()),
              'subcats' => array_reverse($subCategoryModel->getAllRecords())
-         ];
-     }
-
-     private function getAllWidgets() {
-         $AdminWidgets = new AdminWidgets();
-         $products     = $AdminWidgets->getDataForWidget('product');
-         $orders       = $AdminWidgets->getDataForWidget('order');
-         $clients      = $AdminWidgets->getDataForWidget('user', 'INNER JOIN user_role ON user.id = user_role.user_id WHERE role_id = 4');
-         $comments     = $AdminWidgets->getDataForWidget('comment');
-
-         $productsPerMonts = $AdminWidgets->getDataForWidget('product', 'where created_time > LAST_DAY(DATE_SUB(CURDATE(), INTERVAL 1 MONTH)) AND created_time < DATE_ADD(LAST_DAY(CURDATE()), INTERVAL 1 DAY)');
-         $ordersPerMonth   = $AdminWidgets->getDataForWidget('order', 'where create_time > LAST_DAY(DATE_SUB(CURDATE(), INTERVAL 1 MONTH)) AND create_time < DATE_ADD(LAST_DAY(CURDATE()), INTERVAL 1 DAY)');
-         $clientsPerMonth  = $AdminWidgets->getDataForWidget('user', 'INNER JOIN user_role ON user.id = user_role.user_id where role_id = 4 AND user.create_time > LAST_DAY(DATE_SUB(CURDATE(), INTERVAL 1 MONTH)) AND user.create_time < DATE_ADD(LAST_DAY(CURDATE()), INTERVAL 1 DAY)');
-         $commentsPerMonth = $AdminWidgets->getDataForWidget('comment', 'where create_time > LAST_DAY(DATE_SUB(CURDATE(), INTERVAL 1 MONTH)) AND create_time < DATE_ADD(LAST_DAY(CURDATE()), INTERVAL 1 DAY)');
-         return [
-             'products'         => $products,
-             'orders'           => $orders,
-             'clients'          => $clients,
-             'comments'         => $comments,
-             'productsPerMonts' => $productsPerMonts,
-             'ordersPerMonth'   => $ordersPerMonth,
-             'clientsPerMonth'  => $clientsPerMonth,
-             'commentsPerMonth' => $commentsPerMonth,
-             'persentsProds'    => ($productsPerMonts) ? 100 / ($products / $productsPerMonts) : 0,
-             'persentsOrders'   => ($ordersPerMonth) ? 100 / ($orders / $ordersPerMonth) : 0,
-             'persentsClients'  => ($clientsPerMonth) ? 100 / ($clients / $clientsPerMonth) : 0,
-             'persentsComm'     => ($commentsPerMonth) ? 100 / ($comments / $commentsPerMonth) : 0,
          ];
      }
 

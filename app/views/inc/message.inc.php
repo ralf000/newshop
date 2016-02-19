@@ -14,8 +14,8 @@
      }
      ?>
      <div class="box" id="msg">
-         <div class="alert alert-<?= $msg['type'] ?>" style="position: absolute; width: 100%;">
-             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">x</button>
+         <div class="alert alert-<?= $msg['type'] ?>">
+             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">X</button>
              <h4><?= $t ?></h4>
              <?= $msg['body'] ?>
          </div>
@@ -25,10 +25,10 @@
 <script type="text/javascript">
     var msg = $('#msg');
     $('.close').click('on', function () {
-        msg.fadeOut(200);
+        msg.slideUp();
     });
-    $(function () {
-        msg.hide();
-        msg.fadeIn(200);
-    });
+//    $(function () {
+//        msg.hide();
+//        msg.slideDown();
+//    });
 </script>

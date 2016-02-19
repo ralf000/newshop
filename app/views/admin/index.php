@@ -1,16 +1,4 @@
 <? $widgets = $this->getWidgetsData();?>
-    <!-- Content Header (Page header) -->
-    <section class="content-header">
-        <h1>
-            Административная панель
-            <small>для управления сайтом</small>
-        </h1>
-        <ol class="breadcrumb">
-            <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-            <li class="active"></li>
-        </ol>
-    </section>
-
 <!-- Main content -->
 <section class="content">
     <!-- Small boxes (Stat box) -->
