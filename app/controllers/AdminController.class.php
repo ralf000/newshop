@@ -14,7 +14,13 @@
      public function indexAction() {
          $fc        = FrontController::getInstance();
          $model     = new AdminModel('Административная панель', 'управление сайтом');
-         $model->setWidgetsData((new AdminWidgets)->getCntWidgets());
+         $adminWidgets = new AdminWidgets();
+         $model->setWidgetsData([
+             'cntWidgets' => $adminWidgets->getCntWidgets(),
+             'clientsWidget' => $adminWidgets->getUsersForRoleWidget(4, 'WHERE user_role.role_id = ?', 10),
+             'managersWidget' => $adminWidgets->getUsersForRoleWidget(4, 'WHERE user_role.role_id < ?', 8),
+             'productsWidget' => $adminWidgets->getProductsWidget(5, 'JOIN category ON product.category_id = category.id JOIN subcategory ON  product.subcategory_id = subcategory.id JOIN image ON product.id = image.product_id WHERE image.main = 1')
+             ]);
          $output    = $model->render('../views/admin/index.php', 'admin');
          $fc->setPage($output);
      }
@@ -87,6 +93,7 @@
          $output    = $model->render('../views/admin/profile.php', 'admin');
          $fc->setPage($output);
      }
+     
 
      public function newCatAction() {
          $fc    = FrontController::getInstance();
