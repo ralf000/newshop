@@ -92,12 +92,19 @@
          }
      }
 
-     function getController() {
+     public function getController() {
          return $this->_controller;
+     }
+     public function getClearController() {
+         return strtolower(substr($this->_controller, 0, strpos($this->_controller, 'Controller')));
      }
 
      public function getAction() {
          return $this->_action;
+     }
+     
+     public function getClearAction() {
+         return strtolower(substr($this->_action, 0, strpos($this->_action, 'Action')));
      }
 
      public function getBeforeEvent() {

@@ -10,11 +10,11 @@
         <!-- Main content -->
         <section class="content" style="height: 100vh;">
             <div class="error-page" style="margin-top: 100px;">
-            <h2 class="headline text-yellow"> 403</h2>
+            <h2 class="headline text-yellow"> 404</h2>
             <div class="error-content">
-              <h3><i class="fa fa-warning text-yellow"></i> Доступ запрещен</h3>
+              <h3><i class="fa fa-warning text-yellow"></i> Страница не найдена</h3>
               <p>
-                Сожалеем, но у вас нет прав для просмотра запрашиваемой страницы.
+                Сожалеем, но запрашиваемая страница не найдена.
               </p>
               <form class="search-form">
                 <div class="input-group">

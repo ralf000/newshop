@@ -38,10 +38,10 @@
                                             <td><?=$product['published'] ? 'Да' : 'Нет'?></td>
                                             <td><?=$product['category_name']?></td>
                                             <td><?=$product['subcategory_name']?></td>
-                                            <td><?=  date('d-m-Y H:i:s', strtotime($product['created_time']))?></td>
-                                            <td><?=  date('d-m-Y H:i:s', strtotime($product['updated_time']))?></td>
+                                            <td><?= Helper::dateConverter($product['created_time'])?></td>
+                                            <td><?=  Helper::dateConverter($product['updated_time'])?></td>
                                             <td>
-                                                <a href="#" class="admin-data-control"><span class="glyphicon glyphicon-eye-open"></span></a>
+                                                <a href="/admin/view/product/<?=$product['id']?>" class="admin-data-control"><span class="glyphicon glyphicon-eye-open"></span></a>
                                                 <a href="#" class="admin-data-control"><span class="glyphicon glyphicon-pencil"></span></a>
                                                 <a href="#" class="admin-data-control"><span class="glyphicon glyphicon-minus"></span></a>
                                             </td>
@@ -54,8 +54,7 @@
                         <div class="row">
                             <div class="col-sm-5">
                                 <div class="dataTables_info" id="example2_info" role="status" aria-live="polite">
-                                    Showing 1 to 10 of 57 entries
-                                    На странице: <?=$offset + 1?> - <?=($offset + $limit > $numProducts) ? ($offset + $limit) - 1 : $offset + $limit?> из <?=$numProducts?> товаров
+                                    На странице: <b><?=$offset + 1?> - <?=($offset + $limit > $numProducts) ? ($offset + $limit) - 1 : $offset + $limit?></b> из <b><?=$numProducts?></b> товаров
                                 </div>
                             </div>
                             <div class="col-sm-7">

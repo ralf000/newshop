@@ -47,8 +47,30 @@
              $adminModel->subCategoryList = $catsAndSub['subcats']; //used magic __set
              $output                      = $adminModel->render('../views/admin/add.php', 'admin');
              $fc->setPage($output);
-             $adminModel->breadCrumbs();
          }
+     }
+
+     public function viewAction() {
+         $fc           = FrontController::getInstance();
+         $model        = new AdminModel('Подробно о товаре');
+         $productModel = new ProductTableModel();
+         $id           = $fc->getParams()['product'];
+         $product      = $productModel->getAllProducts('*', "WHERE product.id = $id and image.main = 1");
+         $imageModel = new ImageTableModel();
+         $imageModel->setTable('image');
+         $imageModel->setId($id);
+         $imageModel->readRecordsById('product_id');
+         if (empty($product)) {
+             header('Location: /admin/NotFound');
+             exit;
+         } else {
+             $model->setData([
+                 'products' => $productModel->getAllProducts('*', "WHERE product.id = $id and image.main = 1"),
+                 'images' => $imageModel->getRecordsById(),
+             ]);
+         }
+         $output = $model->render('../views/admin/view.php', 'admin');
+         $fc->setPage($output);
      }
 
      public function loginAction() {
@@ -71,6 +93,13 @@
              $output = $model->render('../views/admin/login.php', 'other');
              $fc->setPage($output);
          }
+     }
+
+     public function NotFoundAction() {
+         $fc     = FrontController::getInstance();
+         $model  = new AdminModel();
+         $output = $model->render('../views/status/404.php', 'other');
+         $fc->setPage($output);
      }
 
      public function logoutAction() {
@@ -97,18 +126,18 @@
      public function allProductsAction() {
          $fc           = FrontController::getInstance();
          $model        = new AdminModel('Все товары', 'управление товарами');
-         $ProductModel = new ProductTableModel();
+         $productModel = new ProductTableModel();
          $page         = $fc->getParams()['page'] ? $fc->getParams()['page'] : 1;
          $limit        = $fc->getParams()['limit'] ? $fc->getParams()['limit'] : 3;
          $offset       = $limit * $page - $limit;
          $model->setData([
-             'products' => $ProductModel->getAllProducts('product.id, product.title, product.price, product.quantity, product.published, category.category_name, subcategory.subcategory_name, product.created_time, product.updated_time, image.image', "WHERE image.main = 1 LIMIT $limit OFFSET $offset"),
+             'products' => $productModel->getAllProducts('product.id, product.title, product.price, product.quantity, product.published, category.category_name, subcategory.subcategory_name, product.created_time, product.updated_time, image.image', "WHERE image.main = 1 ORDER BY product.id LIMIT $limit OFFSET $offset"),
              'limit'    => $limit,
              'page'     => $page,
-             'num' => (new AdminWidgets)->getNum('product'),
-             'offset' => $offset
+             'num'      => (new AdminWidgets)->getNum('product'),
+             'offset'   => $offset
          ]);
-         $output       = $model->render('../views/admin/allProducts.php', 'admin');
+         $output       = $model->render('../views/admin/product/allProducts.php', 'admin');
          $fc->setPage($output);
      }
 

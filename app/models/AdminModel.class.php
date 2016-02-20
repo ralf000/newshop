@@ -16,21 +16,28 @@
      }
 
      public function breadCrumbs() {
-         $pages = [
-             'admin'   => 'Главная',
-             'profile' => 'Профиль пользователя',
-             'add'     => 'Добавление новых товаров'
+         $pages  = [
+             'profile'     => 'Профиль пользователя',
+             'add'         => 'Добавление новых товаров',
+             'allProducts' => 'Все товары',
+             'page'        => 'Страница',
+             'view'        => 'Просмотр',
+             'product' => 'Товар'
          ];
          $output = '';
-         $link = '';
-         
-         $path   = parse_url($_SERVER['REQUEST_URI']);
-         $parts  = explode('/', $path['path']);
-         $parts  = array_diff($parts, ['']); //delete empty elements in in array
+         $link   = '';
+
+         $fc     = FrontController::getInstance();
+         $action = $fc->getAction();
+         $action = $fc->getClearAction();
+         $params = $fc->getParams() ? array_diff($fc->getParams(), ['']) : [];
          $output = '<ol class = "breadcrumb">';
-         foreach ($parts as $part) {
-             $link .= '/'.$part;
-             $output .= '<li><a href = "' . $link . '"><i class = ""></i> '. $pages[$part] .' </a></li>';
+         if (!(empty($action) || $action === 'index'))
+             $output .= '<li><a href = "/admin"><i class = ""></i> Главная </a></li>';
+         $output .= '<li><a href = "/admin/'.$action.'"><i class = ""></i>' . $pages[$action] . '</a></li>';
+         foreach ($params as $key => $value) {
+             $link .= '/' . $value;
+             $output .= '<li><a href = "/admin/'.$action.'/'. $key.'/'.$value.'"><i class = ""></i> ' . $pages[$key] . ' ' . $value . ' </a></li>';
          }
          $output .= '</ol >';
          return $output;

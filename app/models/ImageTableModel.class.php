@@ -4,7 +4,7 @@
 
      public $productId, $mainImage, $images, $path;
 
-     public function __construct($lastInsertId) {
+     public function __construct($lastInsertId = '') {
          parent::__construct();
          $this->productId = $lastInsertId;
          $this->path      = Path::IMG_UPLOAD_DIR . $this->productId . '/';

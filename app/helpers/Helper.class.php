@@ -157,6 +157,9 @@
          $output .= '</ul>' . "\n";
          return $output;
      }
-
+     
+     static public function dateConverter($date){
+         return date('d-m-Y H:i:s', strtotime($date));
+     }
  }
  
