@@ -44,8 +44,8 @@
          $this->widgetsData = $widgetsData;
      }
 
-     private function setData(array $data) {
-         $this->data = $data;
+     public function setData(array $data) {
+         array_push($this->data, $data);
      }
 
      function getData() {

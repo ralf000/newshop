@@ -120,5 +120,43 @@
          }
      }
 
+     static function pagination($limit = 10, $page = 1) {
+         $p = $page;
+         $aw    = new AdminWidgets();
+         $num   = $aw->getNum('product');
+         $pages = round($num / $limit);
+
+         if ($page == 0)
+             $page = 1;
+         if ($page == 1) {
+             $disabledP = 'disabled';
+         } else if ($page == $pages) {
+             $disabledN = 'disabled';
+         }else{
+             $disabled = '';
+         }
+         $output = '';
+         $output .= '<ul class="pagination">' . "\n";
+         $output .= '<li class="' . $disabledP . '" id="previous">' . "\n";
+         $output .= '<a href="/admin/allProducts/page/' . --$p . '" aria-controls="pgn" data-dt-idx="0" tabindex="0">&laquo;</a>' . "\n";
+         $output .= '</li>' . "\n";
+
+         for ($i = 1; $i <= $pages; $i++) {
+             if ($page == $i)
+                 $active = 'active';
+             else
+                 $active = '';
+             $output .= '<li class="paginate_button ' . $active . '">' . "\n";
+             $output .= '<a href="/admin/allProducts/page/' . $i . '" aria-controls="pgn" data-dt-idx="' . $i . '" tabindex="0">' . $i . '</a>' . "\n";
+             $output .= '</li>' . "\n";
+         }
+         
+         $output .= '<li class="paginate_button next ' . $disabledN . '" id="next">' . "\n";
+         $output .= '<a href="/admin/allProducts/page/' . ++$page . '" aria-controls="pgn" data-dt-idx="' . ++$page . '" tabindex="0">&raquo;</a>' . "\n";
+         $output .= '</li>' . "\n";
+         $output .= '</ul>' . "\n";
+         return $output;
+     }
+
  }
  

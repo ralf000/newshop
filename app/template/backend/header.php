@@ -1,6 +1,6 @@
-<? $title = $this->getData()['title'] ? $this->getData()['title'] : ''; ?>
-<? $subTitle = $this->getData()['subTitle'] ? $this->getData()['subTitle'] : ''; ?>
-<? $user = $this->getData()['user']; ?>
+<? $title = $this->getData()[0]['title'] ? $this->getData()[0]['title'] : ''; ?>
+<? $subTitle = $this->getData()[0]['subTitle'] ? $this->getData()[0]['subTitle'] : ''; ?>
+<? $user = $this->getData()[0]['user']; ?>
 <body class="hold-transition skin-blue sidebar-mini">
     <div class="wrapper">
         <header class="main-header">

@@ -34,6 +34,16 @@
              die($e->getMessage());
          }
      }
+     
+     public function getAllProducts($fields = '*', $condition = '') {
+         try {
+             $st = $this->db->prepare("SELECT $fields FROM product JOIN category ON product.category_id = category.id JOIN subcategory ON  product.subcategory_id = subcategory.id JOIN image ON product.id = image.product_id $condition");
+             $st->execute();
+             return $this->allRecords = $st->fetchAll(PDO::FETCH_ASSOC);
+         } catch (Exception $ex) {
+             $ex->getMessage();
+         }
+     }
 
      public function setData($formType = '', $method = '') {
          $method            = 'INPUT_POST';

@@ -12,21 +12,21 @@
      }
 
      public function indexAction() {
-         $fc        = FrontController::getInstance();
-         $model     = new AdminModel('Административная панель', 'управление сайтом');
+         $fc           = FrontController::getInstance();
+         $model        = new AdminModel('Административная панель', 'управление сайтом');
          $adminWidgets = new AdminWidgets();
          $model->setWidgetsData([
-             'cntWidgets' => $adminWidgets->getCntWidgets(),
-             'clientsWidget' => $adminWidgets->getUsersForRoleWidget(4, 'WHERE user_role.role_id = ?', 10),
+             'cntWidgets'     => $adminWidgets->getCntWidgets(),
+             'clientsWidget'  => $adminWidgets->getUsersForRoleWidget(4, 'WHERE user_role.role_id = ?', 10),
              'managersWidget' => $adminWidgets->getUsersForRoleWidget(4, 'WHERE user_role.role_id < ?', 8),
-             'productsWidget' => $adminWidgets->getProductsWidget(5, 'JOIN category ON product.category_id = category.id JOIN subcategory ON  product.subcategory_id = subcategory.id JOIN image ON product.id = image.product_id WHERE image.main = 1')
-             ]);
-         $output    = $model->render('../views/admin/index.php', 'admin');
+             'productsWidget' => $adminWidgets->getAllProductsWidget($fields          = '*', 'WHERE image.main = 1 ORDER BY product.created_time DESC LIMIT 5')
+         ]);
+         $output       = $model->render('../views/admin/index.php', 'admin');
          $fc->setPage($output);
      }
 
      public function addAction() {
-         $fc         = FrontController::getInstance();
+         $fc = FrontController::getInstance();
          if ($_SERVER['REQUEST_METHOD'] === 'POST') {
              $model      = new ProductTableModel();
              $model->setTable('product');
@@ -40,12 +40,12 @@
              header('Location: /admin/');
              exit;
          } else {
-             $adminModel             = new AdminModel('Добавление новых товаров');
-             $catsAndSub             = [];
-             $catsAndSub             = $this->getCatsAndSubCats();
+             $adminModel                  = new AdminModel('Добавление новых товаров');
+             $catsAndSub                  = [];
+             $catsAndSub                  = $this->getCatsAndSubCats();
              $adminModel->categoryList    = $catsAndSub['cats']; //used magic __set
              $adminModel->subCategoryList = $catsAndSub['subcats']; //used magic __set
-             $output                 = $adminModel->render('../views/admin/add.php', 'admin');
+             $output                      = $adminModel->render('../views/admin/add.php', 'admin');
              $fc->setPage($output);
              $adminModel->breadCrumbs();
          }
@@ -87,13 +87,30 @@
      }
 
      public function profileAction() {
-         $fc        = FrontController::getInstance();
-         $model     = new AdminModel('Профиль пользователя');
-         $model->setWidgetsData($this->getAllWidgets());
-         $output    = $model->render('../views/admin/profile.php', 'admin');
+         $fc     = FrontController::getInstance();
+         $model  = new AdminModel('Профиль пользователя');
+         $model->setWidgetsData((new AdminWidgets)->getCntWidgets());
+         $output = $model->render('../views/admin/profile.php', 'admin');
          $fc->setPage($output);
      }
-     
+
+     public function allProductsAction() {
+         $fc           = FrontController::getInstance();
+         $model        = new AdminModel('Все товары', 'управление товарами');
+         $ProductModel = new ProductTableModel();
+         $page         = $fc->getParams()['page'] ? $fc->getParams()['page'] : 1;
+         $limit        = $fc->getParams()['limit'] ? $fc->getParams()['limit'] : 3;
+         $offset       = $limit * $page - $limit;
+         $model->setData([
+             'products' => $ProductModel->getAllProducts('product.id, product.title, product.price, product.quantity, product.published, category.category_name, subcategory.subcategory_name, product.created_time, product.updated_time, image.image', "WHERE image.main = 1 LIMIT $limit OFFSET $offset"),
+             'limit'    => $limit,
+             'page'     => $page,
+             'num' => (new AdminWidgets)->getNum('product'),
+             'offset' => $offset
+         ]);
+         $output       = $model->render('../views/admin/allProducts.php', 'admin');
+         $fc->setPage($output);
+     }
 
      public function newCatAction() {
          $fc    = FrontController::getInstance();

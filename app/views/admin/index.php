@@ -211,13 +211,13 @@
                     </ul>
                 </div><!-- /.box-body -->
                 <div class="box-footer text-center">
-                    <a href="javascript::;" class="uppercase">Все товары</a>
+                    <a href="/admin/allProducts" class="uppercase">Все товары</a>
                 </div><!-- /.box-footer -->
             </div>
 
             <div class="box box-danger">
                 <div class="box-header with-border">
-                    <h3 class="box-title">Недавние посетители</h3>
+                    <h3 class="box-title">Менеджеры</h3>
                     <div class="box-tools pull-right">
                         <!--<span class="label label-danger">8 New Members</span>-->
                         <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
@@ -241,7 +241,7 @@
                     </ul><!-- /.users-list -->
                 </div><!-- /.box-body -->
                 <div class="box-footer text-center">
-                    <a href="javascript::" class="uppercase">Все посетители</a>
+                    <a href="javascript::" class="uppercase">Все менеджеры</a>
                 </div><!-- /.box-footer -->
             </div>
         </section><!-- right col -->

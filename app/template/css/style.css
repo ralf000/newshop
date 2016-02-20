@@ -21,7 +21,11 @@
 #msg .alert .close{
     padding-right: 7px;
 }
+td img.product{
+    max-width: 50px;
+}
 
-.cleanImg{
-    /*margin-top: 10px;*/
+a.admin-data-control{
+    margin-right: 7px;
+    font-size: 18px;
 }
