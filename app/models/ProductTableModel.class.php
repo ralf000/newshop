@@ -24,22 +24,33 @@
          }
      }
 
-     public function updateRecord() {
-         if ($this->id == NULL)
-             throw new Exception('укажите id записи для её обновления');
-         try {
-             $query = $this->db->prepare("UPDATE $this->table SET `title` = :title, `article` = :article WHERE `id` = :id");
-             $query->execute([':table' => $this->table, ':title' => $this->article->title, ':article' => $this->article->article, ':id' => $this->id]);
-         } catch (PDOException $e) {
-             die($e->getMessage());
-         }
-     }
+     public function updateRecord() {}
      
      public function getAllProducts($fields = '*', $condition = '') {
          try {
              $st = $this->db->prepare("SELECT $fields FROM product JOIN category ON product.category_id = category.id JOIN subcategory ON  product.subcategory_id = subcategory.id JOIN image ON product.id = image.product_id $condition");
              $st->execute();
              return $this->allRecords = $st->fetchAll(PDO::FETCH_ASSOC);
+         } catch (Exception $ex) {
+             $ex->getMessage();
+         }
+     }
+     
+     public function updateProduct() {
+         if ($this->id == NULL)
+             throw new Exception('укажите id записи для её отображения');
+         try {
+             $st = $this->db->prepare("UPDATE $this->table SET `category_id` = :cat, `subcategory_id` = :subcat, `title` = :title, `description` = :description, `spec` = :spec, `price` = :price, `quantity` = quantity, `published` = :published;");
+             $st->execute([
+                 ':title'       => $this->title,
+                 ':description' => $this->description,
+                 ':spec'        => $this->spec,
+                 ':price'       => $this->price,
+                 ':quantity'    => $this->quantity,
+                 ':published'   => $this->published,
+                 ':subcat'      => $this->subcat,
+                 ':cat'         => $this->cat,
+             ]);
          } catch (Exception $ex) {
              $ex->getMessage();
          }

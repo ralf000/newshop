@@ -86,7 +86,7 @@
          header('Cache-Control: no-store, no-cache');
          header('Expires: ' . date('r'));
          $this->clearAvatarAction();
-         
+
          $model  = new UserTableModel();
          $model->setTable('user');
          $userId = Session::get('user_id');
@@ -102,9 +102,19 @@
              'isAvatar'            => true,
          ]);
      }
-     
-     public function mainImageAction(){}
-     
+
+     public function mainImageAction() {   
+     }
+
+     public function getProductsByNumAction() {
+         header('Content-Type: application/json; charset=utf-8');
+         header('Cache-Control: no-store, no-cache');
+         header('Expires: ' . date('r'));
+         $limit = Validate::validateInputVar('limit', 'INPUT_GET', 'FILTER_SANITIZE_NUMBER_INT');
+         header('Location: /admin/allProducts/limit/'.$limit);
+         exit;
+     }
+
      private function clearAvatarAction() {
          $dir = Path::USERIMG_UPLOAD_DIR . Session::get('user_id');
          Helper::clearDir($dir);

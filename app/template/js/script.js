@@ -92,10 +92,10 @@ $(function () {
     $('#categoryid').val($('#cat option:selected').val());
     addHandlers();
     getSubCategoriesAjax(catId);
-    
+
     //for pagination, blocked prev or next
     $('ul.pagination li.disabled a').on('click', function (e) {
-            e.preventDefault();
-        });
+        e.preventDefault();
+    });
 });
 

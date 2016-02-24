@@ -201,7 +201,7 @@
                                 <img src="/<?=$product['image']?>" alt="Product Image">
                             </div>
                             <div class="product-info">
-                                <a href="javascript::;" class="product-title"><?=$product['title']?> <span class="label label-success pull-right"><?=$product['price']?> руб.</span> </a>
+                                <a href="/admin/view/product/<?=$product['product_id']?>" class="product-title"><?=$product['title']?> <span class="label label-success pull-right"><?=$product['price']?> руб.</span> </a>
                                 <span class="product-description">
                                     На складе: <?=  $product['quantity']?>
                                 </span>

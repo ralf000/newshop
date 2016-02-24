@@ -55,7 +55,11 @@
          $model        = new AdminModel('Подробно о товаре');
          $productModel = new ProductTableModel();
          $id           = $fc->getParams()['product'];
-         $product      = $productModel->getAllProducts('*', "WHERE product.id = $id and image.main = 1");
+         if (!$id) {
+             header('Location: /admin/notFound');
+             exit;
+         }
+         $product    = $productModel->getAllProducts('*', "WHERE product.id = $id and image.main = 1");
          $imageModel = new ImageTableModel();
          $imageModel->setTable('image');
          $imageModel->setId($id);
@@ -66,10 +70,10 @@
          } else {
              $model->setData([
                  'products' => $productModel->getAllProducts('*', "WHERE product.id = $id and image.main = 1"),
-                 'images' => $imageModel->getRecordsById(),
+                 'images'   => $imageModel->getRecordsById(),
              ]);
          }
-         $output = $model->render('../views/admin/view.php', 'admin');
+         $output = $model->render('../views/admin/product/view.php', 'admin');
          $fc->setPage($output);
      }
 
@@ -127,18 +131,48 @@
          $fc           = FrontController::getInstance();
          $model        = new AdminModel('Все товары', 'управление товарами');
          $productModel = new ProductTableModel();
-         $page         = $fc->getParams()['page'] ? $fc->getParams()['page'] : 1;
-         $limit        = $fc->getParams()['limit'] ? $fc->getParams()['limit'] : 3;
+         $page         = $fc->getParams()['page'] ? filter_var($fc->getParams()['page'], FILTER_SANITIZE_NUMBER_INT) : 1;
+         $limit        = $fc->getParams()['limit'] ? filter_var($fc->getParams()['limit'], FILTER_SANITIZE_NUMBER_INT) : 10;
+         $orderBy      = $fc->getParams()['orderBy'] ? filter_var($fc->getParams()['orderBy'], FILTER_SANITIZE_STRING) : 'id';
+         $direction    = $fc->getParams()['direction'] ? filter_var($fc->getParams()['direction'], FILTER_SANITIZE_STRING) : 'asc';
          $offset       = $limit * $page - $limit;
          $model->setData([
-             'products' => $productModel->getAllProducts('product.id, product.title, product.price, product.quantity, product.published, category.category_name, subcategory.subcategory_name, product.created_time, product.updated_time, image.image', "WHERE image.main = 1 ORDER BY product.id LIMIT $limit OFFSET $offset"),
-             'limit'    => $limit,
-             'page'     => $page,
-             'num'      => (new AdminWidgets)->getNum('product'),
-             'offset'   => $offset
+             'products'  => $productModel->getAllProducts('product.id, product.title, product.price, product.quantity, product.published, category.category_name, subcategory.subcategory_name, product.created_time, product.updated_time, image.image', "WHERE image.main = 1 ORDER BY product.$orderBy " . strtoupper($direction) . " LIMIT $limit OFFSET $offset"),
+             'limit'     => $limit,
+             'orderBy'   => $orderBy,
+             'direction' => $orderDirection,
+             'page'      => $page,
+             'num'       => (new AdminWidgets)->getNum('product'),
+             'offset'    => $offset
          ]);
          $output       = $model->render('../views/admin/product/allProducts.php', 'admin');
          $fc->setPage($output);
+     }
+
+     public function editProduct() {
+         $fc           = FrontController::getInstance();
+         $model        = new AdminModel('Редактирование товара');
+         $id           = filter_var($fc->getParams()['id'], FILTER_SANITIZE_STRING);
+         if (!$id) {
+             header('Location: /admin/notFound');
+             exit;
+         }
+         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+             $productModel = new ProductTableModel();
+             $productModel->setId($id);
+             $productModel->setTable('product');
+             $productModel->setData();
+             $productModel->updateProduct();
+             $imageModel = new ImageTableModel($model->getLastId());
+             $imageModel->setTable('image');
+             $imageModel->setData();
+             $imageModel->addAllImages();
+             Session::setMsg('Товар успешно обновлен', 'success');
+             header('Location: /admin/view/product/'.$id);
+         } else {
+             $output = $model->render('../views/admin/product/edit.php', 'admin');
+             $fc->setPage($output);
+         }
      }
 
      public function newCatAction() {
