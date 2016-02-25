@@ -45,7 +45,7 @@
              $catsAndSub                  = $this->getCatsAndSubCats();
              $adminModel->categoryList    = $catsAndSub['cats']; //used magic __set
              $adminModel->subCategoryList = $catsAndSub['subcats']; //used magic __set
-             $output                      = $adminModel->render('../views/admin/add.php', 'admin');
+             $output                      = $adminModel->render('../views/admin/product/add.php', 'admin');
              $fc->setPage($output);
          }
      }
@@ -148,7 +148,6 @@
      }
 
      public function editProductAction() {
-         Helper::clearUrl();
          $fc           = FrontController::getInstance();
          $model        = new AdminModel('Редактирование товара');
          $id           = filter_var($fc->getParams()['product'], FILTER_SANITIZE_STRING);
@@ -205,8 +204,8 @@
              if ($model->setData())
                  $model->addRecord();
          }
-         header('Location: ' . $_SERVER['HTTP_REFERER']);
-         exit;
+//         header('Location: ' . $_SERVER['HTTP_REFERER']);
+//         exit;
      }
 
      public function newSubCatAction() {
@@ -217,8 +216,8 @@
              $model->setData();
              $model->addRecord();
          }
-         header('Location: ' . $_SERVER['HTTP_REFERER']);
-         exit;
+//         header('Location: ' . $_SERVER['HTTP_REFERER']);
+//         exit;
      }
 
      private function getCatsAndSubCats() {

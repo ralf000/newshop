@@ -1,5 +1,6 @@
 <link rel="stylesheet" href="/app/template/css/jquery.fileupload.css">
 <link rel="stylesheet" href="/app/template/css/jquery.fileupload-ui.css">
+<script type="text/javascript" src="/app/template/backend/js/addDelSubAndCategories.js"></script>
 <section class="content">
     <div class="box box-primary">
         <form id="addprod" action="add" method="post" enctype="multipart/form-data" role="form">

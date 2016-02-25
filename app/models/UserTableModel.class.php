@@ -17,7 +17,7 @@
              $this->user = $user;
              $this->auth($this->user['id']);
              if (self::checkUser()) {
-                 if (!empty($this->remember) && $this->remember > 0){
+                 if (!empty($this->remember) && $this->remember > 0) {
                      $this->setRememberCookie($this->user['id']);
                  }
                  return $this->user['id'];
@@ -25,23 +25,24 @@
          }
          return FALSE;
      }
-     
-     protected function setRememberCookie($userId){
+
+     protected function setRememberCookie($userId) {
          $this->setId($userId);
          $this->setTable('user');
          $this->readRecordsById('id', 'password_hash');
-         $hash  = $this->getRecordsById()[0]['password_hash'];
+         $hash = $this->getRecordsById()[0]['password_hash'];
          setcookie('remember', $this->user['id'] . '-' . md5($this->user['id'] . $_SERVER['REMOTE_ADDR'] . crypt($this->password, $hash)), time() + 3600 * 24 * 7, '/');
      }
 
      public function auth($userId) {
          Session::init();
-         $this->setToken();
+//         $this->setToken();
          Session::set('user_id', $userId);
      }
 
      public function logout() {
          Session::destroy();
+         setcookie('remember', '', -3600, '/');
          unset($this->user);
      }
 
@@ -64,14 +65,12 @@
 
      public static function checkUser() {
          // Предотвращение перехвата сеанса
-         if (!(isset($_REQUEST['token']) || $_REQUEST['token'] === Session::get('token'))) {
-             $sessUserId = Session::get('user_id');
-             if (!(isset($sessUserId))) {
-                 Session::destroy();
-                 unset($this->user);
-                 Session::setMsg('Произошла ошибка. Пожалуйста авторизуйтесь заново', 'warning');
-                 return FALSE;
-             }
+         $sessUserId = Session::get('user_id');
+         if (!(isset($sessUserId))) {
+             Session::destroy();
+             unset($this->user);
+             Session::setMsg('Произошла ошибка. Пожалуйста авторизуйтесь заново', 'warning');
+             return FALSE;
          }
          // Предотвращение фиксации сеанса (включая ini_set('session.use_only_cookies', true);)
          $sessGenerated = Session::get('generated');
@@ -145,14 +144,14 @@
          }
      }
 
-     private function setToken() {
-         $salt              = Helper::generate(4);
-         $tokenstr          = strval(date('W')) . $salt;
-         $token             = md5($tokenstr);
-         $_SESSION['token'] = $token;
-         output_add_rewrite_var('token', $token);
-     }
-
+//     private function setToken() {
+//         $salt              = Helper::generate(4);
+//         $tokenstr          = strval(date('W')) . $salt;
+//         $token             = md5($tokenstr);
+//         $_SESSION['token'] = $token;
+//         output_add_rewrite_var('token', $token);
+//     }
+     
      //Современный способ солить и хешировать пароль
      /*      * Функция солит и хеширует пароль
       * @param  string $password

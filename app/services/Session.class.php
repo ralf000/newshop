@@ -3,6 +3,7 @@
  class Session {
 
      public static function init() {
+         ini_set('session.use_strict_mode', true);
          ini_set('session.use_only_cookies', true);
          session_start();
          if (self::get('user_id'))

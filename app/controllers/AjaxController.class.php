@@ -6,6 +6,26 @@
          
      }
 
+     public function addCategoryAction() {
+         header('Content-type: text/plain; charset=utf-8');
+         header('Cache-Control: no-store, no-cache');
+         header('Expires: ' . date('r'));
+
+         $model = new AdminController();
+         $model->newCatAction();
+         $this->getCategoriesAction();
+     }
+
+     public function addSubCategoryAction() {
+         header('Content-type: text/plain; charset=utf-8');
+         header('Cache-Control: no-store, no-cache');
+         header('Expires: ' . date('r'));
+
+         $model = new AdminController();
+         $model->newSubCatAction();
+         $this->getSubCategoriesAction();
+     }
+
      public function getCategoriesAction() {
          // Передаем заголовки
          header('Content-type: text/plain; charset=utf-8');
@@ -46,7 +66,7 @@
          $model->setTable('category');
          $model->setId($id);
          if ($model->deleteRecord())
-             return TRUE;
+             $this->getCategoriesAction();
      }
 
      public function deleteSubCategoryAction($field = 'category_id', $id = NULL) {
@@ -103,7 +123,8 @@
          ]);
      }
 
-     public function mainImageAction() {   
+     public function mainImageAction() {
+         
      }
 
      public function getProductsByNumAction() {
@@ -111,7 +132,7 @@
          header('Cache-Control: no-store, no-cache');
          header('Expires: ' . date('r'));
          $limit = Validate::validateInputVar('limit', 'INPUT_GET', 'FILTER_SANITIZE_NUMBER_INT');
-         header('Location: /admin/allProducts/limit/'.$limit);
+         header('Location: /admin/allProducts/limit/' . $limit);
          exit;
      }
 

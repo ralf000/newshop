@@ -6,13 +6,11 @@
                 <h4 class="modal-title" id="myModalLabel">Добавить новую подкатегорию товаров к текущей категории</h4>
             </div>
             <div class="modal-body" id="addSubCategoryPopupBody">
-                <form id="newsubcarform" action="/admin/newSubCat" method="post">
-                        <input type="hidden" name="categoryid" value="" id="categoryid" class="form-control"/>
-                    <div class="form-group">
-                        <input type="text" name="newsubcat" id="newsubcat" class="form-control"/>
-                    </div>
-                    <button type="submit" class="btn btn-default" name="newsubcarform">Добавить</button>
-                </form>
+                <input type="hidden" name="categoryid" value="" id="categoryid" class="form-control"/>
+                <div class="form-group">
+                    <input type="text" name="newsubcat" id="newsubcat" class="form-control"/>
+                </div>
+                <button type="button" class="btn btn-default" name="newsubcarform" id="newsubcarform">Добавить</button>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>

@@ -14,7 +14,7 @@
                         <? foreach ($images as $image): ?>
                              <? if (isset($image['image'])): ?>
                                  <li data-thumb="/<?= $image['image'] ?>" data-src="/<?= $image['image'] ?>">
-                                     <img src="/<?= $image['image'] ?>" style="width: 60%"/>
+                                     <a href="/<?= $image['image'] ?>"><img src="/<?= $image['image'] ?>" style="width: 60%"/></a>
                                  </li>
                              <? endif; ?>
                          <? endforeach; ?>
