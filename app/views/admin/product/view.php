@@ -1,7 +1,7 @@
 <? $product = $this->getData()[1]['products'][0] ?>
 <? $images  = $this->getData()[1]['images'] ?>
-<link rel="stylesheet" type="text/css" media="all" href="/app/template/css/jgallery/jgallery.min.css?v=1.5.5" />
-<script type="text/javascript" src="/app/template/js/jgallery/jgallery.min.js?v=1.5.5"></script>
+<link rel="stylesheet" type="text/css" media="all" href="/app/template/css/lightslider/lightslider.css" />
+<script type="text/javascript" src="/app/template/js/lightslider/lightslider.js"></script>
 <section class="content">
 
     <div class="row">
@@ -10,19 +10,33 @@
             <!-- Profile Image -->
             <div class="box box-primary">
                 <div class="box-body box-profile">
-                    <div id="gallery">
+                    <ul id="imageGallery">
                         <? foreach ($images as $image): ?>
                              <? if (isset($image['image'])): ?>
-                                 <a href="/<?= $image['image'] ?>"><img src="/<?= $image['image'] ?>" alt="<?= $image['product_id'] ?>" /></a>
+                                 <li data-thumb="/<?= $image['image'] ?>" data-src="/<?= $image['image'] ?>">
+                                     <img src="/<?= $image['image'] ?>" style="width: 60%"/>
+                                 </li>
                              <? endif; ?>
                          <? endforeach; ?>
-                        <script type="text/javascript">
-                            $(function () {
-                                $('#gallery').jGallery();
+                    </ul>
+                    <script type="text/javascript">
+                        $(function () {
+                            $('#imageGallery').lightSlider({
+                                gallery: true,
+                                item: 1,
+                                thumbItem: 5,
+                                slideMargin: 0,
+                                enableDrag: false,
+                                currentPagerPosition: 'left',
+                                autoWidth: true,
+                                onSliderLoad: function (el) {
+                                    el.lightGallery({
+                                        selector: '#imageGallery .lslide'
+                                    });
+                                }
                             });
-                        </script>
-                    </div>
-                    <!--<img class="img-responsive" src="/<?= $product['image'] ?>" alt="User profile picture">-->
+                        });
+                    </script>
                     <h3 class="profile-username text-center"><?= $product['title'] ?></h3>
                     <p class="text-muted text-center"><?= $product['category_name'] ?> / <?= $product['subcategory_name'] ?></p>
 
@@ -35,7 +49,7 @@
                         </li>
                     </ul>
 
-                    <a href="/admin/editProduct/product/<?=$product['product_id']?>" class="btn btn-primary btn-block"><b>Редактировать</b></a>
+                    <a href="/admin/editProduct/product/<?= $product['product_id'] ?>" class="btn btn-primary btn-block"><b>Редактировать</b></a>
                 </div><!-- /.box-body -->
             </div><!-- /.box -->
 
