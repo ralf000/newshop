@@ -5,6 +5,8 @@
      abstract protected function requiredRoles();
 
      public function beforeEvent($action) {
+         if ($userId = $this->rememberMeChecker())
+             (new UserTableModel)->auth($userId);
          return $this->checkRolesForAction($action);
      }
 
@@ -29,4 +31,20 @@
          }
          return TRUE;
      }
+
+     protected function rememberMeChecker() {
+         if (filter_has_var(INPUT_COOKIE, 'remember')) {
+             $remember  = filter_input(INPUT_COOKIE, 'remember');
+             $user_id   = (int) substr($remember, 0, strpos($remember, '-'));
+             $userModel = new UserTableModel;
+             $userModel->setId($user_id);
+             $userModel->setTable('user');
+             $userModel->readRecordsById('id', 'password_hash');
+             $password  = $userModel->getRecordsById()[0]['password_hash'];
+             $joinStr   = $user_id . '-' . md5($user_id . $_SERVER['REMOTE_ADDR'] . $password);
+             return ($remember === $joinStr) ? $user_id : FALSE;
+         }
+     }
+
  }
+ 

@@ -19,7 +19,7 @@
                     <div class="col-xs-7" style="margin-left: 20px;">
                         <div class="checkbox icheck">
                             <label>
-                                <input type="checkbox"> Запомнить меня
+                                <input type="checkbox" name="remember" value="1"> Запомнить меня
                             </label>
                         </div>
                     </div><!-- /.col -->

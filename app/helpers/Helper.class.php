@@ -177,6 +177,10 @@
          $pattern = '/<table.*?>/';
          return preg_replace($pattern, $replacement, $html);
      }
-
+     
+     static function clearUrl($url){
+         $pieces = parse_url($url);
+         return $pieces['path'];
+     }
  }
  

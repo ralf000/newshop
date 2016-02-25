@@ -35,7 +35,7 @@
                         </li>
                     </ul>
 
-                    <a href="#" class="btn btn-primary btn-block"><b>Редактировать</b></a>
+                    <a href="/admin/editProduct/product/<?=$product['product_id']?>" class="btn btn-primary btn-block"><b>Редактировать</b></a>
                 </div><!-- /.box-body -->
             </div><!-- /.box -->
 

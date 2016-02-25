@@ -84,9 +84,7 @@
              $model->setTable('user');
              $model->setData();
              if ($model->login()) {
-                 $ref = Session::get('referer');
-                 Session::delete('referer');
-                 header('Location: /admin/index');
+                 header('Location: /admin');
              } else {
                  header('Location: ' . $_SERVER['REQUEST_URI']);
              }
@@ -149,27 +147,51 @@
          $fc->setPage($output);
      }
 
-     public function editProduct() {
+     public function editProductAction() {
+         Helper::clearUrl();
          $fc           = FrontController::getInstance();
          $model        = new AdminModel('Редактирование товара');
-         $id           = filter_var($fc->getParams()['id'], FILTER_SANITIZE_STRING);
+         $id           = filter_var($fc->getParams()['product'], FILTER_SANITIZE_STRING);
+         $productModel = new ProductTableModel();
+         $productModel->setId($id);
+         $productModel->setTable('product');
+
+         $imageModel = new ImageTableModel();
+         $imageModel->setTable('image');
+         $imageModel->setId($id);
+
          if (!$id) {
              header('Location: /admin/notFound');
              exit;
          }
+
          if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-             $productModel = new ProductTableModel();
-             $productModel->setId($id);
-             $productModel->setTable('product');
              $productModel->setData();
              $productModel->updateProduct();
-             $imageModel = new ImageTableModel($model->getLastId());
+             $imageModel = new ImageTableModel($id);
              $imageModel->setTable('image');
              $imageModel->setData();
              $imageModel->addAllImages();
              Session::setMsg('Товар успешно обновлен', 'success');
-             header('Location: /admin/view/product/'.$id);
+             header('Location: /admin/view/product/' . $id);
          } else {
+             $product = $productModel->getAllProducts('*', "WHERE product.id = $id and image.main = 1");
+             $imageModel->readRecordsById('product_id');
+             if (empty($product)) {
+                 header('Location: /admin/NotFound');
+                 exit;
+             } else {
+                 $model->setData([
+                     'products' => $productModel->getAllProducts('*', "WHERE product.id = $id and image.main = 1"),
+                     'images'   => $imageModel->getRecordsById(),
+                 ]);
+             }
+
+             $catsAndSub             = [];
+             $catsAndSub             = $this->getCatsAndSubCats();
+             $model->categoryList    = $catsAndSub['cats']; //used magic __set
+             $model->subCategoryList = $catsAndSub['subcats']; //used magic __set
+
              $output = $model->render('../views/admin/product/edit.php', 'admin');
              $fc->setPage($output);
          }
@@ -183,7 +205,7 @@
              if ($model->setData())
                  $model->addRecord();
          }
-         header('Location: /admin/add');
+         header('Location: ' . $_SERVER['HTTP_REFERER']);
          exit;
      }
 
@@ -195,7 +217,7 @@
              $model->setData();
              $model->addRecord();
          }
-         header('Location: /admin/add');
+         header('Location: ' . $_SERVER['HTTP_REFERER']);
          exit;
      }
 

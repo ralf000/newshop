@@ -2,7 +2,7 @@
 
  class UserTableModel extends TableModelAbstract {
 
-     private $login, $password, $dpassword, $fullName, $email, $photo, $validateKey, $path, $userContacts;
+     private $login, $password, $dpassword, $remember, $fullName, $email, $photo, $validateKey, $path, $userContacts;
      protected $user, $id;
 
      public function __construct($login = '', $password = '') {
@@ -15,13 +15,29 @@
          $user = $this->checkCreds();
          if ($user) {
              $this->user = $user;
-             Session::init();
-             $this->setToken();
-             Session::set('user_id', $this->user['id']);
-             if (self::checkUser())
+             $this->auth($this->user['id']);
+             if (self::checkUser()) {
+                 if (!empty($this->remember) && $this->remember > 0){
+                     $this->setRememberCookie($this->user['id']);
+                 }
                  return $this->user['id'];
+             }
          }
          return FALSE;
+     }
+     
+     protected function setRememberCookie($userId){
+         $this->setId($userId);
+         $this->setTable('user');
+         $this->readRecordsById('id', 'password_hash');
+         $hash  = $this->getRecordsById()[0]['password_hash'];
+         setcookie('remember', $this->user['id'] . '-' . md5($this->user['id'] . $_SERVER['REMOTE_ADDR'] . crypt($this->password, $hash)), time() + 3600 * 24 * 7, '/');
+     }
+
+     public function auth($userId) {
+         Session::init();
+         $this->setToken();
+         Session::set('user_id', $userId);
      }
 
      public function logout() {
@@ -142,7 +158,7 @@
       * @param  string $password
       * @return string хеш пароля
       */
-     private function hs($password) {
+     public function hs($password) {
          if (defined('CRYPT_BLOWFISH') && CRYPT_BLOWFISH) {
              $salt = '$2y$11$' . substr(md5(uniqid(rand(), true)), 0, 22); //$2y$11$ - специальный ключ
              return crypt($password, $salt);
@@ -190,6 +206,7 @@
      public function setData($formType = '', $method = 'INPUT_POST') {
          $this->login    = Validate::validateInputVar('username', $method, 'str');
          $this->password = Validate::validateInputVar('pass', $method, 'str');
+         $this->remember = Validate::validateInputVar('remember', $method, 'int');
          if ($formType === 'reg' || $formType === 'registration') {
              $this->fullName    = Validate::validateInputVar('fullName', $method, 'str');
              $this->email       = Validate::validateInputVar('email', $method, 'email');
