@@ -53,6 +53,23 @@
          echo json_encode($model->getRecordsById());
      }
 
+     public function getImagesForProductAction() {
+         header('Content-type: text/plain; charset=utf-8');
+         header('Cache-Control: no-store, no-cache');
+         header('Expires: ' . date('r'));
+
+         if (filter_has_var(INPUT_GET, 'id'))
+             $id = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
+         else
+             return FALSE;
+
+         $model = new ImageTableModel();
+         $model->setTable('image');
+         $model->setId($id);
+         $model->readRecordsById();
+         echo json_encode($model->getRecordsById());
+     }
+
      public function deleteCategoryAction($id = NULL) {
          header('Content-type: text/plain; charset=utf-8');
          header('Cache-Control: no-store, no-cache');
@@ -99,6 +116,38 @@
          $model->setId($id);
          if ($model->deleteRecord($field))
              return TRUE;
+     }
+
+     public function deleteProductAction() {
+         header('Content-type: text/plain; charset=utf-8');
+         header('Cache-Control: no-store, no-cache');
+         header('Expires: ' . date('r'));
+
+         if (filter_has_var(INPUT_POST, 'id'))
+             $id = filter_input(INPUT_POST, 'id', FILTER_SANITIZE_NUMBER_INT);
+
+         $model = new ProductTableModel();
+         $model->setId($id);
+         echo $model->deleteProduct();
+     }
+
+     public function deleteImageAction() {
+         header('Content-Type: application/json; charset=utf-8');
+         header('Cache-Control: no-store, no-cache');
+         header('Expires: ' . date('r'));
+
+         if (filter_has_var(INPUT_GET, 'id') && filter_has_var(INPUT_GET, 'image')) {
+             $id    = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
+             $image = json_decode(filter_input(INPUT_GET, 'image'));
+         } else {
+             return FALSE;
+         }
+         $model = new ImageTableModel();
+         $model->setId($id);
+         $model->setTable('image');
+         $model->deleteRecord();
+         Helper::deleteFile($image);
+         echo TRUE;
      }
 
      public function changePhotoAction() {

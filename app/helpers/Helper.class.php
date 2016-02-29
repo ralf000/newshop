@@ -50,6 +50,35 @@
          }
      }
 
+     static function deleteFile($file) {
+         if (file_exists($file))
+             unlink($file) or die('Не могу удалить файл ' . $file);
+     }
+
+     static function deleteDir($dir, $type = 'img') {
+         $rootDir = ($type === 'img') ? Path::IMG_UPLOAD_DIR : Path::FILE_UPLOAD_DIR;
+         self::_searchDir($rootDir, $dir);
+     }
+     
+     private static function _searchDir($rootDir, $dir){
+         foreach (scandir($rootDir) as $d) {
+             if ($d !== '.' && $d !== '..' && is_dir($rootDir.$d)) {
+                 if ($d == $dir) {
+                     self::_removeDir($rootDir . $d);
+                     return TRUE;
+                 } else {
+                     self::_searchDir($rootDir . $d, $dir);
+                 }
+             }
+         }
+     }
+
+     public static function _removeDir($path) {
+         return is_file($path) ?
+                 @unlink($path) :
+                 array_map(['Helper', '_removeDir'], glob($path . "/*")) == @rmdir($path);
+     }
+
      /**
       * Для перевода кириллицы в латиницу
       * @param $string - строка, которую нужно перевести
@@ -147,7 +176,7 @@
          $output = '';
          $output .= '<ul class="pagination">' . "\n";
          $output .= '<li class="' . $disabledP . '" id="previous">' . "\n";
-         $output .= '<a href="'.$link.'/page/' . --$p . '" aria-controls="pgn" data-dt-idx="0" tabindex="0">&laquo;</a>' . "\n";
+         $output .= '<a href="' . $link . '/page/' . --$p . '" aria-controls="pgn" data-dt-idx="0" tabindex="0">&laquo;</a>' . "\n";
          $output .= '</li>' . "\n";
 
          for ($i = 1; $i <= $pages; $i++) {
@@ -156,7 +185,7 @@
              else
                  $active = '';
              $output .= '<li class="paginate_button ' . $active . '">' . "\n";
-             $output .= '<a href="'.$link.'/page/' . $i . '" aria-controls="pgn" data-dt-idx="' . $i . '" tabindex="0">' . $i . '</a>' . "\n";
+             $output .= '<a href="' . $link . '/page/' . $i . '" aria-controls="pgn" data-dt-idx="' . $i . '" tabindex="0">' . $i . '</a>' . "\n";
              $output .= '</li>' . "\n";
          }
 
@@ -165,7 +194,7 @@
          $output .= '<a href="' . $link . '/page/' . ++$page . '" aria-controls="pgn" data-dt-idx="' . ++$page . '" tabindex="0">&raquo;</a>' . "\n";
          $output .= '</li>' . "\n";
          $output .= '</ul>' . "\n";
-         
+
          return $output;
      }
 
@@ -177,10 +206,11 @@
          $pattern = '/<table.*?>/';
          return preg_replace($pattern, $replacement, $html);
      }
-     
-     static function clearUrl($url){
+
+     static function clearUrl($url) {
          $pieces = parse_url($url);
          return $pieces['path'];
      }
+
  }
  

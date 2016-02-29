@@ -1,3 +1,18 @@
+function readURL(input, evt, box) {
+    var files = evt.target.files;
+
+    for (var i = 0, f; f = files[i]; i++) {
+        if (!f.type.match('image.*'))
+            continue;
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            $('<img/>').attr('src', e.target.result).addClass('thumb').appendTo(box);
+        };
+        reader.readAsDataURL(f);
+        box.fadeIn();
+    }
+}
+
 function getCategoriesAjax() {
     var url = '/ajax/getCategories';
     $.getJSON(url, function (data, status, jqXHR) {
@@ -23,6 +38,22 @@ function getSubCategoriesAjax(catId) {
             if (!$.isEmptyObject(data)) {
                 for (var name in data) {
                     console.log(data[name].id);
+                    if (typeof (data[name]) === 'object')
+                        subCat.append('<option value="' + data[name].id + '">' + data[name].subcategory_name + '</option>');
+                }
+            }
+        }
+    });
+}
+
+function getSubCategoriesAjax(catId) {
+    var url = '/ajax/getSubCategories/?catid=' + catId;
+    $.getJSON(url, function (data, status, jqXHR) {
+        if (status === 'success') {
+            var subCat = $('#subcat');
+            subCat.empty();
+            if (!$.isEmptyObject(data)) {
+                for (var name in data) {
                     if (typeof (data[name]) === 'object')
                         subCat.append('<option value="' + data[name].id + '">' + data[name].subcategory_name + '</option>');
                 }
@@ -133,33 +164,65 @@ function addHandlers() {
         });
     });
 
+    $('.delImageClick').on('click', function (e) {
+        e.preventDefault();
+        var ths = $(this);
+        var image = ths.closest('.prodImage').find('img').attr('src');
+        image = image.substr(image.indexOf('/') + 1);
+        var imageId = Number($(this).attr('data-id'));
+        swal({
+            title: "Вы уверены?",
+            text: 'Вы точно хотите удалить это изображение?',
+            html: true,
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Да",
+            closeOnConfirm: true,
+            cancelButtonText: 'Отмена'
+        },
+        function (flag) {
+            if (flag) {
+                var url = '/ajax/deleteImage';
+                $.get(url, {id: imageId, image: JSON.stringify(image)}, function (data, status, jqXHR) {
+                    if (status === 'success') {
+                        console.log(data);
+                        ths.closest('.prodImage').fadeOut();
+                    }
+                });
+            }
+        });
+    });
+    
+    $(".cleanImg").on('click', function (e) {
+        $(this).next('.files').empty().hide();
+    });
+    $("#mainimage").change(function (e) {
+        $('#files').empty().hide();
+        readURL($(this), e, $('#files'));
+    });
+    $("#images").change(function (e) {
+        $('#files2').empty().hide();
+        readURL($(this), e, $('#files2'));
+    });
 }
+
+
 
 $(function () {
     var catId = $('#cat option:selected').val();
     $('#categoryid').val($('#cat option:selected').val());
     addHandlers();
-    getSubCategoriesAjax(catId);
+//    getSubCategoriesAjax(catId);
 
     //for pagination, blocked prev or next
     $('ul.pagination li.disabled a').on('click', function (e) {
         e.preventDefault();
     });
+    
+    $(".cleanImg").hide();
+    $('#files').add('#files2').hide();
+    CKEDITOR.replace('desc');
+    CKEDITOR.replace('spec');
 });
 
-
-function getSubCategoriesAjax(catId) {
-    var url = '/ajax/getSubCategories/?catid=' + catId;
-    $.getJSON(url, function (data, status, jqXHR) {
-        if (status === 'success') {
-            var subCat = $('#subcat');
-            subCat.empty();
-            if (!$.isEmptyObject(data)) {
-                for (var name in data) {
-                    if (typeof (data[name]) === 'object')
-                        subCat.append('<option value="' + data[name].id + '">' + data[name].subcategory_name + '</option>');
-                }
-            }
-        }
-    });
-}

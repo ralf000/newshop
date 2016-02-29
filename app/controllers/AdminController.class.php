@@ -28,6 +28,11 @@
      public function addAction() {
          $fc = FrontController::getInstance();
          if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+             if (empty($_FILES['mainimage']['name'])){
+                 Session::setMsg('Не задано главное изображение товара', 'danger');
+                 header('Location: /admin/add');
+                 exit;
+             }
              $model      = new ProductTableModel();
              $model->setTable('product');
              $model->setData();
@@ -37,7 +42,7 @@
              $imageModel->setData();
              $imageModel->addAllImages();
              Session::setMsg('Товар успешно добавлен в базу', 'success');
-             header('Location: /admin/');
+             header('Location: /admin/allProducts');
              exit;
          } else {
              $adminModel                  = new AdminModel('Добавление новых товаров');
@@ -59,7 +64,7 @@
              header('Location: /admin/notFound');
              exit;
          }
-         $product    = $productModel->getAllProducts('*', "WHERE product.id = $id and image.main = 1");
+         $product    = $productModel->getAllProducts('*', "WHERE product.id = $id GROUP BY product.id");
          $imageModel = new ImageTableModel();
          $imageModel->setTable('image');
          $imageModel->setId($id);
@@ -69,7 +74,7 @@
              exit;
          } else {
              $model->setData([
-                 'products' => $productModel->getAllProducts('*', "WHERE product.id = $id and image.main = 1"),
+                 'products' => $productModel->getAllProducts('*', "WHERE product.id = $id GROUP BY product.id"),
                  'images'   => $imageModel->getRecordsById(),
              ]);
          }
@@ -135,7 +140,7 @@
          $direction    = $fc->getParams()['direction'] ? filter_var($fc->getParams()['direction'], FILTER_SANITIZE_STRING) : 'asc';
          $offset       = $limit * $page - $limit;
          $model->setData([
-             'products'  => $productModel->getAllProducts('product.id, product.title, product.price, product.quantity, product.published, category.category_name, subcategory.subcategory_name, product.created_time, product.updated_time, image.image', "WHERE image.main = 1 ORDER BY product.$orderBy " . strtoupper($direction) . " LIMIT $limit OFFSET $offset"),
+             'products'  => $productModel->getAllProducts('product.id, product.title, product.price, product.quantity, product.published, category.category_name, subcategory.subcategory_name, product.created_time, product.updated_time, image.image', "GROUP BY product.id ORDER BY product.$orderBy " . strtoupper($direction) . " LIMIT $limit OFFSET $offset"),
              'limit'     => $limit,
              'orderBy'   => $orderBy,
              'direction' => $orderDirection,
@@ -159,29 +164,30 @@
          $imageModel->setTable('image');
          $imageModel->setId($id);
 
-         if (!$id) {
-             header('Location: /admin/notFound');
-             exit;
-         }
-
          if ($_SERVER['REQUEST_METHOD'] === 'POST') {
              $productModel->setData();
              $productModel->updateProduct();
-             $imageModel = new ImageTableModel($id);
+             $imageModel = new ImageTableModel($productModel->getId());
              $imageModel->setTable('image');
+             $imageModel->setId($productModel->getId());
              $imageModel->setData();
              $imageModel->addAllImages();
              Session::setMsg('Товар успешно обновлен', 'success');
-             header('Location: /admin/view/product/' . $id);
+             header('Location: /admin/view/product/' . $productModel->getId());
+             exit;
          } else {
-             $product = $productModel->getAllProducts('*', "WHERE product.id = $id and image.main = 1");
+             if (!$id) {
+                 header('Location: /admin/notFound');
+                 exit;
+             }
+             $product = $productModel->getAllProducts('*', "WHERE product.id = $id GROUP BY product.id");
              $imageModel->readRecordsById('product_id');
              if (empty($product)) {
                  header('Location: /admin/NotFound');
                  exit;
              } else {
                  $model->setData([
-                     'products' => $productModel->getAllProducts('*', "WHERE product.id = $id and image.main = 1"),
+                     'products' => $productModel->getAllProducts('*', "WHERE product.id = $id GROUP BY product.id"),
                      'images'   => $imageModel->getRecordsById(),
                  ]);
              }
@@ -195,6 +201,20 @@
              $fc->setPage($output);
          }
      }
+
+//     public function deleteProduct() {
+//         $fc = FrontController::getInstance();
+//         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+//             $model = new ProductTableModel();
+//             if (filter_has_var(INPUT_POST, 'id'))
+//                 $id    = filter_input(INPUT_POST, 'id', FILTER_SANITIZE_NUMBER_INT);
+//             $model->setId($id);
+//             $model->deleteRecord();
+//         }else {
+//             $output = $model->render('../views/admin/product/edit.php', 'admin');
+//             $fc->setPage($output);
+//         }
+//     }
 
      public function newCatAction() {
          $fc    = FrontController::getInstance();
@@ -226,7 +246,7 @@
          $categoryModel->readAllRecords();
          $subCategoryModel = new SubCategoryTableModel();
          $subCategoryModel->setTable('subcategory');
-         $subCategoryModel->readAllRecords();
+         $subCategoryModel->readAllRecords('*', "WHERE subcategory.category_id = ".  end($categoryModel->getAllRecords())['id']);
          return [
              'cats'    => array_reverse($categoryModel->getAllRecords()),
              'subcats' => array_reverse($subCategoryModel->getAllRecords())

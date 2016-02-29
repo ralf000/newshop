@@ -31,7 +31,7 @@
          $this->setTable('user');
          $this->readRecordsById('id', 'password_hash');
          $hash = $this->getRecordsById()[0]['password_hash'];
-         setcookie('remember', $this->user['id'] . '-' . md5($this->user['id'] . $_SERVER['REMOTE_ADDR'] . crypt($this->password, $hash)), time() + 3600 * 24 * 7, '/');
+         setcookie('remember', $this->user['id'] . '-' . md5($this->user['id'] . $_SERVER['REMOTE_ADDR'] . crypt($this->password, $hash)), time() + 3600 * 24 * 7, '/admin');
      }
 
      public function auth($userId) {

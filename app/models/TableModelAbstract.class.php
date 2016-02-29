@@ -8,9 +8,9 @@
      protected $allRecords = [];
      protected $params     = [];
 
-     public function readAllRecords($fileds = '*') {
+     public function readAllRecords($fileds = '*', $condition = '') {
          try {
-             $query            = $this->db->prepare("SELECT $fileds FROM $this->table");
+             $query            = $this->db->prepare("SELECT $fileds FROM $this->table $condition");
              $query->execute();
              $this->allRecords = $query->fetchAll(PDO::FETCH_ASSOC);
          } catch (PDOException $e) {
@@ -35,11 +35,11 @@
 
      abstract function updateRecord();
 
-     public function deleteRecord($field = 'id') {
+     public function deleteRecord($field = 'id', $condition = '') {
          if ($this->id == NULL)
              throw new Exception('укажите id записи для её удаления');
          try {
-             $query = $this->db->prepare("DELETE FROM $this->table WHERE $field = :id");
+             $query = $this->db->prepare("DELETE FROM $this->table WHERE $field = :id $condition");
              $query->execute([':id' => $this->id]);
              return $query->rowCount();
          } catch (PDOException $e) {

@@ -90,43 +90,5 @@
     </div>
 </section>
 
-
-
-
-
-
-<script>
-    function readURL(input, evt, box) {
-        var files = evt.target.files;
-
-        for (var i = 0, f; f = files[i]; i++) {
-            if (!f.type.match('image.*'))
-                continue;
-            var reader = new FileReader();
-            reader.onload = function (e) {
-                $('<img/>').attr('src', e.target.result).addClass('thumb').appendTo(box);
-            };
-            reader.readAsDataURL(f);
-            box.fadeIn();
-        }
-    }
-    $(".cleanImg").on('click', function (e) {
-        $(this).next('.files').empty().hide();
-    });
-    $("#mainimage").change(function (e) {
-        $('#files').empty().hide();
-        readURL($(this), e, $('#files'));
-    });
-    $("#images").change(function (e) {
-        $('#files2').empty().hide();
-        readURL($(this), e, $('#files2'));
-    });
-    $(function () {
-        $(".cleanImg").hide();
-        $('#files').add('#files2').hide();
-        CKEDITOR.replace('desc');
-        CKEDITOR.replace('spec');
-    });
-</script>
 <script src="https://cdn.ckeditor.com/4.4.3/standard/ckeditor.js"></script>
 

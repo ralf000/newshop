@@ -6,13 +6,19 @@
 
     <div class="row">
         <div class="col-md-3">
-
             <!-- Profile Image -->
             <div class="box box-primary">
                 <div class="box-body box-profile">
                     <ul id="imageGallery">
                         <? foreach ($images as $image): ?>
-                             <? if (isset($image['image'])): ?>
+                             <? if (isset($image['image']) && strstr($image['image'], 'main_')): ?>
+                                 <li data-thumb="/<?= $image['image'] ?>" data-src="/<?= $image['image'] ?>">
+                                     <a href="/<?= $image['image'] ?>"><img src="/<?= $image['image'] ?>" style="width: 60%"/></a>
+                                 </li>
+                             <? endif; ?>
+                         <? endforeach; ?>
+                        <? foreach ($images as $image): ?>
+                             <? if (isset($image['image']) && strstr($image['image'], 'main_') === FALSE): ?>
                                  <li data-thumb="/<?= $image['image'] ?>" data-src="/<?= $image['image'] ?>">
                                      <a href="/<?= $image['image'] ?>"><img src="/<?= $image['image'] ?>" style="width: 60%"/></a>
                                  </li>
@@ -92,3 +98,4 @@
     </div><!-- /.row -->
 
 </section><!-- /.content -->
+<script type="text/javascript" src="/app/template/backend/js/addDelSubAndCategories.js"></script>

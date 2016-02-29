@@ -9,7 +9,7 @@
      private function __construct() {
          if (self::$_db === NULL) {
              try {
-                 $this->dbConfig = parse_ini_file(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'config/config.ini');
+                 $this->dbConfig = parse_ini_file(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'config/db.ini');
                  $dsn            = "mysql:host=" . $this->dbConfig['dbHost'] . ";dbname=" . $this->dbConfig['dbName'];
                  $options        = [
                      PDO::ATTR_ERRMODE      => true,

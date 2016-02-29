@@ -37,20 +37,33 @@
      }
      
      public function updateProduct() {
-         if ($this->id == NULL)
-             throw new Exception('укажите id записи для её отображения');
          try {
-             $st = $this->db->prepare("UPDATE $this->table SET `category_id` = :cat, `subcategory_id` = :subcat, `title` = :title, `description` = :description, `spec` = :spec, `price` = :price, `quantity` = quantity, `published` = :published;");
+             $st = $this->db->prepare("UPDATE $this->table SET `category_id` = :cat, `subcategory_id` = :subcat, `title` = :title, `description` = :description, `spec` = :spec, `price` = :price, `quantity` = :quantity, `published` = :published WHERE `id` = :id");
              $st->execute([
+                 ':cat'         => $this->cat,
+                 ':subcat'      => $this->subcat,
                  ':title'       => $this->title,
                  ':description' => $this->description,
                  ':spec'        => $this->spec,
                  ':price'       => $this->price,
                  ':quantity'    => $this->quantity,
                  ':published'   => $this->published,
-                 ':subcat'      => $this->subcat,
-                 ':cat'         => $this->cat,
+                 ':id' => $this->id
              ]);
+         } catch (Exception $ex) {
+             $ex->getMessage();
+         }
+     }
+     
+     public function deleteProduct() {
+         if (empty($this->id))
+             throw new Exception('Не задан id товара для удаления');
+         try {
+             $st = $this->db->prepare("DELETE FROM image WHERE product_id = ?");
+             $st->execute([$this->id]);
+             $st = $this->db->prepare("DELETE FROM product WHERE id = ?");
+             $st->execute([$this->id]);
+             Helper::deleteDir($this->id);
          } catch (Exception $ex) {
              $ex->getMessage();
          }
@@ -58,14 +71,15 @@
 
      public function setData($formType = '', $method = '') {
          $method            = 'INPUT_POST';
-         $this->cat         = Validate::validateInputVar('cat', $method);
-         $this->subcat      = Validate::validateInputVar('subcat', $method);
+         $this->cat         = Validate::validateInputVar('cat', $method, 'int');
+         $this->subcat      = Validate::validateInputVar('subcat', $method, 'int');
          $this->title       = Validate::validateInputVar('title', $method, 'str');
          $this->description = Validate::validateInputVar('desc', $method, 'html');
          $this->spec        = Validate::validateInputVar('spec', $method, 'html');
          $this->price       = Validate::validateInputVar('price', $method, 'int');
          $this->quantity    = Validate::validateInputVar('quant', $method, 'int');
          $this->published   = Validate::validateInputVar('published', $method, 'int');
+         $this->id   = Validate::validateInputVar('product_id', $method, 'int');
          if (empty($this->published))
              $this->published   = 0;
      }

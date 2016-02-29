@@ -73,8 +73,8 @@
                                                  <td><?= Helper::dateConverter($product['updated_time']) ?></td>
                                                  <td>
                                                      <a href="/admin/view/product/<?= $product['id'] ?>" class="admin-data-control"><span class="glyphicon glyphicon-eye-open"></span></a>
-                                                     <a href="#" class="admin-data-control"><span class="glyphicon glyphicon-pencil"></span></a>
-                                                     <a href="#" class="admin-data-control"><span class="glyphicon glyphicon-minus"></span></a>
+                                                     <a href="/admin/editProduct/product/<?=$product['id']?>" class="admin-data-control"><span class="glyphicon glyphicon-pencil"></span></a>
+                                                     <a href="<?=$product['id']?>" class="deleteProduct admin-data-control"><span class="glyphicon glyphicon-minus"></span></a>
                                                  </td>
                                              </tr>
                                          <? endforeach; ?>
