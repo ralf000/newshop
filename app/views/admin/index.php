@@ -177,7 +177,7 @@
                         </tbody></table>
                 </div><!-- /.box-body -->
                 <div class="box-footer clearfix">
-                    <a href="javascript::;" class="btn btn-sm btn-warning btn-flat pull-left">Все клиенты</a>
+                    <a href="/admin/allUsers" class="btn btn-sm btn-warning btn-flat pull-left">Все клиенты</a>
                     <!--<a href="javascript::;" class="btn btn-sm btn-default btn-flat pull-right">View All Orders</a>-->
                 </div><!-- /.box-footer -->
             </div>
@@ -241,7 +241,7 @@
                     </ul><!-- /.users-list -->
                 </div><!-- /.box-body -->
                 <div class="box-footer text-center">
-                    <a href="javascript::" class="uppercase">Все менеджеры</a>
+                    <a href="/admin/allUsers" class="uppercase">Все менеджеры</a>
                 </div><!-- /.box-footer -->
             </div>
         </section><!-- right col -->

@@ -1,5 +1,5 @@
 <?php
-
+ 
  class AjaxController extends AbstractController {
 
      protected function requiredRoles() {

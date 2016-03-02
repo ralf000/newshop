@@ -1,5 +1,5 @@
-<? $userAddress = $this->getData()['userContacts']['address']; ?>
-<? $userPhones  = $this->getData()['userContacts']['phones']; ?>
+<? $userAddress = $this->getData()[0]['userContacts']['address']; ?>
+<? $userPhones  = $this->getData()[0]['userContacts']['phones']; ?>
     <!-- Main content -->
     <section class="content">
 

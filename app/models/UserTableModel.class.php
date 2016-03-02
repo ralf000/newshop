@@ -110,6 +110,16 @@
              $ex->getMessage();
          }
      }
+     
+     public function getAllUsers($fields = '*', $condition = '') {
+         try {
+             $st               = $this->db->prepare("SELECT $fields FROM user LEFT JOIN address ON user.id = address.user_id LEFT JOIN phone ON  user.id = phone.user_id $condition");
+             $st->execute();
+             return $this->allRecords = $st->fetchAll(PDO::FETCH_ASSOC);
+         } catch (Exception $ex) {
+             $ex->getMessage();
+         }
+     }
 
      public function updateRecord() {
          

@@ -6,7 +6,6 @@
 
      function indexAction() {
          $fc = FrontController::getInstance();
-
          $model       = new UserTableModel();
          $model->name = $fc->getParams();
          $output      = $model->render('../views/index.php');

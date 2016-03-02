@@ -1,5 +1,5 @@
 <?php
-
+ 
  class UserController extends AbstractController {
 
      protected function requiredRoles() {

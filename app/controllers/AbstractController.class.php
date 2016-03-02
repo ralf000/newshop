@@ -1,5 +1,5 @@
 <?php
-
+ 
  abstract class AbstractController implements IController {
 
      abstract protected function requiredRoles();

@@ -1,5 +1,6 @@
 <?php
- /* Пути по-умолчанию для поиска файлов */
+
+/* Пути по-умолчанию для поиска файлов */
  set_include_path(get_include_path()
          . PATH_SEPARATOR . 'app/controllers'
          . PATH_SEPARATOR . 'app/models'
@@ -8,12 +9,12 @@
          . PATH_SEPARATOR . 'app/tests'
          . PATH_SEPARATOR . 'app/widgets'
  );
-
+ 
  /* Автозагрузчик классов */
  spl_autoload_register(function ($class) {
-     include $class . '.class.php';
+     require_once $class . '.class.php';
  });
- 
+
  Session::init();
 
  /* Инициализация и запуск FrontController */
@@ -22,3 +23,4 @@
 
  /* Вывод данных */
  echo $controller->getPage();
+ 

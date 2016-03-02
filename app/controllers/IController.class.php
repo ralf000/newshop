@@ -1,4 +1,6 @@
 <?php
-
-interface IController{}
-
+ 
+ interface IController {
+     
+ }
+ 

@@ -1,7 +1,6 @@
 <?php
 
  class FrontController implements IController {
-
      private $_controller, $_action, $_params, $_head, $_header, $_body, $_footer, $_page, $_beforeEvent, $_afterEvent;
      private static $_instance;
 
@@ -14,7 +13,7 @@
      private function __construct() {
          $this->_beforeEvent = 'beforeEvent';
          $this->_afterEvent  = 'afterEvent';
-
+         
          $request           = filter_input(INPUT_SERVER, 'REQUEST_URI', FILTER_SANITIZE_URL);
          $urlComponents     = parse_url($request);
          $path              = explode('/', trim($urlComponents['path'], '/'));
@@ -42,9 +41,10 @@
      }
 
      public function route() {
-         if (class_exists($this->getController())) {
-             $rc = new ReflectionClass($this->getController());
-             if ($rc->implementsInterface('IController')) {
+        
+//         if (class_exists($this->getController())) {
+             $rc = new ReflectionClass(__NAMESPACE__.'\\'.$this->getController());
+             if ($rc->implementsInterface(__NAMESPACE__.'\\'.'IController')) {
                  if ($rc->hasMethod($this->getAction())) {
                      $controller = $rc->newInstance();
                      // invoke methods before action
@@ -60,7 +60,7 @@
                      }
                  } else {
                      http_response_code(404);
-                     echo "Action «" . $this->getAction() . "» not found";
+                     echo 'Action "' . $this->getAction() . '" not found';
                      exit;
                  }
              } else {
@@ -68,11 +68,11 @@
                  echo "Interface not found";
                  exit;
              }
-         } else {
-             http_response_code(404);
-             echo "Controller " . $this->getController() . " not found";
-             exit;
-         }
+//         } else {
+//             http_response_code(404);
+//             echo 'Controller "' . $this->getController() . '" not found';
+//             exit;
+//         }
      }
 
      private function redirToAuth() {
