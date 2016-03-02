@@ -1,5 +1,9 @@
 <?php
 
+ namespace app\controllers;
+
+use app\models\UserTableModel;
+ 
  class IndexController extends AbstractController {
      
      protected function requiredRoles() {}

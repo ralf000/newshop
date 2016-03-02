@@ -1,4 +1,10 @@
 <?php
+ 
+ namespace app\helpers;
+
+use app\widgets\AdminWidgets;
+use Reflection;
+use ReflectionClass;
 
  Class Helper {
 

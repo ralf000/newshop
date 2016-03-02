@@ -1,5 +1,7 @@
 <?php
 
+ namespace app\helpers;
+ 
  class Path {
 
      const TEMPLATE_DIR        = 'app/template/';

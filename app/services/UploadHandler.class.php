@@ -1,6 +1,11 @@
 <?php
 
- /*
+ namespace app\services;
+
+use app\helpers\Helper;
+use stdClass;
+
+/*
   * jQuery File Upload Plugin PHP Class 6.4.2
   * https://github.com/blueimp/jQuery-File-Upload
   *

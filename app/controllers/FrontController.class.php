@@ -1,5 +1,11 @@
 <?php
 
+ namespace app\controllers;
+
+use app\models\Model;
+use app\services\Session;
+use ReflectionClass;
+ 
  class FrontController implements IController {
      private $_controller, $_action, $_params, $_head, $_header, $_body, $_footer, $_page, $_beforeEvent, $_afterEvent;
      private static $_instance;
@@ -41,8 +47,7 @@
      }
 
      public function route() {
-        
-//         if (class_exists($this->getController())) {
+         if (class_exists(__NAMESPACE__.'\\'.$this->getController())) {
              $rc = new ReflectionClass(__NAMESPACE__.'\\'.$this->getController());
              if ($rc->implementsInterface(__NAMESPACE__.'\\'.'IController')) {
                  if ($rc->hasMethod($this->getAction())) {
@@ -68,11 +73,11 @@
                  echo "Interface not found";
                  exit;
              }
-//         } else {
-//             http_response_code(404);
-//             echo 'Controller "' . $this->getController() . '" not found';
-//             exit;
-//         }
+         } else {
+             http_response_code(404);
+             echo 'Controller "' . $this->getController() . '" not found';
+             exit;
+         }
      }
 
      private function redirToAuth() {

@@ -1,5 +1,10 @@
 <?php
 
+ namespace app\tests;
+
+use Exception;
+use PDO;
+
  Class DBTest {
 
      private $dbConfig;

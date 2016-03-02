@@ -1,4 +1,6 @@
 <?php
+ 
+  namespace app\tests;
 
 class PDOTester extends PDO {
 

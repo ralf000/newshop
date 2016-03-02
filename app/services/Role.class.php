@@ -1,4 +1,9 @@
 <?php
+ 
+   namespace app\services;
+
+use Exception;
+use PDO;
 
  class Role {
 

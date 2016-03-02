@@ -1,5 +1,8 @@
 <?php
 
+use app\controllers\FrontController;
+use app\services\Session;
+
 /* Пути по-умолчанию для поиска файлов */
  set_include_path(get_include_path()
          . PATH_SEPARATOR . 'app/controllers'
@@ -9,12 +12,12 @@
          . PATH_SEPARATOR . 'app/tests'
          . PATH_SEPARATOR . 'app/widgets'
  );
- 
+
  /* Автозагрузчик классов */
  spl_autoload_register(function ($class) {
      require_once $class . '.class.php';
  });
-
+ 
  Session::init();
 
  /* Инициализация и запуск FrontController */

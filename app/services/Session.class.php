@@ -1,5 +1,9 @@
 <?php
 
+ namespace app\services;
+
+ use app\models\UserTableModel;
+
  class Session {
 
      public static function init() {
@@ -13,8 +17,8 @@
      public static function set($key, $value) {
          $_SESSION[$key] = $value;
      }
-     
-     public static function setMsg($body, $type = 'info'){
+
+     public static function setMsg($body, $type = 'info') {
          Session::set('msg', [
              'type' => $type,
              'body' => $body
@@ -26,8 +30,8 @@
              return $_SESSION[$key];
          return FALSE;
      }
-     
-     public static function delete($key){
+
+     public static function delete($key) {
          unset($_SESSION[$key]);
      }
 

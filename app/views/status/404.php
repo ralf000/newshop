@@ -1,4 +1,7 @@
 <!DOCTYPE html>
+
+<? use app\controllers\FrontController; ?>
+
 <html>
   <body class="hold-transition skin-blue sidebar-mini">
     <div class="wrapper">

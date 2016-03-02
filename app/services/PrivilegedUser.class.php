@@ -1,4 +1,9 @@
 <?php
+ 
+   namespace app\services;
+
+use app\models\UserTableModel;
+use PDO;
 
  class PrivilegedUser extends UserTableModel {
 

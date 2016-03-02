@@ -1,4 +1,6 @@
 <?php
+ 
+ namespace app\helpers;
 
 class CreateDB{
     private $db;

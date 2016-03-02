@@ -1,5 +1,16 @@
 <?php
 
+ namespace app\models;
+
+ use app\helpers\Helper;
+ use app\helpers\Path;
+ use app\helpers\Validate;
+ use app\services\Mailer;
+ use app\services\Role;
+ use app\services\Session;
+ use Exception;
+ use PDO;
+
  class UserTableModel extends TableModelAbstract {
 
      private $login, $password, $dpassword, $remember, $fullName, $email, $photo, $validateKey, $path, $userContacts;
@@ -110,7 +121,7 @@
              $ex->getMessage();
          }
      }
-     
+
      public function getAllUsers($fields = '*', $condition = '') {
          try {
              $st               = $this->db->prepare("SELECT $fields FROM user LEFT JOIN address ON user.id = address.user_id LEFT JOIN phone ON  user.id = phone.user_id $condition");
@@ -161,7 +172,6 @@
 //         $_SESSION['token'] = $token;
 //         output_add_rewrite_var('token', $token);
 //     }
-     
      //Современный способ солить и хешировать пароль
      /*      * Функция солит и хеширует пароль
       * @param  string $password

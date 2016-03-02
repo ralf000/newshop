@@ -1,4 +1,8 @@
 <?php
+ 
+  namespace app\models;
+
+use Exception;
 
  class OrderTableModel extends TableModelAbstract {
 

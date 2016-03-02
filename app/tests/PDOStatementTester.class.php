@@ -1,6 +1,11 @@
 <?php
 
-class PDOStatementTester extends PDOStatement {
+ namespace app\tests;
+
+ use PDO;
+ use PDOStatement;
+
+ class PDOStatementTester extends PDOStatement {
 
      const NO_MAX_LENGTH = -1;
 

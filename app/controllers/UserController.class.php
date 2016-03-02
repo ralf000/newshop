@@ -1,5 +1,10 @@
 <?php
  
+ namespace app\controllers;
+
+use app\models\UserTableModel;
+use app\services\Session;
+ 
  class UserController extends AbstractController {
 
      protected function requiredRoles() {

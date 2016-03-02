@@ -1,3 +1,5 @@
+<? use app\helpers\Path; ?>
+
 <? $userAddress = $this->getData()[0]['userContacts']['address']; ?>
 <? $userPhones  = $this->getData()[0]['userContacts']['phones']; ?>
     <!-- Main content -->

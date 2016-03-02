@@ -1,4 +1,10 @@
 <?php
+ 
+  namespace app\models;
+
+use Exception;
+use PDO;
+use PDOException;
 
  abstract class TableModelAbstract extends Model implements CRUDInterface {
 

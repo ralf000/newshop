@@ -1,4 +1,8 @@
 <?php
+ 
+ namespace app\helpers;
+
+use PDO;
 
  class Validate {
 

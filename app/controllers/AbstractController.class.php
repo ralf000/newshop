@@ -1,5 +1,12 @@
 <?php
  
+ namespace app\controllers;
+
+use app\models\UserTableModel;
+use app\services\DB;
+use app\services\PrivilegedUser;
+use app\services\Session;
+ 
  abstract class AbstractController implements IController {
 
      abstract protected function requiredRoles();

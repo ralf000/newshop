@@ -1,5 +1,11 @@
 <?php
 
+ namespace app\widgets;
+
+use app\models\ProductTableModel;
+use Exception;
+use PDO;
+
  class AdminWidgets extends WidgetAbstract {
 
      public function getCntWidgets() {
@@ -27,7 +33,7 @@
              'persentsComm'     => ($commentsPerMonth) ? 100 / ($comments / $commentsPerMonth) : 0,
          ];
      }
-     
+
      public function getNum($table, $condition = '') {
          try {
              $st = $this->db->prepare("SELECT COUNT(`id`) as num FROM `$table` $condition");
@@ -47,7 +53,7 @@
              $ex->getMessage();
          }
      }
-     
+
      public function getAllProductsWidget($fields = '*', $condition = '') {
          $model = new ProductTableModel();
          return $model->getAllProducts($fields, $condition);

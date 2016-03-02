@@ -1,4 +1,9 @@
 <?php
+ 
+ namespace app\models;
+
+use app\controllers\FrontController;
+use app\services\Session;
 
  class AdminModel extends Model {
 

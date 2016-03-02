@@ -1,4 +1,10 @@
 <?php
+ 
+  namespace app\models;
+
+use app\helpers\Path;
+use app\services\DB;
+use Exception;
 
  class Model {
      

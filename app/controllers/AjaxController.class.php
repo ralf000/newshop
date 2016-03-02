@@ -1,5 +1,18 @@
 <?php
  
+ namespace app\controllers;
+
+use app\helpers\Helper;
+use app\helpers\Path;
+use app\helpers\Validate;
+use app\models\CategoryTableModel;
+use app\models\ImageTableModel;
+use app\models\ProductTableModel;
+use app\models\SubCategoryTableModel;
+use app\models\UserTableModel;
+use app\services\Session;
+use app\services\UploadHandler;
+ 
  class AjaxController extends AbstractController {
 
      protected function requiredRoles() {

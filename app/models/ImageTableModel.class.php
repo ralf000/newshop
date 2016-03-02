@@ -1,4 +1,10 @@
 <?php
+ 
+  namespace app\models;
+
+use app\helpers\Helper;
+use app\helpers\Path;
+use Exception;
 
  class ImageTableModel extends TableModelAbstract {
 

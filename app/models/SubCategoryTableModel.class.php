@@ -1,4 +1,10 @@
 <?php
+ 
+  namespace app\models;
+
+use app\helpers\Validate;
+use Exception;
+use PDOException;
 
  class SubCategoryTableModel extends TableModelAbstract {
 

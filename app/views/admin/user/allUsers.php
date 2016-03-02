@@ -1,3 +1,6 @@
+<? use app\helpers\Helper; ?>
+<? use app\helpers\Path; ?>
+
 <? $users    = $this->getData()[1]['users'] ?>
 <? $limit    = $this->getData()[1]['limit'] ?>
 <? $page     = $this->getData()[1]['page'] ?>

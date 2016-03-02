@@ -1,5 +1,16 @@
 <?php
- 
+
+ namespace app\controllers;
+
+ use app\models\AdminModel;
+ use app\models\CategoryTableModel;
+ use app\models\ImageTableModel;
+ use app\models\ProductTableModel;
+ use app\models\SubCategoryTableModel;
+ use app\models\UserTableModel;
+ use app\services\Session;
+ use app\widgets\AdminWidgets;
+
  class AdminController extends AbstractController {
 
      protected function requiredRoles() {
@@ -212,7 +223,7 @@
          $direction = $fc->getParams()['direction'] ? filter_var($fc->getParams()['direction'], FILTER_SANITIZE_STRING) : 'asc';
          $offset    = $limit * $page - $limit;
          $model->setData([
-             'users'  => $userModel->getAllUsers('user.id, user.username, user.full_name, user.photo, user.email, user.validated, user.create_time, user.update_time, address.address, address.postal_code, phone.number, phone.number_type', "GROUP BY user.id ORDER BY user.$orderBy " . strtoupper($direction) . " LIMIT $limit OFFSET $offset"),
+             'users'     => $userModel->getAllUsers('user.id, user.username, user.full_name, user.photo, user.email, user.validated, user.create_time, user.update_time, address.address, address.postal_code, phone.number, phone.number_type', "GROUP BY user.id ORDER BY user.$orderBy " . strtoupper($direction) . " LIMIT $limit OFFSET $offset"),
              'limit'     => $limit,
              'orderBy'   => $orderBy,
              'direction' => $orderDirection,

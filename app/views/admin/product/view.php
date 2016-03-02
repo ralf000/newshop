@@ -1,3 +1,5 @@
+<? use app\helpers\Helper; ?>
+
 <? $product = $this->getData()[1]['products'][0] ?>
 <? $images  = $this->getData()[1]['images'] ?>
 <link rel="stylesheet" type="text/css" media="all" href="/app/template/css/lightslider/lightslider.css" />

@@ -1,3 +1,6 @@
+<? use app\helpers\Helper; ?>
+<? use app\helpers\Path; ?>
+
 <? $product = $this->getData()[1]['products'][0] ?>
 <? $images  = $this->getData()[1]['images'] ?>
 

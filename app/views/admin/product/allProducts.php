@@ -1,4 +1,7 @@
 <? $products    = $this->getData()[1]['products'] ?>
+
+<? use app\helpers\Helper; ?>
+
 <? $limit       = $this->getData()[1]['limit'] ?>
 <? $page        = $this->getData()[1]['page'] ?>
 <? $numProducts = $this->getData()[1]['num'] ?>

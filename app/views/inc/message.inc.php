@@ -1,4 +1,7 @@
+<? use app\services\Session; ?>
+
 <? $msg = Session::get('msg'); ?>
+
 <? if ($msg): ?>
      <?
      switch ($msg['type']) {
@@ -17,7 +20,7 @@
          <div class="alert alert-<?= $msg['type'] ?>">
              <button type="button" class="close" data-dismiss="alert" aria-hidden="true">X</button>
              <h4><?= $t ?></h4>
-             <?= $msg['body'] ?>
+     <?= $msg['body'] ?>
          </div>
      </div>
      <? Session::delete('msg'); ?>
