@@ -1,10 +1,11 @@
 <?php
- 
+
  namespace app\helpers;
 
 use app\widgets\AdminWidgets;
 use Reflection;
 use ReflectionClass;
+use function mb_strtolower;
 
  Class Helper {
 
@@ -59,16 +60,17 @@ use ReflectionClass;
      static function deleteFile($file) {
          if (file_exists($file))
              unlink($file) or die('Не могу удалить файл ' . $file);
+         return TRUE;
      }
 
      static function deleteDir($dir, $type = 'img') {
          $rootDir = ($type === 'img') ? Path::IMG_UPLOAD_DIR : Path::FILE_UPLOAD_DIR;
          self::_searchDir($rootDir, $dir);
      }
-     
-     private static function _searchDir($rootDir, $dir){
+
+     private static function _searchDir($rootDir, $dir) {
          foreach (scandir($rootDir) as $d) {
-             if ($d !== '.' && $d !== '..' && is_dir($rootDir.$d)) {
+             if ($d !== '.' && $d !== '..' && is_dir($rootDir . $d)) {
                  if ($d == $dir) {
                      self::_removeDir($rootDir . $d);
                      return TRUE;
@@ -217,6 +219,5 @@ use ReflectionClass;
          $pieces = parse_url($url);
          return $pieces['path'];
      }
-
  }
  

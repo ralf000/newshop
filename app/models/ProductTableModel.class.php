@@ -92,6 +92,18 @@ use PDOException;
              $this->published   = 0;
      }
      
+     public function getHistory() {
+         if (empty($this->id))
+             throw new Exception('Не задан id товара');
+         try {
+             $st = $this->db->prepare('SELECT * FROM product_history WHERE product_id = ?');
+             $st->execute([$this->id]);
+             return $st->fetchAll(PDO::FETCH_ASSOC);
+         } catch (Exception $ex) {
+             $ex->getMessage();
+         }
+     }
+     
      function getLastId() {
          return $this->lastId;
      }

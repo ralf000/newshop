@@ -1,7 +1,11 @@
-<? use app\helpers\Helper; ?>
+<?
+
+ use app\helpers\Helper; ?>
 
 <? $product = $this->getData()[1]['products'][0] ?>
 <? $images  = $this->getData()[1]['images'] ?>
+<? $history = $this->getData()[1]['history'] ?>
+<? Helper::g($this->getData()[1]['history']) ?>
 <link rel="stylesheet" type="text/css" media="all" href="/app/template/css/lightslider/lightslider.css" />
 <script type="text/javascript" src="/app/template/js/lightslider/lightslider.js"></script>
 <section class="content">
@@ -82,19 +86,44 @@
             </div><!-- /.box -->
         </div><!-- /.col -->
         <div class="col-md-9">
-            <div class="box box-warning">
-                <div class="box-header with-border ui-sortable-handle" style="cursor: move;">
-                    <h3 class="box-title">Полное описание</h3>
-                </div><!-- /.box-header -->
-                <div class="box-body">
-                    <?= $product['description'] ?>
-                    <hr>
-                    <?= Helper::tableToBootstrap($product['spec']) ?>                    
-                </div><!-- /.box-body -->
-                <div class="box-footer clearfix">
-                    <!--<a href="javascript::;" class="btn btn-sm btn-primary btn-flat pull-right">Редактировать</a>-->
-                    <!--<a href="javascript::;" class="btn btn-sm btn-default btn-flat pull-right">View All Orders</a>-->
-                </div><!-- /.box-footer -->
+            <div class="nav-tabs-custom">
+                <ul class="nav nav-tabs">
+                    <li class="active"><a href="#desc" data-toggle="tab">Описание товара</a></li>
+                    <li><a href="#history" data-toggle="tab">История изменений</a></li>
+                </ul>
+                <div class="tab-content">
+                    <div class="active tab-pane" id="desc">
+                                <?= $product['description'] ?>
+                                <?= Helper::tableToBootstrap($product['spec']) ?>                    
+                    </div><!-- /.tab-pane -->
+                    <div class="tab-pane" id="history">
+                        <table class="table table-bordered table-striped">
+                            <tr>
+                                <th>Заголовок</th>
+<!--                                <th>Описание</th>
+                                <th>Характеристики</th>-->
+                                <th>Цена</th>
+                                <th>Количество</th>
+                                <th>Категория</th>
+                                <th>Подкатегория</th>
+                                <th>Дата изменения</th>
+                            </tr>
+                            <? foreach ($history as $h):?>
+                            <tr>
+                                <td><?= $h['title']?></td>
+<!--                                <td><?//= $h['description']?></td>
+                                <td><?//= $h['spec']?></td>-->
+                                <td><?= $h['price']?></td>
+                                <td><?= $h['quantity']?></td>
+                                <td><?= $h['category_id']?></td>
+                                <td><?= $h['subcategory_id']?></td>
+                                <td><?= Helper::dateConverter($h['updated_time'])?></td>
+                            </tr>
+                            <? endforeach;?>
+                        </table>
+                    </div><!-- /.tab-pane -->
+
+                </div><!-- /.tab-content -->
             </div>
         </div><!-- /.col -->
     </div><!-- /.row -->

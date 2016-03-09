@@ -1,4 +1,5 @@
 <?php
+ 
 
  namespace app\controllers;
 
@@ -23,7 +24,7 @@
      }
 
      public function indexAction() {
-         $fc           = FrontController::getInstance();
+         $fc           = FrontController::getInstance();       
          $model        = new AdminModel('Административная панель', 'управление сайтом');
          $adminWidgets = new AdminWidgets();
          $model->setWidgetsData([
@@ -76,6 +77,7 @@
              exit;
          }
          $product    = $productModel->getAllProducts('*', "WHERE product.id = $id GROUP BY product.id");
+         $productModel->setId($id);
          $imageModel = new ImageTableModel();
          $imageModel->setTable('image');
          $imageModel->setId($id);
@@ -87,6 +89,7 @@
              $model->setData([
                  'products' => $productModel->getAllProducts('*', "WHERE product.id = $id GROUP BY product.id"),
                  'images'   => $imageModel->getRecordsById(),
+                 'history' => $productModel->getHistory()
              ]);
          }
          $output = $model->render('../views/admin/product/view.php', 'admin');

@@ -1,5 +1,6 @@
 {
-    "require": {
-        "eventviva/php-image-resize": "1.5.*"
+    "require-dev": {
+        "phpunit/phpunit": "5.0.*",
+        "phpunit/phpunit-skeleton-generator": "*"
     }
 }
