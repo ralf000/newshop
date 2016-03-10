@@ -32,7 +32,6 @@
 
      /**
       * @covers app\helpers\Helper::deleteFile
-      * @todo   Implement testDeleteFile().
       */
      public function testDeleteFile() {
          $this->assertTrue($this->object->deleteFile($file = tempnam('', 'tmp')));
@@ -41,7 +40,6 @@
 
      /**
       * @covers app\helpers\Helper::strToLat
-      * @todo   Implement testStrToLat().
       */
      public function testStrToLat() {
          $testStr = 'Тестовое предложение для проверки функции автоматической транлитерации';
@@ -51,7 +49,6 @@
 
      /**
       * @covers app\helpers\Helper::generate
-      * @todo   Implement testGenerate().
       */
      public function testGenerate() {
          $result = $this->object->generate(5);
@@ -61,7 +58,6 @@
 
      /**
       * @covers app\helpers\Helper::getSiteConfig
-      * @todo   Implement testGetSiteConfig().
       */
      public function testGetSiteConfig() {
          $result = $this->object->getSiteConfig();
@@ -71,7 +67,6 @@
 
      /**
       * @covers app\helpers\Helper::dateConverter
-      * @todo   Implement testDateConverter().
       */
      public function testDateConverter() {
          $result = $this->object->dateConverter('2016-02-19 17:21:00');
@@ -81,7 +76,6 @@
 
      /**
       * @covers app\helpers\Helper::tableToBootstrap
-      * @todo   Implement testTableToBootstrap().
       */
      public function testTableToBootstrap() {
          $html = '<table test class="table table-bordered table-stripped" width="200px" height="100px;">testTest123</table>';
@@ -93,7 +87,7 @@
 
      /**
       * @covers app\helpers\Helper::clearUrl
-      * @todo   Implement testClearUrl().
+      
       */
      public function testClearUrl() {
          $url = 'http://examples.com/sub/subdir?id=1&val=test#hash';

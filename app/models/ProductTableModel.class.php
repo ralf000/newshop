@@ -1,12 +1,13 @@
 <?php
- 
-  namespace app\models;
 
-use app\helpers\Helper;
-use app\helpers\Validate;
-use Exception;
-use PDO;
-use PDOException;
+ namespace app\models;
+
+ use app\helpers\Helper;
+ use app\helpers\Validate;
+ use app\services\Session;
+ use Exception;
+ use PDO;
+ use PDOException;
 
  class ProductTableModel extends TableModelAbstract {
 
@@ -14,16 +15,17 @@ use PDOException;
 
      public function addRecord() {
          try {
-             $query = $this->db->prepare("INSERT INTO $this->table (`category_id`, `subcategory_id`, `title`, `description`, `spec`, `price`, `quantity`, `published`, created_time) VALUES (:cat, :subcat, :title, :description, :spec, :price, :quantity, :published, :created_time)");
+             $this->setUserIdForDB();
+             $query        = $this->db->prepare("INSERT INTO $this->table (`category_id`, `subcategory_id`, `title`, `description`, `spec`, `price`, `quantity`, `published`, created_time) VALUES (:cat, :subcat, :title, :description, :spec, :price, :quantity, :published, :created_time)");
              $query->execute([
-                 ':title'       => $this->title,
-                 ':description' => $this->description,
-                 ':spec'        => $this->spec,
-                 ':price'       => $this->price,
-                 ':quantity'    => $this->quantity,
-                 ':published'   => $this->published,
-                 ':subcat'      => $this->subcat,
-                 ':cat'         => $this->cat,
+                 ':title'        => $this->title,
+                 ':description'  => $this->description,
+                 ':spec'         => $this->spec,
+                 ':price'        => $this->price,
+                 ':quantity'     => $this->quantity,
+                 ':published'    => $this->published,
+                 ':subcat'       => $this->subcat,
+                 ':cat'          => $this->cat,
                  ':created_time' => date('Y-m-d H:i:s')
              ]);
              $this->lastId = $this->db->lastInsertId();
@@ -32,20 +34,23 @@ use PDOException;
          }
      }
 
-     public function updateRecord() {}
-     
+     public function updateRecord() {
+         
+     }
+
      public function getAllProducts($fields = '*', $condition = '') {
          try {
-             $st = $this->db->prepare("SELECT $fields FROM product JOIN category ON product.category_id = category.id JOIN subcategory ON  product.subcategory_id = subcategory.id JOIN image ON product.id = image.product_id $condition");
+             $st               = $this->db->prepare("SELECT $fields FROM product JOIN category ON product.category_id = category.id JOIN subcategory ON  product.subcategory_id = subcategory.id JOIN image ON product.id = image.product_id $condition");
              $st->execute();
              return $this->allRecords = $st->fetchAll(PDO::FETCH_ASSOC);
          } catch (Exception $ex) {
              $ex->getMessage();
          }
      }
-     
+
      public function updateProduct() {
          try {
+             $this->setUserIdForDB();
              $st = $this->db->prepare("UPDATE $this->table SET `category_id` = :cat, `subcategory_id` = :subcat, `title` = :title, `description` = :description, `spec` = :spec, `price` = :price, `quantity` = :quantity, `published` = :published WHERE `id` = :id");
              $st->execute([
                  ':cat'         => $this->cat,
@@ -56,17 +61,18 @@ use PDOException;
                  ':price'       => $this->price,
                  ':quantity'    => $this->quantity,
                  ':published'   => $this->published,
-                 ':id' => $this->id
+                 ':id'          => $this->id
              ]);
          } catch (Exception $ex) {
              $ex->getMessage();
          }
      }
-     
+
      public function deleteProduct() {
          if (empty($this->id))
              throw new Exception('Не задан id товара для удаления');
          try {
+             $this->setUserIdForDB();
              $st = $this->db->prepare("DELETE FROM image WHERE product_id = ?");
              $st->execute([$this->id]);
              $st = $this->db->prepare("DELETE FROM product WHERE id = ?");
@@ -87,11 +93,11 @@ use PDOException;
          $this->price       = Validate::validateInputVar('price', $method, 'int');
          $this->quantity    = Validate::validateInputVar('quant', $method, 'int');
          $this->published   = Validate::validateInputVar('published', $method, 'int');
-         $this->id   = Validate::validateInputVar('product_id', $method, 'int');
+         $this->id          = Validate::validateInputVar('product_id', $method, 'int');
          if (empty($this->published))
              $this->published   = 0;
      }
-     
+
      public function getHistory() {
          if (empty($this->id))
              throw new Exception('Не задан id товара');
@@ -103,7 +109,7 @@ use PDOException;
              $ex->getMessage();
          }
      }
-     
+
      function getLastId() {
          return $this->lastId;
      }

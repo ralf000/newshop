@@ -5,7 +5,7 @@
 <? $product = $this->getData()[1]['products'][0] ?>
 <? $images  = $this->getData()[1]['images'] ?>
 <? $history = $this->getData()[1]['history'] ?>
-<? Helper::g($this->getData()[1]['history']) ?>
+
 <link rel="stylesheet" type="text/css" media="all" href="/app/template/css/lightslider/lightslider.css" />
 <script type="text/javascript" src="/app/template/js/lightslider/lightslider.js"></script>
 <section class="content">
@@ -115,8 +115,8 @@
                                 <td><?//= $h['spec']?></td>-->
                                 <td><?= $h['price']?></td>
                                 <td><?= $h['quantity']?></td>
-                                <td><?= $h['category_id']?></td>
-                                <td><?= $h['subcategory_id']?></td>
+                                <td><?= (new app\models\CategoryTableModel())->getCategoryById($h['category_id'])['category_name']?></td>
+                                <td><?= (new app\models\CategoryTableModel())->getSubCategoryById($h['subcategory_id'])['subcategory_name']?></td>
                                 <td><?= Helper::dateConverter($h['updated_time'])?></td>
                             </tr>
                             <? endforeach;?>

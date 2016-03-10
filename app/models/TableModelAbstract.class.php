@@ -2,6 +2,7 @@
  
   namespace app\models;
 
+use app\services\Session;
 use Exception;
 use PDO;
 use PDOException;
@@ -45,11 +46,23 @@ use PDOException;
          if ($this->id == NULL)
              throw new Exception('укажите id записи для её удаления');
          try {
+             $this->setUserIdForDB();
              $query = $this->db->prepare("DELETE FROM $this->table WHERE $field = :id $condition");
              $query->execute([':id' => $this->id]);
              return $query->rowCount();
          } catch (PDOException $e) {
              die($e->getMessage());
+         }
+     }
+     
+     protected function setUserIdForDB($id = NULL) {
+         if (!$id)
+             $id = Session::get('user_id');
+         try {
+             $st = $this->db->prepare("SET @user_id=?");
+             $st->execute([$id]);
+         } catch (Exception $ex) {
+             $ex->getMessage();
          }
      }
 

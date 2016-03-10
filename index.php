@@ -17,10 +17,6 @@ use app\services\Session;
  spl_autoload_register(function ($class) {
      require_once $class . '.class.php';
  });
-
-$url = 'http://examples.com/sub/subdir?id=1&val=test#hash';
-echo app\helpers\Helper::clearUrl($url);
- exit;
  
  Session::init();
 
