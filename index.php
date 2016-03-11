@@ -1,7 +1,7 @@
 <?php
 
-use app\controllers\FrontController;
-use app\services\Session;
+ use app\controllers\FrontController;
+ use app\services\Session;
 
 /* Пути по-умолчанию для поиска файлов */
  set_include_path(get_include_path()
@@ -17,7 +17,7 @@ use app\services\Session;
  spl_autoload_register(function ($class) {
      require_once $class . '.class.php';
  });
- 
+
  Session::init();
 
  /* Инициализация и запуск FrontController */

@@ -48,7 +48,7 @@
                                 <!-- Menu Footer-->
                                 <li class="user-footer">
                                     <div class="pull-left">
-                                        <a href="/admin/profile" class="btn btn-default btn-flat">Профиль</a>
+                                        <a href="/admin/profile/id/<?= $user['id']?>" class="btn btn-default btn-flat">Профиль</a>
                                     </div>
                                     <div class="pull-right">
                                         <form action="/admin/logout" method="post">

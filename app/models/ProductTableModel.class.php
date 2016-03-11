@@ -2,12 +2,11 @@
 
  namespace app\models;
 
- use app\helpers\Helper;
- use app\helpers\Validate;
- use app\services\Session;
- use Exception;
- use PDO;
- use PDOException;
+use app\helpers\Helper;
+use app\helpers\Validate;
+use Exception;
+use PDO;
+use PDOException;
 
  class ProductTableModel extends TableModelAbstract {
 

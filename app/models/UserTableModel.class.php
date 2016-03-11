@@ -259,6 +259,20 @@
              }
          }
      }
+     
+     public function deleteUser($id = NULL) {
+         if (!$id)
+             $id = $this->id;
+         if (!$id)
+             throw new Exception('не задан id пользователя для удаления!');
+         try {
+             $this->setUserIdForDB();
+             $st = $this->db->prepare("UPDATE user SET deleted = 1 WHERE id = ?");
+             $st->execute([$id]);
+         } catch (Exception $ex) {
+             $ex->getMessage();
+         }
+     }
 
      private function getUserEmail($fields = '*') {
          try {

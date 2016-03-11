@@ -1,7 +1,8 @@
+<?
+
+ use app\helpers\Helper; ?>
+
 <? $products    = $this->getData()[1]['products'] ?>
-
-<? use app\helpers\Helper; ?>
-
 <? $limit       = $this->getData()[1]['limit'] ?>
 <? $page        = $this->getData()[1]['page'] ?>
 <? $numProducts = $this->getData()[1]['num'] ?>
@@ -12,6 +13,8 @@
 //     'offset'    => $offset,
      'orderBy'   => $this->getData()[1]['orderBy'],
      'direction' => $this->getData()[1]['direction'],
+     'table'     => 'product',
+     'num'       => $numProducts
          ]
 ?>
 <script type="text/javascript" src="/app/template/backend/js/products/allproducts.js"></script>
@@ -62,7 +65,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <? foreach ($products as $product): ?>
+<? foreach ($products as $product): ?>
                                              <tr role="row">
                                                  <td><?= $product['id'] ?></td>
                                                  <td><img src="/<?= $product['image'] ?>" alt="<?= $product['title'] ?>" class="product"/></td>
@@ -76,11 +79,11 @@
                                                  <td><?= Helper::dateConverter($product['updated_time']) ?></td>
                                                  <td>
                                                      <a href="/admin/view/product/<?= $product['id'] ?>" class="admin-data-control"><span class="glyphicon glyphicon-eye-open"></span></a>
-                                                     <a href="/admin/editProduct/product/<?=$product['id']?>" class="admin-data-control"><span class="glyphicon glyphicon-pencil"></span></a>
-                                                     <a href="<?=$product['id']?>" class="deleteProduct admin-data-control"><span class="glyphicon glyphicon-minus"></span></a>
+                                                     <a href="/admin/editProduct/product/<?= $product['id'] ?>" class="admin-data-control"><span class="glyphicon glyphicon-pencil"></span></a>
+                                                     <a href="<?= $product['id'] ?>" class="deleteProduct admin-data-control"><span class="glyphicon glyphicon-minus"></span></a>
                                                  </td>
                                              </tr>
-                                         <? endforeach; ?>
+ <? endforeach; ?>
                                     </tbody>
                                 </table>
                             </div>
@@ -88,16 +91,16 @@
                         <div class="row">
                             <div class="col-sm-5">
                                 <div class="dataTables_info" id="example2_info" role="status" aria-live="polite">
-                                    <? $start = $offset + 1 ?>
-                                    <? $end   = ($limit * $page < $numProducts) ? $limit * $page : $numProducts ?>
+<? $start = $offset + 1 ?>
+<? $end   = ($limit * $page < $numProducts) ? $limit * $page : $numProducts ?>
                                     На странице: <b><?= $start ?> - <?= $end ?></b> из <b><?= $numProducts ?></b> товаров
                                 </div>
                             </div>
                             <div class="col-sm-7">
                                 <div class="dataTables_paginate paging_simple_numbers" id="example2_paginate">
                                     <? if ($limit < $numProducts): ?>
-                                         <?= Helper::pagination($limit, $page, $opt) ?>
-                                     <? endif; ?>
+     <?= Helper::pagination($limit, $page, $opt) ?>
+ <? endif; ?>
                                 </div>
                             </div>
                         </div>

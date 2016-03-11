@@ -9,7 +9,7 @@
             </div>
             <div class="pull-left info">
                 <p><?=$user['full_name']?></p>
-                <a href="/admin/profile"><i class="fa fa-circle text-success"></i> Онлайн</a>
+                <a href="/admin/profile/id/<?= $user['id']?>"><i class="fa fa-circle text-success"></i> Онлайн</a>
             </div>
         </div>
         <!-- search form -->

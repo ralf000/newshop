@@ -1,11 +1,11 @@
 <?php
- 
-  namespace app\models;
 
-use app\services\Session;
-use Exception;
-use PDO;
-use PDOException;
+ namespace app\models;
+
+ use app\services\Session;
+ use Exception;
+ use PDO;
+ use PDOException;
 
  abstract class TableModelAbstract extends Model implements CRUDInterface {
 
@@ -25,14 +25,15 @@ use PDOException;
          }
      }
 
-     public function readRecordsById($foreignKey = 'id', $fileds = '*') {
+     public function readRecordsById($foreignKey = 'id', $fileds = '*', $condition = '') {
          if ($this->id == NULL)
              throw new Exception('укажите id записи для её отображения');
          try {
-             $query                         = $this->db->prepare("SELECT $fileds FROM $this->table WHERE `" . $foreignKey . "` = :id");
+             $query = $this->db->prepare("SELECT $fileds FROM $this->table WHERE `" . $foreignKey . "` = :id $condition");
              $query->execute([':id' => $this->id]);
              $this->recordsById             = $query->fetchAll(PDO::FETCH_ASSOC);
              $this->recordsById['rowCount'] = $query->rowCount();
+             return $this->recordsById;
          } catch (PDOException $e) {
              $e->getMessage();
          }
@@ -54,7 +55,7 @@ use PDOException;
              die($e->getMessage());
          }
      }
-     
+
      protected function setUserIdForDB($id = NULL) {
          if (!$id)
              $id = Session::get('user_id');
@@ -98,7 +99,7 @@ use PDOException;
      public function getAllRecords() {
          return $this->allRecords;
      }
-     
+
      function __set($key, $value) {
          $method = 'set' . ucfirst($key);
          if (is_callable(array($this, $method))) {

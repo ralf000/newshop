@@ -2,10 +2,11 @@
 
  namespace app\helpers;
 
-use app\widgets\AdminWidgets;
-use Reflection;
-use ReflectionClass;
-use function mb_strtolower;
+ use app\controllers\FrontController;
+ use app\widgets\AdminWidgets;
+ use Reflection;
+ use ReflectionClass;
+ use function mb_strtolower;
 
  Class Helper {
 
@@ -81,11 +82,12 @@ use function mb_strtolower;
          }
      }
 
-     public static function _removeDir($path) {
+     private static function _removeDir($path) {
          return is_file($path) ?
                  @unlink($path) :
-                 array_map(['Helper', '_removeDir'], glob($path . "/*")) == @rmdir($path);
+                 array_map(['self', '_removeDir'], glob($path . "/*")) == @rmdir($path);
      }
+     
 
      /**
       * Для перевода кириллицы в латиницу
@@ -158,9 +160,13 @@ use function mb_strtolower;
      }
 
      static function pagination($limit = 10, $page = 1, array $options = []) {
-         $p     = $page;
-         $aw    = new AdminWidgets();
-         $num   = $aw->getNum('product');
+         $p = $page;
+         if (!$options['num']) {
+             $aw  = new AdminWidgets();
+             $num = $aw->getNum($options['table']);
+         } else {
+             $num = $options['num'];
+         }
          $pages = round($num / $limit);
 
          if ($page == 0)
@@ -173,7 +179,11 @@ use function mb_strtolower;
              $disabled = '';
          }
 
-         $link = '/admin/allProducts';
+//         $link = '/admin/allProducts';
+         $fc         = FrontController::getInstance();
+         $controller = $fc->getClearController();
+         $action     = $fc->getClearAction();
+         $link       = "/$controller/$action";
          if (!empty($options)) {
              foreach ($options as $key => $value) {
                  if (!empty($value))
@@ -219,5 +229,19 @@ use function mb_strtolower;
          $pieces = parse_url($url);
          return $pieces['path'];
      }
+
+     static function getIconForUserProfileBYAdmin($action = 'insert') {
+         $icon = '';
+         switch ($action) {
+             case 'insert': $icon = 'fa fa-plus-circle bg-green';
+                 break;
+             case 'update': $icon = 'fa fa-refresh bg-blue';
+                 break;
+             case 'delete': $icon = 'fa fa-minus-circle bg-red';
+                 break;
+             default : $icon = 'fa fa-check-square bg-blue';
+         }
+         return $icon;
+     }
+
  }
- 

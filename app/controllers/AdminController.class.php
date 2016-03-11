@@ -1,5 +1,4 @@
 <?php
- 
 
  namespace app\controllers;
 
@@ -24,13 +23,13 @@
      }
 
      public function indexAction() {
-         $fc           = FrontController::getInstance();       
+         $fc           = FrontController::getInstance();
          $model        = new AdminModel('Административная панель', 'управление сайтом');
          $adminWidgets = new AdminWidgets();
          $model->setWidgetsData([
              'cntWidgets'     => $adminWidgets->getCntWidgets(),
-             'clientsWidget'  => $adminWidgets->getUsersForRoleWidget(4, 'WHERE user_role.role_id = ?', 10),
-             'managersWidget' => $adminWidgets->getUsersForRoleWidget(4, 'WHERE user_role.role_id < ?', 8),
+             'clientsWidget'  => $adminWidgets->getUsersForRoleWidget(4, 'WHERE user_role.role_id = ? AND deleted != 1', 10),
+             'managersWidget' => $adminWidgets->getUsersForRoleWidget(4, 'WHERE user_role.role_id < ? AND deleted != 1', 8),
              'productsWidget' => $adminWidgets->getAllProductsWidget($fields          = '*', 'WHERE image.main = 1 ORDER BY product.created_time DESC LIMIT 5')
          ]);
          $output       = $model->render('../views/admin/index.php', 'admin');
@@ -89,7 +88,7 @@
              $model->setData([
                  'products' => $productModel->getAllProducts('*', "WHERE product.id = $id GROUP BY product.id"),
                  'images'   => $imageModel->getRecordsById(),
-                 'history' => $productModel->getHistory()
+                 'history'  => $productModel->getHistory()
              ]);
          }
          $output = $model->render('../views/admin/product/view.php', 'admin');
@@ -137,10 +136,29 @@
      }
 
      public function profileAction() {
-         $fc     = FrontController::getInstance();
-         $model  = new AdminModel('Профиль пользователя');
-         $model->setWidgetsData((new AdminWidgets)->getCntWidgets());
-         $output = $model->render('../views/admin/profile.php', 'admin');
+         $fc    = FrontController::getInstance();
+         $model = new AdminModel('Профиль пользователя');
+//         $model->setWidgetsData((new AdminWidgets)->getCntWidgets());
+
+         $id = filter_var($fc->getParams()['id'], FILTER_SANITIZE_NUMBER_INT);
+
+         if ($id) {
+             $userModel               = new UserTableModel();
+             $userModel->setId($id);
+             $userModel->setTable('user');
+             $userProfile             = $userModel->readRecordsById('id', '`id`,`username`, `full_name`, `photo`, `email`');
+             $userModel->setTable('operation_log');
+             $userActivity            = $userModel->readRecordsById('manager', "*, DATE_FORMAT(`time`, '%Y-%m-%d') as dat", 'ORDER BY `time` DESC');
+             $userActivityGroupByDate = $userModel->readRecordsById('manager', "DATE_FORMAT(`time`, '%Y-%m-%d') as dat", 'GROUP BY dat');
+             $userModel->readUserAddress();
+             $userModel->readUserPhones();
+             $model->setData([
+                 'userProfile'             => $userProfile, 'userContacts'            => $userModel->getUserContacts(),
+                 'userActivity'            => $userActivity,
+                 'userActivityGroupByDate' => $userActivityGroupByDate
+             ]);
+         }
+         $output = $model->render('../views/admin/user/profile.php', 'admin');
          $fc->setPage($output);
      }
 
@@ -157,7 +175,7 @@
              'products'  => $productModel->getAllProducts('product.id, product.title, product.price, product.quantity, product.published, category.category_name, subcategory.subcategory_name, product.created_time, product.updated_time, image.image', "GROUP BY product.id ORDER BY product.$orderBy " . strtoupper($direction) . " LIMIT $limit OFFSET $offset"),
              'limit'     => $limit,
              'orderBy'   => $orderBy,
-             'direction' => $orderDirection,
+             'direction' => $direction,
              'page'      => $page,
              'num'       => (new AdminWidgets)->getNum('product'),
              'offset'    => $offset
@@ -226,10 +244,10 @@
          $direction = $fc->getParams()['direction'] ? filter_var($fc->getParams()['direction'], FILTER_SANITIZE_STRING) : 'asc';
          $offset    = $limit * $page - $limit;
          $model->setData([
-             'users'     => $userModel->getAllUsers('user.id, user.username, user.full_name, user.photo, user.email, user.validated, user.create_time, user.update_time, address.address, address.postal_code, phone.number, phone.number_type', "GROUP BY user.id ORDER BY user.$orderBy " . strtoupper($direction) . " LIMIT $limit OFFSET $offset"),
+             'users'     => $userModel->getAllUsers('user.id, user.username, user.full_name, user.photo, user.email, user.validated, user.create_time, user.update_time, address.address, address.postal_code, phone.number, phone.number_type', "WHERE deleted != 1 GROUP BY user.id ORDER BY user.$orderBy " . strtoupper($direction) . " LIMIT $limit OFFSET $offset"),
              'limit'     => $limit,
              'orderBy'   => $orderBy,
-             'direction' => $orderDirection,
+             'direction' => $direction,
              'page'      => $page,
              'num'       => (new AdminWidgets)->getNum('user'),
              'offset'    => $offset

@@ -1,5 +1,5 @@
 <?php
- 
+
  namespace app\controllers;
 
 use app\helpers\Helper;
@@ -12,7 +12,8 @@ use app\models\SubCategoryTableModel;
 use app\models\UserTableModel;
 use app\services\Session;
 use app\services\UploadHandler;
- 
+use SebastianBergmann\RecursionContext\Exception;
+
  class AjaxController extends AbstractController {
 
      protected function requiredRoles() {
@@ -196,6 +197,20 @@ use app\services\UploadHandler;
          $limit = Validate::validateInputVar('limit', 'INPUT_GET', 'FILTER_SANITIZE_NUMBER_INT');
          header('Location: /admin/allProducts/limit/' . $limit);
          exit;
+     }
+
+     public function deleteUserAction() {
+         header('Content-Type: application/json; charset=utf-8');
+         header('Cache-Control: no-store, no-cache');
+         header('Expires: ' . date('r'));
+
+         if (filter_has_var(INPUT_GET, 'id'))
+             $id = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
+         if (!$id)
+             throw new Exception('не задан id пользователя для удаления!');
+         $userModel = new UserTableModel;
+         $userModel->deleteUser($id);
+         echo TRUE;
      }
 
      private function clearAvatarAction() {

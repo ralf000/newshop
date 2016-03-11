@@ -12,9 +12,10 @@
 //     'offset'    => $offset,
      'orderBy'   => $this->getData()[1]['orderBy'],
      'direction' => $this->getData()[1]['direction'],
+     'table'     => 'product',
+     'num'       => $numProducts
          ]
 ?>
-<? Helper::g($users) ?>
 <script type="text/javascript" src="/app/template/backend/js/products/allproducts.js"></script>
 <section class="content">
     <div class="row">
@@ -61,10 +62,10 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <? foreach ($users as $user): ?>
+<? foreach ($users as $user): ?>
                                              <tr role="row">
                                                  <td><?= $user['id'] ?></td>
-                                                 <? $user['photo'] = ($user['photo']) ? $user['photo'] : Path::DEFAULT_USER_AVATAR ?>
+     <? $user['photo'] = ($user['photo']) ? $user['photo'] : Path::DEFAULT_USER_AVATAR ?>
                                                  <td><img src="/<?= $user['photo'] ?>" alt="<?= $user['username'] ?>" class="product"/></td>
                                                  <td><?= $user['username'] ?></td>
                                                  <td><?= $user['full_name'] ?></td>
@@ -73,12 +74,12 @@
                                                  <td><?= Helper::dateConverter($user['create_time']) ?></td>
                                                  <td><?= Helper::dateConverter($user['update_time']) ?></td>
                                                  <td>
-                                                     <a href="/admin/view/product/<?= $user['id'] ?>" class="admin-data-control"><span class="glyphicon glyphicon-eye-open"></span></a>
-                                                     <a href="/admin/editProduct/product/<?= $user['id'] ?>" class="admin-data-control"><span class="glyphicon glyphicon-pencil"></span></a>
-                                                     <a href="<?= $user['id'] ?>" class="deleteProduct admin-data-control"><span class="glyphicon glyphicon-minus"></span></a>
+                                                     <a href="/admin/profile/id/<?= $user['id'] ?>" class="admin-data-control"><span class="glyphicon glyphicon-eye-open"></span></a>
+                                                     <a href="/admin/editProduct/id/<?= $user['id'] ?>" class="admin-data-control"><span class="glyphicon glyphicon-pencil"></span></a>
+                                                     <a href="<?= $user['id'] ?>" class="deleteUser admin-data-control"><span class="glyphicon glyphicon-minus"></span></a>
                                                  </td>
                                              </tr>
-                                         <? endforeach; ?>
+ <? endforeach; ?>
                                     </tbody>
                                 </table>
                             </div>
@@ -86,16 +87,16 @@
                         <div class="row">
                             <div class="col-sm-5">
                                 <div class="dataTables_info" id="example2_info" role="status" aria-live="polite">
-                                    <? $start = $offset + 1 ?>
-                                    <? $end   = ($limit * $page < $numProducts) ? $limit * $page : $numProducts ?>
-                                    На странице: <b><?= $start ?> - <?= $end ?></b> из <b><?= $numProducts ?></b> товаров
+<? $start = $offset + 1 ?>
+<? $end   = ($limit * $page < $numUsers) ? $limit * $page : $numUsers ?>
+                                    На странице: <b><?= $start ?> - <?= $end ?></b> из <b><?= $numUsers ?></b> товаров
                                 </div>
                             </div>
                             <div class="col-sm-7">
                                 <div class="dataTables_paginate paging_simple_numbers" id="example2_paginate">
-                                    <? if ($limit < $numProducts): ?>
-                                         <?= Helper::pagination($limit, $page, $opt) ?>
-                                     <? endif; ?>
+<? if ($limit < $numUsers): ?>
+     <?= Helper::pagination($limit, $page, $opt) ?>
+ <? endif; ?>
                                 </div>
                             </div>
                         </div>
@@ -106,3 +107,4 @@
         </div><!-- /.col -->
     </div><!-- /.row -->
 </section>
+<script type="text/javascript" src="/app/template/backend/js/user/allusers.js"></script>
