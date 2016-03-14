@@ -45,6 +45,7 @@ $user                    = $this->getData()[1]['userProfile'][0];
                 <div class="box-body box-profile">
                     <a href="#changePhotoPopup" id="changePhoto" data-toggle="modal" data-target="#changePhotoPopUp"><img class="profile-user-img img-responsive img-circle" src="/<?= $user['photo'] ?>" alt="change photo"></a>
                     <h3 class="profile-username text-center"><?= $username ?></h3>
+                    <a href="/admin/editUser/id/<?= $user['id']?>" class="btn btn-block btn-primary">Редактировать</a>
                 </div><!-- /.box-body -->
             </div><!-- /.box -->
 
@@ -122,9 +123,9 @@ $user                    = $this->getData()[1]['userProfile'][0];
                                  <? endforeach; ?>
                              <? endforeach; ?>
                             <!-- END timeline item -->
-                            <li>
+<!--                            <li>
                                 <i class="fa fa-clock-o bg-gray"></i>
-                            </li>
+                            </li>-->
                         </ul>
                     </div><!-- /.tab-pane -->
                 </div><!-- /.tab-content -->

@@ -13,7 +13,7 @@
 
  class UserTableModel extends TableModelAbstract {
 
-     private $login, $password, $dpassword, $remember, $fullName, $email, $photo, $validateKey, $path, $userContacts;
+     protected $login, $password, $dpassword, $remember, $fullName, $email, $photo, $validateKey, $path, $userContacts;
      protected $user, $id;
 
      public function __construct($login = '', $password = '') {
@@ -107,7 +107,7 @@
          if (empty($this->id))
              throw new Exception('Не задан id пользователя');
          try {
-             $st                            = $this->db->prepare("SELECT `address`, `postal_code` FROM address WHERE `user_id` = ?");
+             $st                            = $this->db->prepare("SELECT `id`, `address`, `postal_code` FROM address WHERE `user_id` = ?");
              $st->execute([$this->id]);
              $this->userContacts['address'] = $st->fetchAll(PDO::FETCH_ASSOC);
          } catch (Exception $ex) {
@@ -119,7 +119,7 @@
          if (empty($this->id))
              throw new Exception('Не задан id пользователя');
          try {
-             $st                           = $this->db->prepare("SELECT `number`, `number_type` FROM `phone` WHERE `user_id` = ?");
+             $st                           = $this->db->prepare("SELECT `id`, `number`, `number_type` FROM `phone` WHERE `user_id` = ?");
              $st->execute([$this->id]);
              $this->userContacts['phones'] = $st->fetchAll(PDO::FETCH_ASSOC);
          } catch (Exception $ex) {
@@ -150,20 +150,6 @@
                  $st = $this->db->prepare("UPDATE $this->table SET `photo` = :photo WHERE `id` = :id");
                  $st->execute([':photo' => $this->path . '/main_' . Helper::strToLat($this->photo), ':id' => $this->id]);
                  Helper::moveFile('photo', TRUE, $this->id, 'userimg');
-             }
-         } catch (Exception $ex) {
-             $ex->getMessage();
-         }
-     }
-
-     public function updateAvatar() {
-         if (empty($this->id))
-             $this->id   = $this->user['id'];
-         $this->path = $this->path . $this->id;
-         try {
-             if ($this->photo) {
-                 $st = $this->db->prepare("UPDATE $this->table SET `photo` = ? WHERE `id` = ?");
-                 $st->execute([$this->path . '/avatar/' . Helper::strToLat($this->photo), intval($this->id)]);
              }
          } catch (Exception $ex) {
              $ex->getMessage();
@@ -259,7 +245,7 @@
              }
          }
      }
-     
+
      public function deleteUser($id = NULL) {
          if (!$id)
              $id = $this->id;

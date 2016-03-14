@@ -2,14 +2,18 @@
 
  namespace app\controllers;
 
- use app\models\AdminModel;
- use app\models\CategoryTableModel;
- use app\models\ImageTableModel;
- use app\models\ProductTableModel;
- use app\models\SubCategoryTableModel;
- use app\models\UserTableModel;
- use app\services\Session;
- use app\widgets\AdminWidgets;
+use app\models\AdminModel;
+use app\models\CategoryTableModel;
+use app\models\ImageTableModel;
+use app\models\ProductTableModel;
+use app\models\SubCategoryTableModel;
+use app\models\UserTableModel;
+use app\models\UserUpdateTableModel;
+use app\services\DB;
+use app\services\PrivilegedUser;
+use app\services\Role;
+use app\services\Session;
+use app\widgets\AdminWidgets;
 
  class AdminController extends AbstractController {
 
@@ -105,8 +109,8 @@
                  header('Location: /admin');
              } else {
                  header('Location: ' . $_SERVER['REQUEST_URI']);
+                 exit;
              }
-             exit;
          } else {
              if ($_SESSION['user_id'])
                  header('Location: /');
@@ -253,6 +257,44 @@
              'offset'    => $offset
          ]);
          $output    = $model->render('../views/admin/user/allUsers.php', 'admin');
+         $fc->setPage($output);
+     }
+
+     public function editUserAction() {
+         $fc        = FrontController::getInstance();
+         $model     = new AdminModel('Редактирование пользователя');
+         $userModel = new UserUpdateTableModel();
+         $userModel->setTable('user');
+
+         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+             $userModel->setData('userUpdate');
+             $userModel->updateRecord();
+             header('Location: /admin/profile/id/' . $userModel->getId());
+             exit;
+         } else {
+             $id = filter_var($fc->getParams()['id'], FILTER_SANITIZE_NUMBER_INT);
+             if (!$id) {
+                 header('Location: /admin/notFound');
+                 exit;
+             }
+             $userModel->setId($id);
+
+             $user  = [];
+             $db    = DB::init()->connect();
+             $userModel->readRecordsById();
+             $userModel->readUserAddress();
+             $userModel->readUserPhones();
+             $roles = PrivilegedUser::getUserRoleById($db, $id);
+             $model->setData([
+                 'profile'  => $userModel->getRecordsById(),
+                 'contacts' => $userModel->getUserContacts(),
+                 'role'     => $roles,
+                 'allRoles' => Role::getRoles($db),
+                 'perms'    => Role::getRolePerms($db, $roles['role_id'])->getPermissions(),
+             ]);
+         }
+
+         $output = $model->render('../views/admin/user/editUser.php', 'admin');
          $fc->setPage($output);
      }
 

@@ -75,7 +75,7 @@
                                                  <td><?= Helper::dateConverter($user['update_time']) ?></td>
                                                  <td>
                                                      <a href="/admin/profile/id/<?= $user['id'] ?>" class="admin-data-control"><span class="glyphicon glyphicon-eye-open"></span></a>
-                                                     <a href="/admin/editProduct/id/<?= $user['id'] ?>" class="admin-data-control"><span class="glyphicon glyphicon-pencil"></span></a>
+                                                     <a href="/admin/editUser/id/<?= $user['id'] ?>" class="admin-data-control"><span class="glyphicon glyphicon-pencil"></span></a>
                                                      <a href="<?= $user['id'] ?>" class="deleteUser admin-data-control"><span class="glyphicon glyphicon-minus"></span></a>
                                                  </td>
                                              </tr>

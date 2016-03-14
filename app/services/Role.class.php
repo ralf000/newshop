@@ -5,7 +5,7 @@
 use Exception;
 use PDO;
 
- class Role {
+ class Role{
 
      protected $db;
      protected $permissions;
@@ -16,18 +16,26 @@ use PDO;
      }
 
      // Возвращаем объект роли с соответствующими полномочиями
-     public static function getRolePerms($role_id) {
+     public static function getRolePerms($db, $role_id) {
          $role = new Role();
          $sql  = "SELECT permissions.perm_desc FROM role_perm
                 JOIN permissions ON role_perm.perm_id = permissions.perm_id
                 WHERE role_perm.role_id = :role_id";
-         $sth  = $this->db->prepare($sql);
+         $sth  = $db->prepare($sql);
          $sth->execute([":role_id" => $role_id]);
 
          while ($row = $sth->fetch(PDO::FETCH_ASSOC)) {
              $role->permissions[$row["perm_desc"]] = true;
          }
          return $role;
+     }
+     
+     public static function getRoles($db){
+         try {
+             return $db->query("SELECT * FROM roles")->fetchAll(PDO::FETCH_ASSOC);
+         } catch (Exception $ex) {
+             $ex->getMessage();
+         }
      }
 
      // Проверка установленных полномочий
@@ -54,8 +62,17 @@ use PDO;
          }
          return true;
      }
+     
+     public static function updateRoleByUserId($db, $roleId, $userId){
+         try {
+             $st = $db->prepare("UPDATE user_role SET role_id = ? WHERE user_id = ?");
+             $st->execute([$roleId, $userId]);
+         } catch (Exception $ex) {
+             $ex->getMessage();
+         }
+     }
 
-    // удалить массив ролей и все связи
+     // удалить массив ролей и все связи
      public static function deleteRoles($roles) {
          $sql = "DELETE t1, t2, t3 FROM roles as t1
             JOIN user_role as t2 on t1.role_id = t2.role_id
@@ -83,6 +100,10 @@ use PDO;
          } catch (Exception $ex) {
              $ex->getMessage();
          }
+     }
+     
+     public function getPermissions() {
+         return $this->permissions;
      }
  }
  

@@ -14,8 +14,12 @@ use PDO;
      }
      
      public static function getUserRoleById($db, $userId){
-         $st = $db->prepare("SELECT user_role.user_id, user_role.role_id, roles.role_name FROM user_role INNER JOIN roles ON user_role.role_id = roles.role_id WHERE user_role.user_id = ?");
-         $st->execute([$userId]);
+         try {
+             $st = $db->prepare("SELECT user_role.user_id, user_role.role_id, roles.role_name FROM user_role INNER JOIN roles ON user_role.role_id = roles.role_id WHERE user_role.user_id = ?");
+             $st->execute([$userId]);
+         } catch (Exception $ex) {
+             $ex->getMessage();
+         }
          return $st->fetch(PDO::FETCH_ASSOC);
      }
 

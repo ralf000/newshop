@@ -35,7 +35,7 @@
     $(function () {
         'use strict';
         // Change this to the location of your server-side upload handler:
-        var url = '../ajax/changePhoto',
+        var url = '/ajax/changePhoto',
                 uploadButton = $('<button/>')
                 .addClass('btn btn-primary')
                 .prop('disabled', true)

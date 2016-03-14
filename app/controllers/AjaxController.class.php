@@ -7,12 +7,16 @@ use app\helpers\Path;
 use app\helpers\Validate;
 use app\models\CategoryTableModel;
 use app\models\ImageTableModel;
+use app\models\PhoneTableModel;
 use app\models\ProductTableModel;
 use app\models\SubCategoryTableModel;
 use app\models\UserTableModel;
+use app\models\UserUpdateTableModel;
+use app\services\DB;
+use app\services\Role;
 use app\services\Session;
 use app\services\UploadHandler;
-use SebastianBergmann\RecursionContext\Exception;
+use Exception;
 
  class AjaxController extends AbstractController {
 
@@ -66,6 +70,18 @@ use SebastianBergmann\RecursionContext\Exception;
          $model->readRecordsById('category_id');
          echo json_encode($model->getRecordsById());
      }
+     
+     public function getPhonesTypesAction() {
+         // Передаем заголовки
+         header('Content-type: application/json; charset=utf-8');
+         header('Cache-Control: no-store, no-cache');
+         header('Expires: ' . date('r'));
+         
+         $model = new PhoneTableModel();
+         $model->setTable('phone');
+         $model->readAllRecords();
+         echo json_encode($model->getAllRecords());
+     }
 
      public function getImagesForProductAction() {
          header('Content-type: text/plain; charset=utf-8');
@@ -82,6 +98,19 @@ use SebastianBergmann\RecursionContext\Exception;
          $model->setId($id);
          $model->readRecordsById();
          echo json_encode($model->getRecordsById());
+     }
+     
+     public function getPermsByRoleIdAction() {
+         header('Content-type: application/json; charset=utf-8');
+         header('Cache-Control: no-store, no-cache');
+         header('Expires: ' . date('r'));
+         
+         if (filter_has_var(INPUT_GET, 'id'))
+             $id = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
+         else
+             throw new Exception('Не удалось получить id роли');
+         $perms = Role::getRolePerms(DB::init()->connect(), $id)->getPermissions();
+         echo json_encode($perms);
      }
 
      public function deleteCategoryAction($id = NULL) {
@@ -170,7 +199,7 @@ use SebastianBergmann\RecursionContext\Exception;
          header('Expires: ' . date('r'));
          $this->clearAvatarAction();
 
-         $model  = new UserTableModel();
+         $model  = new UserUpdateTableModel();
          $model->setTable('user');
          $userId = Session::get('user_id');
          $model->setId($userId);
