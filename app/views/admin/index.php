@@ -195,19 +195,19 @@
                 </div><!-- /.box-header -->
                 <div class="box-body">
                     <ul class="products-list product-list-in-box">
-                        <? foreach ($productsWidget as $product):?>
-                        <li class="item">
-                            <div class="product-img">
-                                <img src="/<?=$product['image']?>" alt="Product Image">
-                            </div>
-                            <div class="product-info">
-                                <a href="/admin/view/product/<?=$product['product_id']?>" class="product-title"><?=$product['title']?> <span class="label label-success pull-right"><?=$product['price']?> руб.</span> </a>
-                                <span class="product-description">
-                                    На складе: <?=  $product['quantity']?>
-                                </span>
-                            </div>
-                        </li><!-- /.item -->
-                        <? endforeach;?>
+                        <? foreach ($productsWidget as $product): ?>
+                             <li class="item">
+                                 <div class="product-img">
+                                     <img src="/<?= $product['image'] ?>" alt="Product Image">
+                                 </div>
+                                 <div class="product-info">
+                                     <a href="/admin/view/product/<?= $product['product_id'] ?>" class="product-title"><?= $product['title'] ?> <span class="label label-success pull-right"><?= $product['price'] ?> руб.</span> </a>
+                                     <span class="product-description">
+                                         На складе: <?= $product['quantity'] ?>
+                                     </span>
+                                 </div>
+                             </li><!-- /.item -->
+                         <? endforeach; ?>
                     </ul>
                 </div><!-- /.box-body -->
                 <div class="box-footer text-center">
@@ -227,17 +227,20 @@
                 <div class="box-body no-padding">
                     <ul class="users-list clearfix">
                         <? foreach ($managersWidget as $manager): ?>
+                             <?
+                             $manager['photo'] = ($manager['photo']) ? $manager['photo'] : app\helpers\Path::DEFAULT_USER_AVATAR
+                             ?>
                              <li>
-                                 <img src="/<?=$manager['photo']?>" alt="User Image">
-                                 <?=$manager['full_name']?>
-                                 <span class="users-list-date"><?=$manager['create_time']?></span>
+                                 <img src="/<?= $manager['photo'] ?>" alt="User Image">
+                                 <?= $manager['full_name'] ?>
+                                 <span class="users-list-date"><?= $manager['create_time'] ?></span>
                              </li>
                          <? endforeach; ?>
-<!--                        <li>
-                            <img src="dist/img/user1-128x128.jpg" alt="User Image">
-                            <a class="users-list-name" href="#">Alexander Pierce</a>
-                            <span class="users-list-date">Today</span>
-                        </li>-->
+                        <!--                        <li>
+                                                    <img src="dist/img/user1-128x128.jpg" alt="User Image">
+                                                    <a class="users-list-name" href="#">Alexander Pierce</a>
+                                                    <span class="users-list-date">Today</span>
+                                                </li>-->
                     </ul><!-- /.users-list -->
                 </div><!-- /.box-body -->
                 <div class="box-footer text-center">

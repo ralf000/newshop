@@ -6,6 +6,8 @@
 
      const TEMPLATE_DIR        = 'app/template/';
      const PATH_TO_INC         = '/app/views/inc/';
+     const PATH_TO_TEMPLATE = '/app/template/';
+     const PATH_TO_ADMIN_TEMPLATE = '/app/template/backend/';
      const IMG_UPLOAD_DIR      = 'upload/images/';
      const USERIMG_UPLOAD_DIR  = 'upload/images/users/';
      const DEFAULT_USER_AVATAR = self::TEMPLATE_DIR . 'img/user/default_user_avatar.png';

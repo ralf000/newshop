@@ -8,10 +8,12 @@
 
      protected $number = [], $types  = [], $id;
 
-     public function __construct($id = NULL) {
+     public function __construct($id = NULL, array $number = [], array $types = []) {
          parent::__construct();
          if ($id)
              $this->id = $id;
+         $this->number = $number;
+         $this->types = $types;
      }
 
      public function addRecord() {

@@ -2,21 +2,22 @@
 
  namespace app\controllers;
 
-use app\helpers\Helper;
-use app\helpers\Path;
-use app\helpers\Validate;
-use app\models\CategoryTableModel;
-use app\models\ImageTableModel;
-use app\models\PhoneTableModel;
-use app\models\ProductTableModel;
-use app\models\SubCategoryTableModel;
-use app\models\UserTableModel;
-use app\models\UserUpdateTableModel;
-use app\services\DB;
-use app\services\Role;
-use app\services\Session;
-use app\services\UploadHandler;
-use Exception;
+ use app\helpers\Helper;
+ use app\helpers\Path;
+ use app\helpers\Validate;
+ use app\models\AddressTableModel;
+ use app\models\CategoryTableModel;
+ use app\models\ImageTableModel;
+ use app\models\PhoneTableModel;
+ use app\models\ProductTableModel;
+ use app\models\SubCategoryTableModel;
+ use app\models\UserTableModel;
+ use app\models\UserUpdateTableModel;
+ use app\services\DB;
+ use app\services\Role;
+ use app\services\Session;
+ use app\services\UploadHandler;
+ use Exception;
 
  class AjaxController extends AbstractController {
 
@@ -42,6 +43,34 @@ use Exception;
          $model = new AdminController();
          $model->newSubCatAction();
          $this->getSubCategoriesAction();
+     }
+
+     public function addUserAddressAction() {
+         header('Content-type: text/plain; charset=utf-8');
+         header('Cache-Control: no-store, no-cache');
+         header('Expires: ' . date('r'));
+
+         $userId = Validate::validateInputVar('userid', 'INPUT_POST', 'int');
+         $address = Validate::validateInputVar('address', 'INPUT_POST', 'str');
+         $postal  = Validate::validateInputVar('postal', 'INPUT_POST', 'str');
+         if (!(empty($address) && $userId)) {
+             $model = new AddressTableModel($userId, [$address], [$postal]);
+             echo $model->addRecord();
+         }
+     }
+     
+     public function addUserPhoneAction() {
+         header('Content-type: text/plain; charset=utf-8');
+         header('Cache-Control: no-store, no-cache');
+         header('Expires: ' . date('r'));
+
+         $userId = Validate::validateInputVar('userid', 'INPUT_POST', 'int');
+         $number = Validate::validateInputVar('number', 'INPUT_POST', 'int');
+         $numtype  = Validate::validateInputVar('numtype', 'INPUT_POST', 'str');
+         if (!(empty($number) && $userId)) {
+             $model = new PhoneTableModel($userId, [$number], [$numtype]);
+             echo $model->addRecord();
+         }
      }
 
      public function getCategoriesAction() {
@@ -70,18 +99,18 @@ use Exception;
          $model->readRecordsById('category_id');
          echo json_encode($model->getRecordsById());
      }
-     
-     public function getPhonesTypesAction() {
-         // Передаем заголовки
-         header('Content-type: application/json; charset=utf-8');
-         header('Cache-Control: no-store, no-cache');
-         header('Expires: ' . date('r'));
-         
-         $model = new PhoneTableModel();
-         $model->setTable('phone');
-         $model->readAllRecords();
-         echo json_encode($model->getAllRecords());
-     }
+
+//     public function getPhonesTypesAction() {
+//         // Передаем заголовки
+//         header('Content-type: application/json; charset=utf-8');
+//         header('Cache-Control: no-store, no-cache');
+//         header('Expires: ' . date('r'));
+//
+//         $model = new PhoneTableModel();
+//         $model->setTable('phone');
+//         $model->readAllRecords();
+//         echo json_encode($model->getAllRecords());
+//     }
 
      public function getImagesForProductAction() {
          header('Content-type: text/plain; charset=utf-8');
@@ -99,14 +128,14 @@ use Exception;
          $model->readRecordsById();
          echo json_encode($model->getRecordsById());
      }
-     
+
      public function getPermsByRoleIdAction() {
          header('Content-type: application/json; charset=utf-8');
          header('Cache-Control: no-store, no-cache');
          header('Expires: ' . date('r'));
-         
+
          if (filter_has_var(INPUT_GET, 'id'))
-             $id = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
+             $id    = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
          else
              throw new Exception('Не удалось получить id роли');
          $perms = Role::getRolePerms(DB::init()->connect(), $id)->getPermissions();
@@ -234,12 +263,36 @@ use Exception;
          header('Expires: ' . date('r'));
 
          if (filter_has_var(INPUT_GET, 'id'))
-             $id = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
+             $id        = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
          if (!$id)
              throw new Exception('не задан id пользователя для удаления!');
          $userModel = new UserTableModel;
          $userModel->deleteUser($id);
          echo TRUE;
+     }
+     
+     public function deleteUserAddressAction() {
+         header('Content-Type: application/json; charset=utf-8');
+         header('Cache-Control: no-store, no-cache');
+         header('Expires: ' . date('r'));
+         
+         $id = Validate::validateInputVar('id', 'INPUT_GET', 'int');
+         $model = new AddressTableModel();
+         $model->setId($id);
+         $model->setTable('address');
+         echo $model->deleteRecord();
+     }
+     
+     public function deleteUserPhoneAction() {
+         header('Content-Type: application/json; charset=utf-8');
+         header('Cache-Control: no-store, no-cache');
+         header('Expires: ' . date('r'));
+         
+         $id = Validate::validateInputVar('id', 'INPUT_GET', 'int');
+         $model = new PhoneTableModel();
+         $model->setId($id);
+         $model->setTable('phone');
+         echo $model->deleteRecord();
      }
 
      private function clearAvatarAction() {

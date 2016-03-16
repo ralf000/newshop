@@ -1,15 +1,14 @@
 <?php
- 
-  namespace app\models;
 
-use app\helpers\Path;
-use app\services\DB;
-use Exception;
+ namespace app\models;
+
+ use app\helpers\Path;
+ use app\services\DB;
+ use Exception;
 
  class Model {
-     
-     protected $db;
 
+     protected $db;
 
      public function __construct() {
          try {
@@ -21,74 +20,39 @@ use Exception;
 
      function render($file, $template = '') {
          ob_start();
-         if ($template === 'admin') {
-             require(dirname(__DIR__)
-                     . DIRECTORY_SEPARATOR
-                     . 'template'
-                     . DIRECTORY_SEPARATOR
-                     . 'backend'
-                     . DIRECTORY_SEPARATOR
-                     . 'head.php');
-             require(Path::PATH_TO_INC. 'message.inc.php');
-             require(dirname(__DIR__)
-                     . DIRECTORY_SEPARATOR
-                     . 'template'
-                     . DIRECTORY_SEPARATOR
-                     . 'backend'
-                     . DIRECTORY_SEPARATOR
-                     . 'header.php');
-             require(dirname(__DIR__)
-                     . DIRECTORY_SEPARATOR
-                     . 'template'
-                     . DIRECTORY_SEPARATOR
-                     . 'backend'
-                     . DIRECTORY_SEPARATOR
-                     . 'sidebar.php');
-             require(dirname(__FILE__)
-                     . DIRECTORY_SEPARATOR
-                     . $file);
-             require(dirname(__DIR__)
-                     . DIRECTORY_SEPARATOR
-                     . 'template'
-                     . DIRECTORY_SEPARATOR
-                     . 'backend'
-                     . DIRECTORY_SEPARATOR
-                     . 'footer.php');
-         } elseif ($template === 'status' || $template === 'other') {
-             require(dirname(__DIR__)
-                     . DIRECTORY_SEPARATOR
-                     . 'template'
-                     . DIRECTORY_SEPARATOR
-                     . 'backend'
-                     . DIRECTORY_SEPARATOR
-                     . 'head.php');
-             require(Path::PATH_TO_INC. 'message.inc.php');
-             require(dirname(__FILE__)
-                     . DIRECTORY_SEPARATOR
-                     . $file);
-         } else {
-             require(dirname(__DIR__)
-                     . DIRECTORY_SEPARATOR
-                     . 'template'
-                     . DIRECTORY_SEPARATOR
-                     . 'head.php');
-             require(dirname(__DIR__)
-                     . DIRECTORY_SEPARATOR
-                     . 'template'
-                     . DIRECTORY_SEPARATOR
-                     . 'head.php');
-             require(Path::PATH_TO_INC. 'message.inc.php');
-             require(dirname(__FILE__)
-                     . DIRECTORY_SEPARATOR
-                     . $file);
-             require(dirname(__DIR__)
-                     . DIRECTORY_SEPARATOR
-                     . 'template'
-                     . DIRECTORY_SEPARATOR
-                     . 'footer.php');
+         switch ($template) {
+             case 'admin':
+                 require(Path::PATH_TO_ADMIN_TEMPLATE . 'head.php');
+                 require(Path::PATH_TO_INC . 'message.inc.php');
+                 require(Path::PATH_TO_ADMIN_TEMPLATE . 'header.php');
+                 require(Path::PATH_TO_ADMIN_TEMPLATE . 'sidebar.php');
+                 require(dirname(__FILE__)
+                         . DIRECTORY_SEPARATOR
+                         . $file);
+                 require(Path::PATH_TO_ADMIN_TEMPLATE . 'footer.php');
+                 break;
+             case 'status':
+             case 'other':
+                 require(Path::PATH_TO_ADMIN_TEMPLATE . 'head.php');
+                 require(Path::PATH_TO_INC . 'message.inc.php');
+                 require(dirname(__FILE__)
+                         . DIRECTORY_SEPARATOR
+                         . $file);
+                 break;
+             case 'main':
+                 require Path::PATH_TO_TEMPLATE . 'head.php';
+                 require(Path::PATH_TO_INC . 'message.inc.php');
+                 require Path::PATH_TO_TEMPLATE . 'header.php';
+                 require Path::PATH_TO_TEMPLATE . 'slider.php';
+                 require Path::PATH_TO_TEMPLATE . 'sidebar.php';
+                 require(dirname(__FILE__)
+                         . DIRECTORY_SEPARATOR
+                         . $file);
+                 require Path::PATH_TO_TEMPLATE . 'footer.php';
+                 break;
          }
          return ob_get_clean();
      }
-     
-  }
+
+ }
  

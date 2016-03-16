@@ -12,7 +12,7 @@ use app\models\UserTableModel;
          $fc = FrontController::getInstance();
          $model       = new UserTableModel();
          $model->name = $fc->getParams();
-         $output      = $model->render('../views/index.php');
+         $output      = $model->render('../views/index.php', 'main');
          $fc->setPage($output);
      }
 

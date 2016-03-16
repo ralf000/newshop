@@ -20,7 +20,7 @@ PHPUnit_TextUI_Command::main();
 --EXPECTF--
 PHPUnit %s by Sebastian Bergmann and contributors.
 
-F.E.E                                                               5 / 5 (100%)
+F.E.E
 
 Time: %s, Memory: %sMb
 
@@ -45,4 +45,4 @@ There was 1 failure:
 Expected failure.
 %A
 FAILURES!
-Tests: 5, Assertions: 5, Errors: 2, Failures: 1.
+Tests: 5, Assertions: 5, Failures: 1, Errors: 2.

@@ -8,25 +8,36 @@
  * file that was distributed with this source code.
  */
 
+if (!defined('JSON_PRETTY_PRINT')) {
+    define('JSON_PRETTY_PRINT', 128);
+}
+
 /**
  * A TestListener that generates JSON messages.
  *
- * @since Class available since Release 3.0.0
+ * @package    PHPUnit
+ * @subpackage Util_Log
+ * @author     Sebastian Bergmann <sebastian@phpunit.de>
+ * @copyright  Sebastian Bergmann <sebastian@phpunit.de>
+ * @license    http://www.opensource.org/licenses/BSD-3-Clause  The BSD 3-Clause License
+ * @link       http://www.phpunit.de/
+ * @since      Class available since Release 3.0.0
  */
 class PHPUnit_Util_Log_JSON extends PHPUnit_Util_Printer implements PHPUnit_Framework_TestListener
 {
     /**
-     * @var string
+     * @var    string
      */
     protected $currentTestSuiteName = '';
 
     /**
-     * @var string
+     * @var    string
      */
     protected $currentTestName = '';
 
     /**
-     * @var bool
+     * @var     boolean
+     * @access  private
      */
     protected $currentTestPass = true;
 
@@ -96,7 +107,6 @@ class PHPUnit_Util_Log_JSON extends PHPUnit_Util_Printer implements PHPUnit_Fram
      * @param PHPUnit_Framework_Test $test
      * @param Exception              $e
      * @param float                  $time
-     *
      * @since  Method available since Release 4.0.0
      */
     public function addRiskyTest(PHPUnit_Framework_Test $test, Exception $e, $time)
@@ -143,11 +153,11 @@ class PHPUnit_Util_Log_JSON extends PHPUnit_Util_Printer implements PHPUnit_Fram
         $this->currentTestName      = '';
 
         $this->write(
-            [
+            array(
             'event' => 'suiteStart',
             'suite' => $this->currentTestSuiteName,
             'tests' => count($suite)
-            ]
+            )
         );
     }
 
@@ -173,11 +183,11 @@ class PHPUnit_Util_Log_JSON extends PHPUnit_Util_Printer implements PHPUnit_Fram
         $this->currentTestPass = true;
 
         $this->write(
-            [
+            array(
             'event' => 'testStart',
             'suite' => $this->currentTestSuiteName,
             'test'  => $this->currentTestName
-            ]
+            )
         );
     }
 
@@ -190,18 +200,18 @@ class PHPUnit_Util_Log_JSON extends PHPUnit_Util_Printer implements PHPUnit_Fram
     public function endTest(PHPUnit_Framework_Test $test, $time)
     {
         if ($this->currentTestPass) {
-            $this->writeCase('pass', $time, [], '', $test);
+            $this->writeCase('pass', $time, array(), '', $test);
         }
     }
 
     /**
-     * @param string                          $status
-     * @param float                           $time
-     * @param array                           $trace
-     * @param string                          $message
+     * @param string $status
+     * @param float  $time
+     * @param array  $trace
+     * @param string $message
      * @param PHPUnit_Framework_TestCase|null $test
      */
-    protected function writeCase($status, $time, array $trace = [], $message = '', $test = null)
+    protected function writeCase($status, $time, array $trace = array(), $message = '', $test = null)
     {
         $output = '';
         // take care of TestSuite producing error (e.g. by running into exception) as TestSuite doesn't have hasOutput
@@ -209,7 +219,7 @@ class PHPUnit_Util_Log_JSON extends PHPUnit_Util_Printer implements PHPUnit_Fram
             $output = $test->getActualOutput();
         }
         $this->write(
-            [
+            array(
             'event'   => 'test',
             'suite'   => $this->currentTestSuiteName,
             'test'    => $this->currentTestName,
@@ -218,7 +228,7 @@ class PHPUnit_Util_Log_JSON extends PHPUnit_Util_Printer implements PHPUnit_Fram
             'trace'   => $trace,
             'message' => PHPUnit_Util_String::convertToUtf8($message),
             'output'  => $output,
-            ]
+            )
         );
     }
 

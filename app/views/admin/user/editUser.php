@@ -42,6 +42,7 @@ $userProfile          = $this->getData()[1]['profile'][0];
                              <? foreach ($userContacts['address'] as $key => $adr): ?>
                                  <div class="form-group">
                                      <label for="address">Адрес <?= ++$key ?></label>
+                                     <a href="#" class="delAddress" data-id="<?= $adr['id']?>"><i class="fa fa-minus-circle margin-r-5 pull-right"></i></a>
                                      <input type="text" class="form-control" name="address[<?= $adr['id'] ?>]" id="address" value="<?= $adr['address'] ?>"/>
                                  </div>
                                  <div class="form-group">
@@ -58,6 +59,7 @@ $userProfile          = $this->getData()[1]['profile'][0];
                              <? foreach ($userContacts['phones'] as $key => $ph): ?>
                                  <div class="form-group">
                                      <label for="number">Номер <?= ++$key ?></label>
+                                     <a href="#" class="delPhone" data-id="<?= $ph['id']?>"><i class="fa fa-minus-circle margin-r-5 pull-right"></i></a>
                                      <input type="text" class="form-control" name="number[<?= $ph['id'] ?>]" id="address" value="<?= $ph['number'] ?>"/>
                                  </div>
                                  <div class="form-group">

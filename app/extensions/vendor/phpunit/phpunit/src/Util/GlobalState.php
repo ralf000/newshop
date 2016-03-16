@@ -9,14 +9,22 @@
  */
 
 /**
- * @since Class available since Release 3.4.0
+ *
+ *
+ * @package    PHPUnit
+ * @subpackage Util
+ * @author     Sebastian Bergmann <sebastian@phpunit.de>
+ * @copyright  Sebastian Bergmann <sebastian@phpunit.de>
+ * @license    http://www.opensource.org/licenses/BSD-3-Clause  The BSD 3-Clause License
+ * @link       http://www.phpunit.de/
+ * @since      Class available since Release 3.4.0
  */
 class PHPUnit_Util_GlobalState
 {
     /**
      * @var array
      */
-    protected static $superGlobalArrays = [
+    protected static $superGlobalArrays = array(
       '_ENV',
       '_POST',
       '_GET',
@@ -24,19 +32,19 @@ class PHPUnit_Util_GlobalState
       '_SERVER',
       '_FILES',
       '_REQUEST'
-    ];
+    );
 
     /**
      * @var array
      */
-    protected static $superGlobalArraysLong = [
+    protected static $superGlobalArraysLong = array(
       'HTTP_ENV_VARS',
       'HTTP_POST_VARS',
       'HTTP_GET_VARS',
       'HTTP_COOKIE_VARS',
       'HTTP_SERVER_VARS',
       'HTTP_POST_FILES'
-    ];
+    );
 
     public static function getIncludedFilesAsString()
     {
@@ -165,7 +173,6 @@ class PHPUnit_Util_GlobalState
            (is_array($variable) && self::arrayOnlyContainsScalars($variable))) {
             return var_export($variable, true);
         }
-
         return 'unserialize(' .
                 var_export(serialize($variable), true) .
                 ')';

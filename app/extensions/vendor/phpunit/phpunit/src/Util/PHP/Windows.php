@@ -13,7 +13,13 @@ use SebastianBergmann\Environment\Runtime;
 /**
  * Windows utility for PHP sub-processes.
  *
- * @since Class available since Release 3.5.12
+ * @package    PHPUnit
+ * @subpackage Util
+ * @author     Sebastian Bergmann <sebastian@phpunit.de>
+ * @copyright  Sebastian Bergmann <sebastian@phpunit.de>
+ * @license    http://www.opensource.org/licenses/BSD-3-Clause  The BSD 3-Clause License
+ * @link       http://www.phpunit.de/
+ * @since      Class available since Release 3.5.12
  */
 class PHPUnit_Util_PHP_Windows extends PHPUnit_Util_PHP_Default
 {
@@ -30,7 +36,7 @@ class PHPUnit_Util_PHP_Windows extends PHPUnit_Util_PHP_Default
      *
      * @see https://bugs.php.net/bug.php?id=51800
      */
-    public function runJob($job, array $settings = [])
+    public function runJob($job, array $settings = array())
     {
         $runtime = new Runtime;
 
@@ -42,11 +48,11 @@ class PHPUnit_Util_PHP_Windows extends PHPUnit_Util_PHP_Default
 
         $process = proc_open(
             $runtime->getBinary() . $this->settingsToParameters($settings),
-            [
-            0 => ['pipe', 'r'],
+            array(
+            0 => array('pipe', 'r'),
             1 => $stdout_handle,
-            2 => ['pipe', 'w']
-            ],
+            2 => array('pipe', 'w')
+            ),
             $pipes
         );
 
@@ -70,15 +76,13 @@ class PHPUnit_Util_PHP_Windows extends PHPUnit_Util_PHP_Default
 
         $this->cleanup();
 
-        return ['stdout' => $stdout, 'stderr' => $stderr];
+        return array('stdout' => $stdout, 'stderr' => $stderr);
     }
 
     /**
-     * @param resource $pipe
-     * @param string   $job
-     *
+     * @param  resource                    $pipe
+     * @param  string                      $job
      * @throws PHPUnit_Framework_Exception
-     *
      * @since  Method available since Release 3.5.12
      */
     protected function process($pipe, $job)
@@ -92,7 +96,7 @@ class PHPUnit_Util_PHP_Windows extends PHPUnit_Util_PHP_Default
 
         fwrite(
             $pipe,
-            '<?php require_once ' . var_export($this->tempFile, true) .  '; ?>'
+            "<?php require_once " . var_export($this->tempFile, true) .  "; ?>"
         );
     }
 

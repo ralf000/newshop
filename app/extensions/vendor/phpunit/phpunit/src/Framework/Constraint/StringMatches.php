@@ -13,7 +13,14 @@ use SebastianBergmann\Diff\Differ;
 /**
  * ...
  *
- * @since Class available since Release 3.5.0
+ * @package    PHPUnit
+ * @subpackage Framework_Constraint
+ * @author     Sebastian Bergmann <sebastian@phpunit.de>
+ * @author     Bernhard Schussek <bschussek@2bepublished.at>
+ * @copyright  Sebastian Bergmann <sebastian@phpunit.de>
+ * @license    http://www.opensource.org/licenses/BSD-3-Clause  The BSD 3-Clause License
+ * @link       http://www.phpunit.de/
+ * @since      Class available since Release 3.5.0
  */
 class PHPUnit_Framework_Constraint_StringMatches extends PHPUnit_Framework_Constraint_PCREMatch
 {
@@ -38,7 +45,7 @@ class PHPUnit_Framework_Constraint_StringMatches extends PHPUnit_Framework_Const
 
     protected function failureDescription($other)
     {
-        return 'format description matches text';
+        return "format description matches text";
     }
 
     protected function additionalFailureDescription($other)
@@ -56,8 +63,8 @@ class PHPUnit_Framework_Constraint_StringMatches extends PHPUnit_Framework_Const
             }
         }
 
-        $this->string = implode("\n", $from);
-        $other        = implode("\n", $to);
+        $this->string = join("\n", $from);
+        $other        = join("\n", $to);
 
         $differ = new Differ("--- Expected\n+++ Actual\n");
 
@@ -67,7 +74,7 @@ class PHPUnit_Framework_Constraint_StringMatches extends PHPUnit_Framework_Const
     protected function createPatternFromFormat($string)
     {
         $string = str_replace(
-            [
+            array(
             '%e',
             '%s',
             '%S',
@@ -79,8 +86,8 @@ class PHPUnit_Framework_Constraint_StringMatches extends PHPUnit_Framework_Const
             '%x',
             '%f',
             '%c'
-            ],
-            [
+            ),
+            array(
             '\\' . DIRECTORY_SEPARATOR,
             '[^\r\n]+',
             '[^\r\n]*',
@@ -92,7 +99,7 @@ class PHPUnit_Framework_Constraint_StringMatches extends PHPUnit_Framework_Const
             '[0-9a-fA-F]+',
             '[+-]?\.?\d+\.?\d*(?:[Ee][+-]?\d+)?',
             '.'
-            ],
+            ),
             preg_quote($string, '/')
         );
 

@@ -13,36 +13,35 @@ use SebastianBergmann\Environment\Runtime;
 /**
  * Default utility for PHP sub-processes.
  *
- * @since Class available since Release 3.5.12
+ * @package    PHPUnit
+ * @subpackage Util
+ * @author     Sebastian Bergmann <sebastian@phpunit.de>
+ * @copyright  Sebastian Bergmann <sebastian@phpunit.de>
+ * @license    http://www.opensource.org/licenses/BSD-3-Clause  The BSD 3-Clause License
+ * @link       http://www.phpunit.de/
+ * @since      Class available since Release 3.5.12
  */
 class PHPUnit_Util_PHP_Default extends PHPUnit_Util_PHP
 {
     /**
      * Runs a single job (PHP code) using a separate PHP process.
      *
-     * @param string $job
-     * @param array  $settings
-     *
+     * @param  string                      $job
+     * @param  array                       $settings
      * @return array
-     *
      * @throws PHPUnit_Framework_Exception
      */
-    public function runJob($job, array $settings = [])
+    public function runJob($job, array $settings = array())
     {
         $runtime = new Runtime;
-        $runtime = $runtime->getBinary() . $this->settingsToParameters($settings);
-
-        if ('phpdbg' === PHP_SAPI) {
-            $runtime .= ' -qrr ' . escapeshellarg(__DIR__ . '/eval-stdin.php');
-        }
 
         $process = proc_open(
-            $runtime,
-            [
-                0 => ['pipe', 'r'],
-                1 => ['pipe', 'w'],
-                2 => ['pipe', 'w']
-            ],
+            $runtime->getBinary() . $this->settingsToParameters($settings),
+            array(
+            0 => array('pipe', 'r'),
+            1 => array('pipe', 'w'),
+            2 => array('pipe', 'w')
+            ),
             $pipes
         );
 
@@ -64,15 +63,13 @@ class PHPUnit_Util_PHP_Default extends PHPUnit_Util_PHP
         proc_close($process);
         $this->cleanup();
 
-        return ['stdout' => $stdout, 'stderr' => $stderr];
+        return array('stdout' => $stdout, 'stderr' => $stderr);
     }
 
     /**
-     * @param resource $pipe
-     * @param string   $job
-     *
+     * @param  resource                    $pipe
+     * @param  string                      $job
      * @throws PHPUnit_Framework_Exception
-     *
      * @since Method available since Release 3.5.12
      */
     protected function process($pipe, $job)

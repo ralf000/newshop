@@ -8,10 +8,12 @@
 
      protected $address = [], $postal  = [], $id;
 
-     public function __construct($id = NULL) {
+     public function __construct($id = NULL, $address = [], $postal = []) {
          parent::__construct();
          if ($id)
              $this->id = $id;
+             $this->address = $address;
+             $this->postal = $postal;
      }
 
      public function addRecord() {
@@ -51,6 +53,14 @@
                  $this->postal[(int) $id] = filter_var($p, FILTER_SANITIZE_NUMBER_INT);
              }
          }
+     }
+     
+     public function setAddress(array $address) {
+         $this->address = $address;
+     }
+     
+     public function setPostal(array $postal) {
+         $this->postal = $postal;
      }
 
      public function getAddress() {

@@ -6,13 +6,16 @@
                 <h4 class="modal-title" id="myModalLabel">Добавить новый адрес</h4>
             </div>
             <div class="modal-body" id="addAddressPopupBody">
-                <!--<form id="newcarform" action="/admin/newCat" method="post">-->
+                <input type="hidden" name="id" value="<?= $userProfile['id'] ?>" id="userid"/>
                 <div class="form-group">
-                    <label for="address">Адрес</label>
-                    <input type="text" name="address" id="address" class="form-control"/>
+                    <label for="naddress">Адрес</label>
+                    <input type="text" name="naddress" id="naddress" class="form-control"/>
+                </div>
+                <div class="form-group">
+                    <label for="npostal">Почтовый Индекс</label>
+                    <input type="text" name="npostal" id="npostal" class="form-control"/>
                 </div>
                 <button type="button" class="btn btn-default" name="newaddress" id="newaddress">Добавить</button>
-                <!--</form>-->
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>

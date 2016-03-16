@@ -18,6 +18,9 @@
      require_once $class . '.class.php';
  });
 
+  //классы composer
+ require_once '/app/extensions/vendor/autoload.php';
+
  Session::init();
 
  /* Инициализация и запуск FrontController */

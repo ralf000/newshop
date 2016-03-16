@@ -11,13 +11,18 @@
 /**
  * Utility methods for PHP sub-processes.
  *
- * @since Class available since Release 3.4.0
+ * @package    PHPUnit
+ * @subpackage Util
+ * @author     Sebastian Bergmann <sebastian@phpunit.de>
+ * @copyright  Sebastian Bergmann <sebastian@phpunit.de>
+ * @license    http://www.opensource.org/licenses/BSD-3-Clause  The BSD 3-Clause License
+ * @link       http://www.phpunit.de/
+ * @since      Class available since Release 3.4.0
  */
 abstract class PHPUnit_Util_PHP
 {
     /**
      * @return PHPUnit_Util_PHP
-     *
      * @since  Method available since Release 3.5.12
      */
     public static function factory()
@@ -32,10 +37,9 @@ abstract class PHPUnit_Util_PHP
     /**
      * Runs a single test in a separate PHP process.
      *
-     * @param string                       $job
-     * @param PHPUnit_Framework_Test       $test
-     * @param PHPUnit_Framework_TestResult $result
-     *
+     * @param  string                       $job
+     * @param  PHPUnit_Framework_Test       $test
+     * @param  PHPUnit_Framework_TestResult $result
      * @throws PHPUnit_Framework_Exception
      */
     public function runTestJob($job, PHPUnit_Framework_Test $test, PHPUnit_Framework_TestResult $result)
@@ -55,20 +59,16 @@ abstract class PHPUnit_Util_PHP
     /**
      * Runs a single job (PHP code) using a separate PHP process.
      *
-     * @param string $job
-     * @param array  $settings
-     *
+     * @param  string                      $job
+     * @param  array                       $settings
      * @return array
-     *
      * @throws PHPUnit_Framework_Exception
      */
-    abstract public function runJob($job, array $settings = []);
+    abstract public function runJob($job, array $settings = array());
 
     /**
-     * @param array $settings
-     *
+     * @param  array  $settings
      * @return string
-     *
      * @since Method available since Release 4.0.0
      */
     protected function settingsToParameters(array $settings)
@@ -89,7 +89,6 @@ abstract class PHPUnit_Util_PHP
      * @param PHPUnit_Framework_TestResult $result
      * @param string                       $stdout
      * @param string                       $stderr
-     *
      * @since Method available since Release 3.5.0
      */
     private function processChildResult(PHPUnit_Framework_Test $test, PHPUnit_Framework_TestResult $result, $stdout, $stderr)
@@ -191,10 +190,8 @@ abstract class PHPUnit_Util_PHP
     /**
      * Gets the thrown exception from a PHPUnit_Framework_TestFailure.
      *
-     * @param PHPUnit_Framework_TestFailure $error
-     *
+     * @param  PHPUnit_Framework_TestFailure $error
      * @return Exception
-     *
      * @since  Method available since Release 3.6.0
      * @see    https://github.com/sebastianbergmann/phpunit/issues/74
      */
@@ -203,9 +200,9 @@ abstract class PHPUnit_Util_PHP
         $exception = $error->thrownException();
 
         if ($exception instanceof __PHP_Incomplete_Class) {
-            $exceptionArray = [];
+            $exceptionArray = array();
             foreach ((array) $exception as $key => $value) {
-                $key                  = substr($key, strrpos($key, "\0") + 1);
+                $key = substr($key, strrpos($key, "\0") + 1);
                 $exceptionArray[$key] = $value;
             }
 
