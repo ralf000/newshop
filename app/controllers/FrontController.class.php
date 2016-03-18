@@ -2,11 +2,12 @@
 
  namespace app\controllers;
 
-use app\models\Model;
-use app\services\Session;
-use ReflectionClass;
- 
+ use app\models\Model;
+ use app\services\Session;
+ use ReflectionClass;
+
  class FrontController implements IController {
+
      private $_controller, $_action, $_params, $_head, $_header, $_body, $_footer, $_page, $_beforeEvent, $_afterEvent;
      private static $_instance;
 
@@ -19,7 +20,7 @@ use ReflectionClass;
      private function __construct() {
          $this->_beforeEvent = 'beforeEvent';
          $this->_afterEvent  = 'afterEvent';
-         
+
          $request           = filter_input(INPUT_SERVER, 'REQUEST_URI', FILTER_SANITIZE_URL);
          $urlComponents     = parse_url($request);
          $path              = explode('/', trim($urlComponents['path'], '/'));
@@ -47,9 +48,9 @@ use ReflectionClass;
      }
 
      public function route() {
-         if (class_exists(__NAMESPACE__.'\\'.$this->getController())) {
-             $rc = new ReflectionClass(__NAMESPACE__.'\\'.$this->getController());
-             if ($rc->implementsInterface(__NAMESPACE__.'\\'.'IController')) {
+         if (class_exists(__NAMESPACE__ . '\\' . $this->getController())) {
+             $rc = new ReflectionClass(__NAMESPACE__ . '\\' . $this->getController());
+             if ($rc->implementsInterface(__NAMESPACE__ . '\\' . 'IController')) {
                  if ($rc->hasMethod($this->getAction())) {
                      $controller = $rc->newInstance();
                      // invoke methods before action
@@ -100,6 +101,7 @@ use ReflectionClass;
      public function getController() {
          return $this->_controller;
      }
+
      public function getClearController() {
          return strtolower(substr($this->_controller, 0, strpos($this->_controller, 'Controller')));
      }
@@ -107,7 +109,7 @@ use ReflectionClass;
      public function getAction() {
          return $this->_action;
      }
-     
+
      public function getClearAction() {
          return strtolower(substr($this->_action, 0, strpos($this->_action, 'Action')));
      }

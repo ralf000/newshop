@@ -2,11 +2,11 @@
 
  namespace app\models;
 
- use app\helpers\Helper;
- use app\helpers\Validate;
- use app\services\Role;
- use app\services\Session;
- use Exception;
+use app\helpers\Generator;
+use app\helpers\Validate;
+use app\services\Role;
+use app\services\Session;
+use Exception;
 
  class UserUpdateTableModel extends UserTableModel {
 
@@ -35,7 +35,7 @@
          try {
              if ($this->photo) {
                  $st = $this->db->prepare("UPDATE $this->table SET `photo` = ? WHERE `id` = ?");
-                 $st->execute([$this->path . '/avatar/' . Helper::strToLat($this->photo), intval($this->id)]);
+                 $st->execute([$this->path . '/avatar/' . Generator::strToLat($this->photo), intval($this->id)]);
              }
          } catch (Exception $ex) {
              $ex->getMessage();

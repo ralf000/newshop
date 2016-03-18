@@ -1,25 +1,23 @@
 <?
 use app\helpers\Generator;
-use app\helpers\Helper;
-use app\helpers\Path;
 ?>
 
-<? $users    = $this->getData()[1]['users'] ?>
-<? $limit    = $this->getData()[1]['limit'] ?>
-<? $page     = $this->getData()[1]['page'] ?>
-<? $numUsers = $this->getData()[1]['num'] ?>
-<? $offset   = $this->getData()[1]['offset'] ?>
+<? $slider    = $this->getData()[1]['slider'] ?>
+<? $limit     = $this->getData()[1]['limit'] ?>
+<? $page      = $this->getData()[1]['page'] ?>
+<? $numSlides = $this->getData()[1]['num'] ?>
+<? $offset    = $this->getData()[1]['offset'] ?>
 <?
- $opt      = [
+ $opt       = [
      'limit'     => $limit,
-//     'offset'    => $offset,
      'orderBy'   => $this->getData()[1]['orderBy'],
      'direction' => $this->getData()[1]['direction'],
-     'table'     => 'product',
-     'num'       => $numProducts
+     'num'       => $numSlides
          ]
 ?>
-<script type="text/javascript" src="/app/template/backend/js/products/allproducts.js"></script>
+<script type="text/javascript" src="/app/template/backend/js/slider/allslides.js"></script>
+
+
 <section class="content">
     <div class="row">
         <div class="col-xs-12">
@@ -31,7 +29,7 @@ use app\helpers\Path;
                                 <table id="products" class="table table-bordered table-hover dataTable" role="grid" aria-describedby="example2_info">
                                     <div class="row">
                                         <div class="col-sm-6">
-                                            <div class="dataTables_length" id="showNumProducts">
+                                            <div class="dataTables_length" id="showNumSlides">
                                                 <label>Отображать по 
                                                     <select name="example1_length" aria-controls="example1" class="form-control input-sm">
                                                         <option value="10">10</option>
@@ -54,35 +52,33 @@ use app\helpers\Path;
                                     <thead>
                                         <tr role="row">
                                             <th><a href="" data-name="id" class="sorting">ID</a></th>
-                                            <th>Аватар</th>
-                                            <th><a href="" data-name="username" class="sorting">Ник</a></th>
-                                            <th><a href="" data-name="fio" class="sorting">ФИО</a></th>
-                                            <th><a href="" data-name="email" class="sorting">email</a></th>
-                                            <th><a href="" data-name="validated" class="sorting">Активирован</a></th>
-                                            <th><a href="" data-name="create_time" class="sorting">Создан</a></th>
-                                            <th><a href="" data-name="update_time" class="sorting">Обновлён</a></th>
+                                            <th>Изображение</th>
+                                            <th><a href="" data-name="title_h1" class="sorting">Заголовок</a></th>
+                                            <th><a href="" data-name="title_h2" class="sorting">Подзаголовок</a></th>
+                                            <th><a href="" data-name="content" class="sorting">Текст</a></th>
+                                            <th><a href="" data-name="time_created" class="sorting">Создан</a></th>
+                                            <th><a href="" data-name="time_updated" class="sorting">Обновлён</a></th>
                                             <th>Управление</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-<? foreach ($users as $user): ?>
-                                             <tr role="row">
-                                                 <td><?= $user['id'] ?></td>
-     <? $user['photo'] = ($user['photo']) ? $user['photo'] : Path::DEFAULT_USER_AVATAR ?>
-                                                 <td><img src="/<?= $user['photo'] ?>" alt="<?= $user['username'] ?>" class="product"/></td>
-                                                 <td><?= $user['username'] ?></td>
-                                                 <td><?= $user['full_name'] ?></td>
-                                                 <td><?= $user['email'] ?></td>
-                                                 <td><?= $user['validated'] ?></td>
-                                                 <td><?= Helper::dateConverter($user['create_time']) ?></td>
-                                                 <td><?= Helper::dateConverter($user['update_time']) ?></td>
-                                                 <td>
-                                                     <a href="/admin/profile/id/<?= $user['id'] ?>" class="admin-data-control"><span class="glyphicon glyphicon-eye-open"></span></a>
-                                                     <a href="/admin/editUser/id/<?= $user['id'] ?>" class="admin-data-control"><span class="glyphicon glyphicon-pencil"></span></a>
-                                                     <a href="<?= $user['id'] ?>" class="deleteUser admin-data-control"><span class="glyphicon glyphicon-minus"></span></a>
-                                                 </td>
-                                             </tr>
- <? endforeach; ?>
+                                        <? if (!empty($slider) && is_array($slider)): ?>
+                                             <? foreach ($slider as $slide): ?>
+                                                 <tr role="row">
+                                                     <td><?= $slide['id'] ?></td>
+                                                     <td style="width: 20%"><a href="/<?= $slide['image'] ?>"><img src="/<?= $slide['image'] ?>" alt="" style="width: 100%;"/></a></td>
+                                                     <td><?= $slide['title_h1'] ?></td>
+                                                     <td><?= $slide['title_h2'] ?></td>
+                                                     <td style="width: 20%"><?= $slide['content'] ?></td>
+                                                     <td><?= $slide['time_created'] ?></td>
+                                                     <td><?= $slide['time_updated'] ?></td>
+                                                     <td>
+                                                         <a href="/admin/editslide/id/<?= $slide['id'] ?>" class="admin-data-control"><span class="glyphicon glyphicon-pencil"></span></a>
+                                                         <a href="<?= $slide['id'] ?>" class="deleteSlide admin-data-control"><span class="glyphicon glyphicon-minus"></span></a>
+                                                     </td>
+                                                 </tr>
+                                             <? endforeach; ?>
+                                         <? endif; ?>
                                     </tbody>
                                 </table>
                             </div>
@@ -90,24 +86,24 @@ use app\helpers\Path;
                         <div class="row">
                             <div class="col-sm-5">
                                 <div class="dataTables_info" id="example2_info" role="status" aria-live="polite">
-<? $start = $offset + 1 ?>
-<? $end   = ($limit * $page < $numUsers) ? $limit * $page : $numUsers ?>
-                                    На странице: <b><?= $start ?> - <?= $end ?></b> из <b><?= $numUsers ?></b> товаров
+                                    <? $start = $offset + 1 ?>
+                                    <? $end   = ($limit * $page < $numSlides) ? $limit * $page : $numSlides ?>
+                                    На странице: <b><?= $start ?> - <?= $end ?></b> из <b><?= $numSlides ?></b> слайдов
                                 </div>
                             </div>
                             <div class="col-sm-7">
                                 <div class="dataTables_paginate paging_simple_numbers" id="example2_paginate">
-<? if ($limit < $numUsers): ?>
-     <?= Generator::pagination($limit, $page, $opt) ?>
- <? endif; ?>
+                                    <? if ($limit < $numSlides): ?>
+                                         <?= Generator::pagination($limit, $page, $opt) ?>
+                                     <? endif; ?>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div><!-- /.box-body -->
             </div><!-- /.box -->
+                    <a href="/admin/addslide" class="btn btn-sm btn-primary btn-flat pull-right">Новый слайд</a>
 
         </div><!-- /.col -->
     </div><!-- /.row -->
 </section>
-<script type="text/javascript" src="/app/template/backend/js/user/allusers.js"></script>

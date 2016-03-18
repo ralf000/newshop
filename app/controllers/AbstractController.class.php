@@ -1,14 +1,15 @@
 <?php
- 
+
  namespace app\controllers;
 
 use app\models\UserTableModel;
 use app\services\DB;
 use app\services\PrivilegedUser;
 use app\services\Session;
- 
- abstract class AbstractController implements IController {
+use Exception;
 
+ abstract class AbstractController implements IController {
+     
      abstract protected function requiredRoles();
 
      public function beforeEvent($action) {
@@ -52,6 +53,26 @@ use app\services\Session;
              return ($remember === $joinStr) ? $user_id : FALSE;
          }
      }
+
+     /**
+      * Метод делегирует полномочия класса другим классам
+      * Работает на подобии __call. Но его применить не удалось 
+      * из-за использования ReflectionClass в FrontController
+      * Если в FrontController::route не удается найти вызываемый action
+      * данный метод пытается вызвать этот метод у классов, 
+      * добавленных в делегирование в конструкторе
+      * @param string $method имя вызываемого метода (action)
+      * @param array $arguments массив аргументов для метода
+      */
+//     public function delegator($method, array $arguments = []) {
+//         if (!empty($this->delegatedObjects)) {
+//             foreach ($this->delegatedObjects as $object) {
+//                 if (method_exists($object, $method))
+//                     return call_user_method_array($method, $object, $arguments);
+//             }
+//             throw new Exception('Action not found');
+//         }
+//     }
 
  }
  

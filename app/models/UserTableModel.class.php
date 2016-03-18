@@ -2,14 +2,15 @@
 
  namespace app\models;
 
- use app\helpers\Helper;
- use app\helpers\Path;
- use app\helpers\Validate;
- use app\services\Mailer;
- use app\services\Role;
- use app\services\Session;
- use Exception;
- use PDO;
+use app\helpers\Generator;
+use app\helpers\Helper;
+use app\helpers\Path;
+use app\helpers\Validate;
+use app\services\Mailer;
+use app\services\Role;
+use app\services\Session;
+use Exception;
+use PDO;
 
  class UserTableModel extends TableModelAbstract {
 
@@ -53,7 +54,7 @@
 
      public function logout() {
          Session::destroy();
-         setcookie('remember', '', -3600, '/');
+         setcookie('remember', '', -3600);
          unset($this->user);
      }
 
@@ -148,7 +149,7 @@
          try {
              if ($this->photo) {
                  $st = $this->db->prepare("UPDATE $this->table SET `photo` = :photo WHERE `id` = :id");
-                 $st->execute([':photo' => $this->path . '/main_' . Helper::strToLat($this->photo), ':id' => $this->id]);
+                 $st->execute([':photo' => $this->path . '/main_' . Generator::strToLat($this->photo), ':id' => $this->id]);
                  Helper::moveFile('photo', TRUE, $this->id, 'userimg');
              }
          } catch (Exception $ex) {
@@ -221,7 +222,7 @@
              $this->fullName    = Validate::validateInputVar('fullName', $method, 'str');
              $this->email       = Validate::validateInputVar('email', $method, 'email');
              $this->photo       = $_FILES['photo']['name'];
-             $this->validateKey = Helper::generate(10);
+             $this->validateKey = Generator::generate(10);
              $this->path        = Path::USERIMG_UPLOAD_DIR;
              $this->dpassword   = Validate::validateInputVar('dpass', $method, 'str');
              return $this->password === $this->dpassword ? TRUE : FALSE;

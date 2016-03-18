@@ -34,16 +34,6 @@ use PDO;
          ];
      }
 
-     public function getNum($table, $condition = '') {
-         try {
-             $st = $this->db->prepare("SELECT COUNT(`id`) as num FROM `$table` $condition");
-             $st->execute();
-             return $st->fetch(PDO::FETCH_ASSOC)['num'];
-         } catch (Exception $ex) {
-             $ex->getMessage();
-         }
-     }
-
      public function getUsersForRoleWidget($roleId, $condition, $limit) {
          try {
              $st = $this->db->prepare("SELECT * FROM user JOIN user_role ON user.id = user_role.user_id $condition ORDER BY user.create_time DESC LIMIT $limit");

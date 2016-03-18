@@ -1,13 +1,13 @@
 <?php
- 
+
  namespace app\models;
 
-use app\controllers\FrontController;
-use app\services\Session;
+ use app\controllers\FrontController;
+ use app\services\Session;
 
- class AdminModel extends Model {
+ class AdminModel extends IndexPageModel {
 
-     private $widgetsData = [], $data        = [], $title       = '';
+     private $title = '';
 
      public function __construct($title = '', $subTitle = '') {
          $this->title = $title;
@@ -27,7 +27,7 @@ use app\services\Session;
              'allProducts' => 'Все товары',
              'page'        => 'Страница',
              'view'        => 'Просмотр',
-             'product' => 'Товар'
+             'product'     => 'Товар'
          ];
          $output = '';
          $link   = '';
@@ -39,10 +39,10 @@ use app\services\Session;
          $output = '<ol class = "breadcrumb">';
          if (!(empty($action) || $action === 'index'))
              $output .= '<li><a href = "/admin"><i class = ""></i> Главная </a></li>';
-         $output .= '<li><a href = "/admin/'.$action.'"><i class = ""></i>' . $pages[$action] . '</a></li>';
+         $output .= '<li><a href = "/admin/' . $action . '"><i class = ""></i>' . $pages[$action] . '</a></li>';
          foreach ($params as $key => $value) {
              $link .= '/' . $value;
-             $output .= '<li><a href = "/admin/'.$action.'/'. $key.'/'.$value.'"><i class = ""></i> ' . $pages[$key] . ' ' . $value . ' </a></li>';
+             $output .= '<li><a href = "/admin/' . $action . '/' . $key . '/' . $value . '"><i class = ""></i> ' . $pages[$key] . ' ' . $value . ' </a></li>';
          }
          $output .= '</ol >';
          return $output;

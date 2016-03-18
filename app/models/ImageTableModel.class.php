@@ -2,6 +2,7 @@
  
   namespace app\models;
 
+use app\helpers\Generator;
 use app\helpers\Helper;
 use app\helpers\Path;
 use Exception;
@@ -58,13 +59,13 @@ use Exception;
 
      function addAllImages() {
          if (!empty($this->mainImage)) {
-             $mImage = str_replace('//', '/', $this->path . 'main_' . Helper::strToLat($this->mainImage));
+             $mImage = str_replace('//', '/', $this->path . 'main_' . Generator::strToLat($this->mainImage));
              $this->addImage($mImage, TRUE);
              Helper::moveFile('mainimage', TRUE, $this->productId);
          }
          if (!empty($this->images[0]) && is_array($this->images)) {
              foreach ($this->images as $img) {
-                 $image = str_replace('//', '/', $this->path . Helper::strToLat($img));
+                 $image = str_replace('//', '/', $this->path . Generator::strToLat($img));
                  $this->addImage($image, FALSE);
              }
              Helper::moveFile('images', FALSE, $this->productId);

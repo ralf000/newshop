@@ -2,17 +2,22 @@
 
  namespace app\controllers;
 
-use app\models\UserTableModel;
- 
+ use app\models\IndexModel;
+ use app\widgets\IndexWidgets;
+
  class IndexController extends AbstractController {
-     
-     protected function requiredRoles() {}
+
+     protected function requiredRoles() {
+         
+     }
 
      function indexAction() {
-         $fc = FrontController::getInstance();
-         $model       = new UserTableModel();
-         $model->name = $fc->getParams();
-         $output      = $model->render('../views/index.php', 'main');
+         $fc     = FrontController::getInstance();
+         $model  = new IndexModel();
+         $model->setData([
+             'slides' => IndexWidgets::getSliderWidget()
+         ]);
+         $output = $model->render('../views/index.php', 'main');
          $fc->setPage($output);
      }
 

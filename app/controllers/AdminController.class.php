@@ -2,18 +2,19 @@
 
  namespace app\controllers;
 
-use app\models\AdminModel;
-use app\models\CategoryTableModel;
-use app\models\ImageTableModel;
-use app\models\ProductTableModel;
-use app\models\SubCategoryTableModel;
-use app\models\UserTableModel;
-use app\models\UserUpdateTableModel;
-use app\services\DB;
-use app\services\PrivilegedUser;
-use app\services\Role;
-use app\services\Session;
-use app\widgets\AdminWidgets;
+ use app\models\AdminModel;
+ use app\models\CategoryTableModel;
+ use app\models\ImageTableModel;
+ use app\models\ProductTableModel;
+ use app\models\SliderTableModel;
+ use app\models\SubCategoryTableModel;
+ use app\models\UserTableModel;
+ use app\models\UserUpdateTableModel;
+ use app\services\DB;
+ use app\services\PrivilegedUser;
+ use app\services\Role;
+ use app\services\Session;
+ use app\widgets\AdminWidgets;
 
  class AdminController extends AbstractController {
 
@@ -66,6 +67,22 @@ use app\widgets\AdminWidgets;
              $adminModel->categoryList    = $catsAndSub['cats']; //used magic __set
              $adminModel->subCategoryList = $catsAndSub['subcats']; //used magic __set
              $output                      = $adminModel->render('../views/admin/product/add.php', 'admin');
+             $fc->setPage($output);
+         }
+     }
+
+     public function addSlideAction() {
+         $fc    = FrontController::getInstance();
+         $model = new AdminModel('Новый слайд');
+         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+             $sliderModel = new SliderTableModel();
+             $sliderModel->setData('slider');
+             $sliderModel->addRecord();
+             Session::setMsg('Новый слайд успешно добавлен', 'success');
+             header('Location: /admin/slider');
+             exit;
+         } else {
+             $output = $model->render('../views/admin/slider/addslide.php', 'admin');
              $fc->setPage($output);
          }
      }
@@ -242,11 +259,13 @@ use app\widgets\AdminWidgets;
          $fc        = FrontController::getInstance();
          $model     = new AdminModel('Все пользователи', 'управление пользователями');
          $userModel = new UserTableModel();
+
          $page      = $fc->getParams()['page'] ? filter_var($fc->getParams()['page'], FILTER_SANITIZE_NUMBER_INT) : 1;
          $limit     = $fc->getParams()['limit'] ? filter_var($fc->getParams()['limit'], FILTER_SANITIZE_NUMBER_INT) : 10;
          $orderBy   = $fc->getParams()['orderBy'] ? filter_var($fc->getParams()['orderBy'], FILTER_SANITIZE_STRING) : 'id';
          $direction = $fc->getParams()['direction'] ? filter_var($fc->getParams()['direction'], FILTER_SANITIZE_STRING) : 'asc';
          $offset    = $limit * $page - $limit;
+
          $model->setData([
              'users'     => $userModel->getAllUsers('user.id, user.username, user.full_name, user.photo, user.email, user.validated, user.create_time, user.update_time, address.address, address.postal_code, phone.number, phone.number_type', "WHERE deleted != 1 GROUP BY user.id ORDER BY user.$orderBy " . strtoupper($direction) . " LIMIT $limit OFFSET $offset"),
              'limit'     => $limit,
@@ -256,7 +275,7 @@ use app\widgets\AdminWidgets;
              'num'       => (new AdminWidgets)->getNum('user'),
              'offset'    => $offset
          ]);
-         $output    = $model->render('../views/admin/user/allUsers.php', 'admin');
+         $output = $model->render('../views/admin/user/allUsers.php', 'admin');
          $fc->setPage($output);
      }
 
@@ -298,6 +317,60 @@ use app\widgets\AdminWidgets;
          $fc->setPage($output);
      }
 
+     public function sliderAction() {
+         $fc          = FrontController::getInstance();
+         $model       = new AdminModel('Слайдер', 'управление слайдами');
+         $sliderModel = new SliderTableModel();
+         $sliderModel->setTable('slider');
+
+         $page      = $fc->getParams()['page'] ? filter_var($fc->getParams()['page'], FILTER_SANITIZE_NUMBER_INT) : 1;
+         $limit     = $fc->getParams()['limit'] ? filter_var($fc->getParams()['limit'], FILTER_SANITIZE_NUMBER_INT) : 10;
+         $orderBy   = $fc->getParams()['orderBy'] ? filter_var($fc->getParams()['orderBy'], FILTER_SANITIZE_STRING) : 'id';
+         $direction = $fc->getParams()['direction'] ? filter_var($fc->getParams()['direction'], FILTER_SANITIZE_STRING) : 'asc';
+         $offset    = $limit * $page - $limit;
+
+         $sliderModel->readAllRecords('*', "ORDER BY $orderBy " . strtoupper($direction) . " LIMIT $limit OFFSET $offset");
+         $model->setData([
+             'slider'    => $sliderModel->getAllRecords(),
+             'limit'     => $limit,
+             'orderBy'   => $orderBy,
+             'direction' => $direction,
+             'page'      => $page,
+             'num'       => (new AdminWidgets)->getNum('slider'),
+             'offset'    => $offset
+         ]);
+         $output = $model->render('../views/admin/slider/slider.php', 'admin');
+         $fc->setPage($output);
+     }
+
+     public function editSlideAction() {
+         $fc          = FrontController::getInstance();
+         $model       = new AdminModel('Редактирование слайда', 'управление слайдами');
+         $sliderModel = new SliderTableModel();
+
+         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+             $sliderModel->setData('slider');
+             $sliderModel->updateRecord();
+             Session::setMsg('Слайд успешно обновлен', 'success');
+             header('Location: /admin/slider');
+             exit;
+         } else {
+             $id = filter_var($fc->getParams()['id'], FILTER_SANITIZE_NUMBER_INT);
+             if (!$id) {
+                 header('Location: /admin/notFound');
+                 exit;
+             }
+             $sliderModel->setId($id);
+             $sliderModel->setTable('slider');
+             $sliderModel->readRecordsById();
+             $model->setData([
+                 'slide' => $sliderModel->getRecordsById()
+             ]);
+             $output = $model->render('../views/admin/slider/editslide.php', 'admin');
+             $fc->setPage($output);
+         }
+     }
+
      public function newCatAction() {
          $fc    = FrontController::getInstance();
          $model = new CategoryTableModel();
@@ -322,7 +395,7 @@ use app\widgets\AdminWidgets;
 //         exit;
      }
 
-     private function getCatsAndSubCats() {
+     protected function getCatsAndSubCats() {
          $categoryModel    = new CategoryTableModel();
          $categoryModel->setTable('category');
          $categoryModel->readAllRecords();

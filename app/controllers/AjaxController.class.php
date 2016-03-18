@@ -2,22 +2,23 @@
 
  namespace app\controllers;
 
- use app\helpers\Helper;
- use app\helpers\Path;
- use app\helpers\Validate;
- use app\models\AddressTableModel;
- use app\models\CategoryTableModel;
- use app\models\ImageTableModel;
- use app\models\PhoneTableModel;
- use app\models\ProductTableModel;
- use app\models\SubCategoryTableModel;
- use app\models\UserTableModel;
- use app\models\UserUpdateTableModel;
- use app\services\DB;
- use app\services\Role;
- use app\services\Session;
- use app\services\UploadHandler;
- use Exception;
+use app\helpers\Helper;
+use app\helpers\Path;
+use app\helpers\Validate;
+use app\models\AddressTableModel;
+use app\models\CategoryTableModel;
+use app\models\ImageTableModel;
+use app\models\PhoneTableModel;
+use app\models\ProductTableModel;
+use app\models\SliderTableModel;
+use app\models\SubCategoryTableModel;
+use app\models\UserTableModel;
+use app\models\UserUpdateTableModel;
+use app\services\DB;
+use app\services\Role;
+use app\services\Session;
+use app\services\UploadHandler;
+use Exception;
 
  class AjaxController extends AbstractController {
 
@@ -201,6 +202,21 @@
          $model = new ProductTableModel();
          $model->setId($id);
          echo $model->deleteProduct();
+     }
+     
+     public function deleteSlideAction() {
+         header('Content-type: text/plain; charset=utf-8');
+         header('Cache-Control: no-store, no-cache');
+         header('Expires: ' . date('r'));
+
+         if (filter_has_var(INPUT_POST, 'id'))
+             $id = filter_input(INPUT_POST, 'id', FILTER_SANITIZE_NUMBER_INT);
+
+         $model = new SliderTableModel();
+         $model->setId($id);
+         $model->setTable('slider');
+         $model->deleteRecord();
+         echo Helper::deleteDir($id, 'slider');
      }
 
      public function deleteImageAction() {

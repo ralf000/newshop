@@ -1,6 +1,5 @@
-
-
 <? use app\helpers\Path; ?>
+
 <div class="col-sm-9 padding-right">
     <div class="features_items"><!--features_items-->
         <h2 class="title text-center">Популярные товары</h2>
