@@ -2,14 +2,15 @@
 
  namespace app\controllers;
 
+use app\models\CategoryTableModel;
+use app\models\SubCategoryTableModel;
 use app\models\UserTableModel;
 use app\services\DB;
 use app\services\PrivilegedUser;
 use app\services\Session;
-use Exception;
 
  abstract class AbstractController implements IController {
-     
+
      abstract protected function requiredRoles();
 
      public function beforeEvent($action) {
@@ -23,9 +24,9 @@ use Exception;
          $alterRegRoles = [];
          if ($reqRoles) {
              foreach ($reqRoles as $key => $value) {
-                 $alterRegRoles[$key . 'Action'] = $value;
+                 $alterRegRoles[strtolower($key . 'Action')] = $value;
              }
-             if (array_key_exists($action, $alterRegRoles)) {
+             if (array_key_exists($action = strtolower($action), $alterRegRoles)) {
                  $roles = $alterRegRoles[$action];
                  if (Session::get('user_id'))
                      $user  = PrivilegedUser::getUserRoleById(DB::init()->connect(), Session::get('user_id'));
@@ -54,6 +55,22 @@ use Exception;
          }
      }
 
+     protected function getCatsAndSubCats($flag = FALSE) {
+         $condition = '';
+         $categoryModel    = new CategoryTableModel();
+         $categoryModel->setTable('category');
+         $categoryModel->readAllRecords();
+         $subCategoryModel = new SubCategoryTableModel();
+         $subCategoryModel->setTable('subcategory');
+         if (!$flag)
+             $condition .= "WHERE subcategory.category_id = " . end($categoryModel->getAllRecords())['id'];
+         $subCategoryModel->readAllRecords('*', $condition);
+         return [
+             'cats'    => array_reverse($categoryModel->getAllRecords()),
+             'subcats' => array_reverse($subCategoryModel->getAllRecords())
+         ];
+     }
+
      /**
       * Метод делегирует полномочия класса другим классам
       * Работает на подобии __call. Но его применить не удалось 
@@ -73,6 +90,6 @@ use Exception;
 //             throw new Exception('Action not found');
 //         }
 //     }
-
+     
  }
  

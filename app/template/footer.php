@@ -158,8 +158,6 @@
 </footer><!--/Footer-->
 
 
-
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
 <script src="<?= Path::PATH_TO_TEMPLATE ?>js/bootstrap.min.js"></script>
 <script src="<?= Path::PATH_TO_TEMPLATE ?>js/jquery.scrollUp.min.js"></script>
 <script src="<?= Path::PATH_TO_TEMPLATE ?>js/price-range.js"></script>

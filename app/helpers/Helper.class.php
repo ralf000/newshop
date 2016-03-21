@@ -2,8 +2,8 @@
 
  namespace app\helpers;
 
-use Reflection;
-use ReflectionClass;
+ use Reflection;
+ use ReflectionClass;
 
  Class Helper {
 
@@ -94,7 +94,9 @@ use ReflectionClass;
      }
 
      static function getSiteConfig() {
-         return parse_ini_file(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'config/site.ini');
+         $path = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'config/site.json';
+         $json = file_get_contents($path);
+         return json_decode($json);
      }
 
      static function clearDir($dir) {
@@ -131,6 +133,11 @@ use ReflectionClass;
              default : $icon = 'fa fa-check-square bg-blue';
          }
          return $icon;
+     }
+
+     static function strSplitter($str, $length = 21) {
+         $dots = (strlen($str) > $length) ? '...' : '';
+         return mb_substr($str, 0, $length) . $dots;
      }
 
  }

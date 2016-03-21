@@ -260,8 +260,16 @@ use Exception;
          ]);
      }
 
-     public function mainImageAction() {
+     public function getProductsBySubcategoryIdAction() {
+         header('Content-Type: application/json; charset=utf-8');
+         header('Cache-Control: no-store, no-cache');
+         header('Expires: ' . date('r'));
          
+         $id = Validate::validateInputVar('id', 'INPUT_GET', 'int');
+         $model = new ProductTableModel();
+         $model->setTable('product AS p, image AS i');
+         $model->setId($id);
+         echo json_encode($model->readRecordsById('subcategory_id', '*', 'AND i.product_id IN (p.id) AND i.main =1 LIMIT 4'));
      }
 
      public function getProductsByNumAction() {

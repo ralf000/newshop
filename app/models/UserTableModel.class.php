@@ -288,8 +288,8 @@ use PDO;
      }
 
      private function sendValidateCode() {
-         $siteName = Helper::getSiteConfig()['siteName'];
-         $siteHost = Helper::getSiteConfig()['siteHost'];
+         $siteName = Helper::getSiteConfig()->general->siteName;
+         $siteHost = Helper::getSiteConfig()->general->siteHost;
          $subject  = 'Подтверждение регистрации на сайте ' . $siteName;
          $content  = '
                          <p>Здравствуйте! Благодарим вас за регистрацию на сайте ' . $siteName . '</p>

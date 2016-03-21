@@ -1,5 +1,6 @@
 <? use app\helpers\Path; ?>
 <? use app\helpers\Helper; ?>
+<? $cfg = Helper::getSiteConfig(); ?>
 <header id="header"><!--header-->
     <div class="header_top"><!--header_top-->
         <div class="container">
@@ -7,18 +8,22 @@
                 <div class="col-sm-6">
                     <div class="contactinfo">
                         <ul class="nav nav-pills">
-                            <li><a href="#"><i class="fa fa-phone"></i> <?= Helper::getSiteConfig()['sitePhone']?></a></li>
-                            <li><a href="#"><i class="fa fa-envelope"></i> <?= Helper::getSiteConfig()['siteMail']?></a></li>
+                            <? if (isset($cfg->contactinfo) &&!empty($cfg->contactinfo)): ?>
+                            <? foreach ($cfg->contactinfo as $v): ?>
+                            <li><a href="#"><i class="<?= $v->icon ?>"></i> <?= $v->value ?></a></li>
+                            <? endforeach; ?>
+                             <? endif; ?>
                         </ul>
                     </div>
                 </div>
                 <div class="col-sm-6">
                     <div class="social-icons pull-right">
                         <ul class="nav navbar-nav">
-                            <li><a href="#"><i class="fa fa-vk"></i></a></li>
-                            <li><a href="#"><i class="fa fa-twitter"></i></a></li>
-                            <li><a href="#"><i class="fa fa-facebook"></i></a></li>
-                            <li><a href="#"><i class="fa fa-youtube"></i></a></li>
+                            <? if (isset($cfg->social) && !empty($cfg->social)): ?>
+                                 <? foreach ($cfg->social as $v): ?>
+                                     <li><a href="<?= $v->link ?>"><i class="<?= $v->icon ?>"></i></a></li>
+                                 <? endforeach; ?>
+                             <? endif; ?>
                         </ul>
                     </div>
                 </div>
@@ -37,11 +42,11 @@
                 <div class="col-sm-8">
                     <div class="shop-menu pull-right">
                         <ul class="nav navbar-nav">
-                            <li><a href="#"><i class="fa fa-user"></i> Аккаунт</a></li>
-                            <li><a href="#"><i class="fa fa-star"></i> Список пожеланий</a></li>
-                            <li><a href="cart.html"><i class="fa fa-shopping-cart"></i> Корзина</a></li>
-                            <li><a href="login.html"><i class="fa fa-lock"></i> Войти</a></li>
-                            <li><a href="checkout.html"><i class="fa fa-crosshairs"></i> Выйти</a></li>
+                            <? if (isset($cfg->topmenu) && !empty($cfg->topmenu)): ?>
+                                 <? foreach ($cfg->topmenu as $v): ?>
+                                     <li><a href="<?= $v->link ?>"><i class="<?= $v->icon ?>"></i> <?= $v->value ?></a></li>
+                                 <? endforeach; ?>
+                             <? endif; ?>
                         </ul>
                     </div>
                 </div>

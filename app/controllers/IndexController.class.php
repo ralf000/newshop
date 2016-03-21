@@ -2,8 +2,10 @@
 
  namespace app\controllers;
 
- use app\models\IndexModel;
- use app\widgets\IndexWidgets;
+use app\helpers\Helper;
+use app\models\IndexModel;
+use app\models\ProductTableModel;
+use app\widgets\IndexWidgets;
 
  class IndexController extends AbstractController {
 
@@ -15,7 +17,9 @@
          $fc     = FrontController::getInstance();
          $model  = new IndexModel();
          $model->setData([
-             'slides' => IndexWidgets::getSliderWidget()
+             'slides' => IndexWidgets::getSliderWidget(),
+             'catsAndSubCats' => IndexWidgets::sideBarMenuWidget($this->getCatsAndSubCats(TRUE)),
+             'currentCategory' => (new IndexWidgets)->currentCategoryWidget(Helper::getSiteConfig()->currentCategoryWidget)
          ]);
          $output = $model->render('../views/index.php', 'main');
          $fc->setPage($output);
