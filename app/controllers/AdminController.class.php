@@ -2,39 +2,41 @@
 
  namespace app\controllers;
 
-use app\models\AdminModel;
-use app\models\CategoryTableModel;
-use app\models\ImageTableModel;
-use app\models\ProductTableModel;
-use app\models\SliderTableModel;
-use app\models\SubCategoryTableModel;
-use app\models\UserTableModel;
-use app\models\UserUpdateTableModel;
-use app\services\DB;
-use app\services\PrivilegedUser;
-use app\services\Role;
-use app\services\Session;
-use app\widgets\AdminWidgets;
+ use app\helpers\Path;
+ use app\helpers\SiteConfigurator;
+ use app\models\AdminModel;
+ use app\models\CategoryTableModel;
+ use app\models\ImageTableModel;
+ use app\models\ProductTableModel;
+ use app\models\SliderTableModel;
+ use app\models\SubCategoryTableModel;
+ use app\models\UserTableModel;
+ use app\models\UserUpdateTableModel;
+ use app\services\DB;
+ use app\services\PrivilegedUser;
+ use app\services\Role;
+ use app\services\Session;
+ use app\widgets\AdminWidgets;
 
  class AdminController extends AbstractController {
 
      protected function requiredRoles() {
          return [
-             'index'     => [1, 2, 3],
-             'add'       => [1, 2],
-             'slider' => [1, 2, 3],
-             'addSlide' => [1, 2],
-             'editSlide' => [1, 2],
-             'allProduct' => [1, 2, 3],
-             'addProduct' => [1, 2],
+             'index'       => [1, 2, 3],
+             'add'         => [1, 2],
+             'slider'      => [1, 2, 3],
+             'addSlide'    => [1, 2],
+             'editSlide'   => [1, 2],
+             'allProduct'  => [1, 2, 3],
+             'addProduct'  => [1, 2],
              'editProduct' => [1, 2],
-             'view' => [1, 2, 3],
-             'allUsers' => [1, 2, 3],
-             'editUser' => [1],
-             'profile' => [1, 2, 3],
-             'logout' => [1, 2, 3, 4],
-             'newCat'    => [1, 2],
-             'newSubCat' => [1, 2]
+             'view'        => [1, 2, 3],
+             'allUsers'    => [1, 2, 3],
+             'editUser'    => [1],
+             'profile'     => [1, 2, 3],
+             'logout'      => [1, 2, 3, 4],
+             'newCat'      => [1, 2],
+             'newSubCat'   => [1, 2]
          ];
      }
 
@@ -163,6 +165,29 @@ use app\widgets\AdminWidgets;
              exit;
          } else {
              $output = $model->render('../views/admin/login.php');
+             $fc->setPage($output);
+         }
+     }
+
+     public function siteConfigAction() {
+         $fc      = FrontController::getInstance();
+         $model   = new AdminModel('Настройки сайта');
+         $siteCng = new SiteConfigurator();
+         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+             $siteCng->setPostData($_POST);
+             $siteCng->setSiteConfig();
+             Session::setMsg('Настройки сайта успешно обновлены', 'success');
+             header('Location: '.$_SERVER['REQUEST_URI']);
+             exit;
+         } else {
+             $categoryModel = new CategoryTableModel();
+             $categoryModel->setTable('category');
+             $categoryModel->readAllRecords();
+             $model->setData([
+                 'siteConfig'     => $siteCng->getSiteConfig(),
+                 'siteCategories' => $categoryModel->getAllRecords()
+             ]);
+             $output        = $model->render('../views/admin/siteconfig/siteconfig.php', 'admin');
              $fc->setPage($output);
          }
      }

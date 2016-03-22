@@ -3,7 +3,6 @@ use app\helpers\Generator;
 use app\helpers\Helper;
 use app\helpers\Path;
 $currentCategory = $this->getData()[0]['currentCategory'];
-Helper::g($currentCategory);
 ?>
 <div class="col-sm-9 padding-right">
     <div class="features_items"><!--features_items-->
