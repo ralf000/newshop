@@ -2,21 +2,21 @@
 
  namespace app\controllers;
 
- use app\helpers\Path;
- use app\helpers\SiteConfigurator;
- use app\models\AdminModel;
- use app\models\CategoryTableModel;
- use app\models\ImageTableModel;
- use app\models\ProductTableModel;
- use app\models\SliderTableModel;
- use app\models\SubCategoryTableModel;
- use app\models\UserTableModel;
- use app\models\UserUpdateTableModel;
- use app\services\DB;
- use app\services\PrivilegedUser;
- use app\services\Role;
- use app\services\Session;
- use app\widgets\AdminWidgets;
+use app\helpers\SiteConfigurator;
+use app\models\AdminModel;
+use app\models\ArticleTableModel;
+use app\models\CategoryTableModel;
+use app\models\ImageTableModel;
+use app\models\ProductTableModel;
+use app\models\SliderTableModel;
+use app\models\SubCategoryTableModel;
+use app\models\UserTableModel;
+use app\models\UserUpdateTableModel;
+use app\services\DB;
+use app\services\PrivilegedUser;
+use app\services\Role;
+use app\services\Session;
+use app\widgets\AdminWidgets;
 
  class AdminController extends AbstractController {
 
@@ -177,7 +177,7 @@
              $siteCng->setPostData($_POST);
              $siteCng->setSiteConfig();
              Session::setMsg('Настройки сайта успешно обновлены', 'success');
-             header('Location: '.$_SERVER['REQUEST_URI']);
+             header('Location: ' . $_SERVER['REQUEST_URI']);
              exit;
          } else {
              $categoryModel = new CategoryTableModel();
@@ -403,6 +403,49 @@
                  'slide' => $sliderModel->getRecordsById()
              ]);
              $output = $model->render('../views/admin/slider/editslide.php', 'admin');
+             $fc->setPage($output);
+         }
+     }
+
+     public function blogAction() {
+         $fc           = FrontController::getInstance();
+         $model        = new AdminModel('Блог', 'просмотр всех записей');
+         $articleModel = new ArticleTableModel();
+
+         $page      = $fc->getParams()['page'] ? filter_var($fc->getParams()['page'], FILTER_SANITIZE_NUMBER_INT) : 1;
+         $limit     = $fc->getParams()['limit'] ? filter_var($fc->getParams()['limit'], FILTER_SANITIZE_NUMBER_INT) : 10;
+         $orderBy   = $fc->getParams()['orderBy'] ? filter_var($fc->getParams()['orderBy'], FILTER_SANITIZE_STRING) : 'id';
+         $direction = $fc->getParams()['direction'] ? filter_var($fc->getParams()['direction'], FILTER_SANITIZE_STRING) : 'asc';
+         $offset    = $limit * $page - $limit;
+
+         $articleModel->setTable('article AS a');
+         $articleModel->readAllRecords('a.id, a.title, a.description, a.author, a.created_time, a.updated_time, u.username', "INNER JOIN user AS u ORDER BY a.$orderBy " . strtoupper($direction) . " LIMIT $limit OFFSET $offset");
+
+         $model->setData([
+             'articles'  => $articleModel->getAllRecords(),
+             'limit'     => $limit,
+             'orderBy'   => $orderBy,
+             'direction' => $direction,
+             'page'      => $page,
+             'num'       => (new AdminWidgets)->getNum('article'),
+             'offset'    => $offset
+         ]);
+         $output = $model->render('../views/admin/blog/blog.php', 'admin');
+         $fc->setPage($output);
+     }
+
+     public function addArticleAction() {
+         $fc           = FrontController::getInstance();
+         $model        = new AdminModel('Блог', 'Новая статья');
+         $articleModel = new ArticleTableModel();
+         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+             $articleModel->setData();
+             $articleModel->addRecord();
+             Session::setMsg('Статья успешно добавлена', 'success');
+             header('Location: /admin/blog');
+             exit;
+         } else {
+             $output = $model->render('../views/admin/blog/addarticle.php', 'admin');
              $fc->setPage($output);
          }
      }

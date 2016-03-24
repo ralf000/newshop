@@ -162,6 +162,6 @@
 <script src="<?= Path::PATH_TO_TEMPLATE ?>js/jquery.scrollUp.min.js"></script>
 <script src="<?= Path::PATH_TO_TEMPLATE ?>js/price-range.js"></script>
 <script src="<?= Path::PATH_TO_TEMPLATE ?>js/jquery.prettyPhoto.js"></script>
-<script src="<?= Path::PATH_TO_TEMPLATE ?>js/main.js"></script>
+<!--<script src="<?= Path::PATH_TO_TEMPLATE ?>js/main.js"></script>-->
 </body>
 </html>

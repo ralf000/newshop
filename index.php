@@ -11,6 +11,7 @@
          . PATH_SEPARATOR . 'app/helpers'
          . PATH_SEPARATOR . 'app/tests'
          . PATH_SEPARATOR . 'app/widgets'
+         . PATH_SEPARATOR . 'app/dataContainers'
  );
 
  /* Автозагрузчик классов */

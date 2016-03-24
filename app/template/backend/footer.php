@@ -26,17 +26,15 @@
  <!--datepicker--> 
 <script src="/app/template/backend/plugins/datepicker/bootstrap-datepicker.js"></script>
  <!--Bootstrap WYSIHTML5--> 
-<script src="/app/template/backend/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js"></script>
+<!--<script src="/app/template/backend/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js"></script>-->
  <!--Slimscroll--> 
 <script src="/app/template/backend/plugins/slimScroll/jquery.slimscroll.min.js"></script>
  <!--FastClick--> 
 <script src="/app/template/backend/plugins/fastclick/fastclick.min.js"></script>
  <!--AdminLTE App--> 
-<script src="/app/template/backend/js/app.min.js"></script>
+<!--<script src="/app/template/backend/js/app.min.js"></script>-->
  <!--AdminLTE dashboard demo (This is only for demo purposes)--> 
-<script src="/app/template/backend/js/pages/dashboard.js"></script>
-<!-- AdminLTE for demo purposes -->
-<script src="/app/template/backend/js/demo.js"></script>
+<!--<script src="/app/template/backend/js/pages/dashboard.js"></script>-->
 
 
 <script src="/app/template/js/bootstrap.min.js"></script>

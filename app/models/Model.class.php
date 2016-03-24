@@ -50,6 +50,10 @@
                          . $file);
                  require Path::PATH_TO_TEMPLATE . 'footer.php';
                  break;
+             default :
+                 require(dirname(__FILE__)
+                         . DIRECTORY_SEPARATOR
+                         . $file);
          }
          return ob_get_clean();
      }

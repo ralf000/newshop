@@ -2,10 +2,10 @@
 
  namespace app\models;
 
+use app\dataContainers\Slide;
 use app\helpers\Generator;
 use app\helpers\Helper;
 use app\helpers\Path;
-use app\helpers\Slide;
 use app\helpers\Validate;
 use app\services\Session;
 use Exception;
@@ -86,9 +86,9 @@ use Exception;
                  $content = Validate::validateInputVar('content', $method, 'html');
                  $link    = Validate::validateInputVar('link', $method, 'str');
                  $image   = filter_var($_FILES['mainimage']['name']);
-                 if (!$image) {
-                     throw new Exception('Не задано изображение!');
-                 }
+//                 if (!$image) {
+//                     throw new Exception('Не задано изображение!');
+//                 }
                  $published   = Validate::validateInputVar('published', $method, 'int');
                  if ($id = Validate::validateInputVar('id', $method, 'int'))
                      $this->id = $id;
