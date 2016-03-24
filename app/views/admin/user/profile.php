@@ -1,7 +1,7 @@
 <?
 
-use app\helpers\Helper;
-use app\helpers\Path;
+ use app\helpers\Helper;
+ use app\helpers\Path;
 
 $user                    = $this->getData()[1]['userProfile'][0];
  $userAddress             = $this->getData()[1]['userContacts']['address'];
@@ -22,7 +22,7 @@ $user                    = $this->getData()[1]['userProfile'][0];
          'name' => 'товар',
          'link' => '/admin/view/product/'
      ],
-     'user'     => [
+     'user'        => [
          'name' => 'пользователя',
          'link' => '/admin/profile/id/'
      ],
@@ -30,8 +30,14 @@ $user                    = $this->getData()[1]['userProfile'][0];
          'name' => 'комментарий',
          'link' => '/admin/comment/id/'
      ],
-     'category'    => 'категорию',
-     'subcategory' => 'подкатегорию',
+     'category'    => [
+         'name' => 'категорию',
+         'link' => ''
+     ],
+     'subcategory' => [
+         'name' => 'подкатегорию',
+         'link' => ''
+     ]
  ];
 ?>
 <!-- Main content -->
@@ -45,7 +51,7 @@ $user                    = $this->getData()[1]['userProfile'][0];
                 <div class="box-body box-profile">
                     <a href="#changePhotoPopup" id="changePhoto" data-toggle="modal" data-target="#changePhotoPopUp"><img class="profile-user-img img-responsive img-circle" src="/<?= $user['photo'] ?>" alt="change photo"></a>
                     <h3 class="profile-username text-center"><?= $username ?></h3>
-                    <a href="/admin/editUser/id/<?= $user['id']?>" class="btn btn-block btn-primary">Редактировать</a>
+                    <a href="/admin/editUser/id/<?= $user['id'] ?>" class="btn btn-block btn-primary">Редактировать</a>
                 </div><!-- /.box-body -->
             </div><!-- /.box -->
 
@@ -123,9 +129,9 @@ $user                    = $this->getData()[1]['userProfile'][0];
                                  <? endforeach; ?>
                              <? endforeach; ?>
                             <!-- END timeline item -->
-<!--                            <li>
-                                <i class="fa fa-clock-o bg-gray"></i>
-                            </li>-->
+                            <!--                            <li>
+                                                            <i class="fa fa-clock-o bg-gray"></i>
+                                                        </li>-->
                         </ul>
                     </div><!-- /.tab-pane -->
                 </div><!-- /.tab-content -->

@@ -1,21 +1,20 @@
 <?
 
-?>
-
-<? $articles    = $this->getData()[1]['atricles'] ?>
+ use app\helpers\Helper; ?>
+<? $articles = $this->getData()[1]['articles'] ?>
+<? Helper::g($articles)?>
 <? $limit    = $this->getData()[1]['limit'] ?>
 <? $page     = $this->getData()[1]['page'] ?>
-<? $numArts = $this->getData()[1]['num'] ?>
+<? $numArticles  = $this->getData()[1]['num'] ?>
 <? $offset   = $this->getData()[1]['offset'] ?>
-<? app\helpers\Helper::g($articles)?>
 <?
  $opt      = [
      'limit'     => $limit,
      'orderBy'   => $this->getData()[1]['orderBy'],
      'direction' => $this->getData()[1]['direction'],
      'table'     => 'blog',
-     'num'       => $numArts
-         ];
+     'num'       => $numArticles
+ ];
 ?>
 <script type="text/javascript" src="/app/template/backend/js/products/allproducts.js"></script>
 <section class="content">
@@ -52,30 +51,36 @@
                                     <thead>
                                         <tr role="row">
                                             <th><a href="" data-name="id" class="sorting">ID</a></th>
+                                            <th>Изображение</th>
                                             <th><a href="" data-name="title" class="sorting">Заголовок</a></th>
                                             <th><a href="" data-name="description" class="sorting">Описание</a></th>
                                             <th><a href="" data-name="author" class="sorting">Автор</a></th>
-                                            <th><a href="" data-name="created_time" class="sorting">Время создания</a></th>
-                                            <th><a href="" data-name="updated_time" class="sorting">Время обновления</a></th>
+                                            <th><a href="" data-name="created_time" class="sorting">Создан</a></th>
+                                            <th><a href="" data-name="updated_time" class="sorting">Обновлен</a></th>
                                             <th>Управление</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-<? foreach ($users as $user): ?>
-                                             <tr role="row">
-                                                 <td></td>
-                                                 <td></td>
-                                                 <td></td>
-                                                 <td></td>
-                                                 <td><?= Helper::dateConverter($user['create_time']) ?></td>
-                                                 <td><?= Helper::dateConverter($user['update_time']) ?></td>
-                                                 <td>
-                                                     <a href="/admin/profile/id/<?= $user['id'] ?>" class="admin-data-control"><span class="glyphicon glyphicon-eye-open"></span></a>
-                                                     <a href="/admin/editUser/id/<?= $user['id'] ?>" class="admin-data-control"><span class="glyphicon glyphicon-pencil"></span></a>
-                                                     <a href="<?= $user['id'] ?>" class="deleteUser admin-data-control"><span class="glyphicon glyphicon-minus"></span></a>
-                                                 </td>
-                                             </tr>
- <? endforeach; ?>
+                                        <? if (is_array($articles) && !empty($articles)): ?>
+                                             <? foreach ($articles as $a): ?>
+                                                 <tr role="row">
+                                                     <td><?= $a['id']?></td>
+                                                     <td><img width="100px" src="<?= $a['main_image'] ?>" alt="" /></td>
+                                                     <td><?= $a['title']?></td>
+                                                     <td><?= Helper::strSplitter($a['description'], 200) ?></td>
+                                                     <td><a href="/admin/profile/id/<?= $a['user_id']?>"><?= $a['username']?></a></td>
+                                                     <td><?= Helper::dateConverter($a['created_time']) ?></td>
+                                                     <td><?= Helper::dateConverter($a['updated_time']) ?></td>
+                                                     <td>
+                                                         <a href="/admin/viewArticle/id/<?= $a['id'] ?>" class="admin-data-control"><span class="glyphicon glyphicon-eye-open"></span></a>
+                                                         <a href="/admin/editUser/id/<?= $a['id'] ?>" class="admin-data-control"><span class="glyphicon glyphicon-pencil"></span></a>
+                                                         <a href="<?= $a['id'] ?>" class="deleteUser admin-data-control"><span class="glyphicon glyphicon-minus"></span></a>
+                                                     </td>
+                                                 </tr>
+                                             <? endforeach; ?>
+                                         <? else: ?>
+                                         <p>Нет статей для отображения</p>
+                                    <? endif; ?>
                                     </tbody>
                                 </table>
                             </div>
@@ -83,16 +88,16 @@
                         <div class="row">
                             <div class="col-sm-5">
                                 <div class="dataTables_info" id="example2_info" role="status" aria-live="polite">
-<? $start = $offset + 1 ?>
-<? $end   = ($limit * $page < $numUsers) ? $limit * $page : $numUsers ?>
-                                    На странице: <b><?= $start ?> - <?= $end ?></b> из <b><?= $numUsers ?></b> товаров
+                                    <? $start = $offset + 1 ?>
+                                    <? $end   = ($limit * $page < $numArticles) ? $limit * $page : $numArticles ?>
+                                    На странице: <b><?= $start ?> - <?= $end ?></b> из <b><?= $numArticles ?></b> статей
                                 </div>
                             </div>
                             <div class="col-sm-7">
                                 <div class="dataTables_paginate paging_simple_numbers" id="example2_paginate">
-<? if ($limit < $numUsers): ?>
-     <?= Generator::pagination($limit, $page, $opt) ?>
- <? endif; ?>
+                                    <? if ($limit < $numArticles): ?>
+                                         <?= Generator::pagination($limit, $page, $opt) ?>
+                                     <? endif; ?>
                                 </div>
                             </div>
                         </div>

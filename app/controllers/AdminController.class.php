@@ -129,6 +129,32 @@ use app\widgets\AdminWidgets;
          $fc->setPage($output);
      }
 
+     public function viewArticleAction() {
+         $fc           = FrontController::getInstance();
+         $model        = new AdminModel('Просмотр статьи');
+         $articleModel = new ArticleTableModel();
+         $userModel = new UserTableModel;
+         $id           = filter_var($fc->getParams()['id'], FILTER_SANITIZE_NUMBER_INT);
+         if (!$id) {
+             header('Location: /admin/notFound');
+             exit;
+         }
+         $articleModel->setId($id);
+         $articleModel->setTable('article');
+         
+         $article = $articleModel->readRecordsById();
+         
+         $userModel->setId($article[0]['author']);
+         $userModel->setTable('user');
+
+         $model->setData([
+             'article' => $article,
+             'author' => $userModel->readRecordsById('id', 'id, username')
+         ]);
+         $output = $model->render('../views/admin/blog/view.php', 'admin');
+         $fc->setPage($output);
+     }
+
      public function loginAction() {
          $fc    = FrontController::getInstance();
          $model = new UserTableModel();
@@ -419,7 +445,7 @@ use app\widgets\AdminWidgets;
          $offset    = $limit * $page - $limit;
 
          $articleModel->setTable('article AS a');
-         $articleModel->readAllRecords('a.id, a.title, a.description, a.author, a.created_time, a.updated_time, u.username', "INNER JOIN user AS u ORDER BY a.$orderBy " . strtoupper($direction) . " LIMIT $limit OFFSET $offset");
+         $articleModel->readAllRecords('a.id, a.title, a.description, a.main_image, a.author, a.created_time, a.updated_time, u.id as user_id, u.username', "INNER JOIN user AS u GROUP BY a.id ORDER BY a.$orderBy " . strtoupper($direction) . " LIMIT $limit OFFSET $offset");
 
          $model->setData([
              'articles'  => $articleModel->getAllRecords(),
