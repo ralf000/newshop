@@ -1,7 +1,41 @@
-<? $cntWidgets     = $this->getWidgetsData()['cntWidgets']; ?>
-<? $clientsWidget  = $this->getWidgetsData()['clientsWidget']; ?>
-<? $managersWidget = $this->getWidgetsData()['managersWidget']; ?>
-<? $productsWidget = $this->getWidgetsData()['productsWidget']; ?>
+<?
+
+ use app\helpers\Helper;
+ use app\helpers\Path;
+?>
+<? $cntWidgets         = $this->getWidgetsData()['cntWidgets']; ?>
+<? $clientsWidget      = $this->getWidgetsData()['clientsWidget']; ?>
+<? $managersWidget     = $this->getWidgetsData()['managersWidget']; ?>
+<? $productsWidget     = $this->getWidgetsData()['productsWidget']; ?>
+<? $usersActivity      = $this->getWidgetsData()['usersActivityLine'] ?>
+<? $articles = $this->getWidgetsData()['articles']?>
+<?
+ $translate      = [
+     'insert'      => 'добавил',
+     'update'      => 'обновил',
+     'delete'      => 'удалил',
+     'product'     => [
+         'name' => 'товар',
+         'link' => '/admin/view/product/'
+     ],
+     'user'        => [
+         'name' => 'пользователя',
+         'link' => '/admin/profile/id/'
+     ],
+     'comment'     => [
+         'name' => 'комментарий',
+         'link' => '/admin/comment/id/'
+     ],
+     'category'    => [
+         'name' => 'категорию',
+         'link' => ''
+     ],
+     'subcategory' => [
+         'name' => 'подкатегорию',
+         'link' => ''
+     ]
+ ];
+?>
 <!-- Main content -->
 <section class="content">
     <!-- Small boxes (Stat box) -->
@@ -71,6 +105,55 @@
     <div class="row">
         <!-- Left col -->
         <section class="col-lg-7 connectedSortable">
+            
+            <div class="box box-danger">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Активность</h3>
+                    <div class="box-tools pull-right">
+                        <!--<span class="label label-danger">8 New Members</span>-->
+                        <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                        <button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                    </div>
+                </div><!-- /.box-header -->
+                <div class="box-body no-padding">
+                    <!-- The timeline -->
+                    <ul class="timeline timeline-inverse">
+                        <!-- timeline time label -->
+                        <? if (is_array($usersActivity) && !empty($usersActivity)): ?>
+                             <? foreach ($usersActivity as $ua): ?>
+                                 <li class="time-label">
+                                     <span class="bg-red">
+                                         <?= explode(' ', Helper::dateConverter($ua['time']))[0] ?>
+                                     </span>
+                                 </li>
+                                 <!-- /.timeline-label -->
+                                 <? if (is_array($ua['records']) && !empty($ua['records'])): ?>
+                                     <? foreach ($ua['records'] as $r): ?>
+                                         <? list($activDate, $ativTime) = explode(' ', $r['time']) ?>
+                                         <!-- timeline item -->
+                                         <li>
+                                             <i class="<?= Helper::getIconForUserProfileBYAdmin($r['operation']) ?>"></i>
+                                             <div class="timeline-item">
+                                                 <span class="time"><i class="fa fa-clock-o"></i> <?= $ativTime ?></span>
+                                                 <? $link   = "" ?>
+                                                 <? $string = "{$translate[$r['operation']]} {$translate[$r['table_name']]['name']} <a href='{$translate[$r['table_name']]['link']}{$r['object_id']}'>«{$r['object_title']}»</a>" ?>
+                                                 <h3 class="timeline-header"><a href="/admin/profile/id/<?= $r['manager'] ?>"><?= $r['manager_name'] ?></a> <?= $string ?></h3>
+                                             </div>
+                                         </li>
+                                     <? endforeach; ?>
+                                 <? endif; ?>
+                             <? endforeach; ?>
+                         <? endif; ?>
+                        <!-- END timeline item -->
+                        <!--                            <li>
+                                                        <i class="fa fa-clock-o bg-gray"></i>
+                                                    </li>-->
+                    </ul>
+                </div><!-- /.box-body -->
+                <div class="box-footer text-center">
+                    <a href="/admin/activity" class="uppercase">Вся активность</a>
+                </div><!-- /.box-footer -->
+            </div>
 
             <div class="box box-info">
                 <div class="box-header with-border">
@@ -181,7 +264,7 @@
                     <!--<a href="javascript::;" class="btn btn-sm btn-default btn-flat pull-right">View All Orders</a>-->
                 </div><!-- /.box-footer -->
             </div>
-
+            
         </section><!-- /.Left col -->
         <!-- right col (We are only adding the ID to make the widgets sortable)-->
         <section class="col-lg-5 connectedSortable">
@@ -214,6 +297,38 @@
                     <a href="/admin/allProducts" class="uppercase">Все товары</a>
                 </div><!-- /.box-footer -->
             </div>
+            
+            
+            <div class="box box-warning">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Новые статьи</h3>
+                    <div class="box-tools pull-right">
+                        <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                        <button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                    </div>
+                </div><!-- /.box-header -->
+                <div class="box-body">
+                    <ul class="products-list product-list-in-box">
+                        <? foreach ($articles as $a): ?>
+                             <li class="item">
+                                 <div class="product-img">
+                                     <img src="/<?= $a['main_image'] ?>" alt="Article Image">
+                                 </div>
+                                 <div class="product-info">
+                                     <a href="/admin/viewArticle/id/<?= $a['id'] ?>" class="product-title"><?= $a['title'] ?> <a href="/admin/profile/id/<?= $a['author'] ?>"><span class="label label-primary pull-right"> Автор: <?= $a['author_name'] ?></span></a>
+                                     <span class="product-description">
+                                         Создана: <?= Helper::dateConverter($a['created_time'])?><br>
+                                         Обновлена: <?= Helper::dateConverter($a['updated_time'])?>
+                                     </span>
+                                 </div>
+                             </li><!-- /.item -->
+                         <? endforeach; ?>
+                    </ul>
+                </div><!-- /.box-body -->
+                <div class="box-footer text-center">
+                    <a href="/admin/blog" class="uppercase">Все статьи</a>
+                </div><!-- /.box-footer -->
+            </div>
 
             <div class="box box-danger">
                 <div class="box-header with-border">
@@ -228,7 +343,7 @@
                     <ul class="users-list clearfix">
                         <? foreach ($managersWidget as $manager): ?>
                              <?
-                             $manager['photo'] = ($manager['photo']) ? $manager['photo'] : app\helpers\Path::DEFAULT_USER_AVATAR
+                             $manager['photo'] = ($manager['photo']) ? $manager['photo'] : Path::DEFAULT_USER_AVATAR
                              ?>
                              <li>
                                  <img src="/<?= $manager['photo'] ?>" alt="User Image">

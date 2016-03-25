@@ -1,10 +1,10 @@
 <?php
- 
-  namespace app\models;
 
-use app\helpers\Validate;
-use Exception;
-use PDOException;
+ namespace app\models;
+
+ use app\helpers\Validate;
+ use Exception;
+ use PDOException;
 
  class SubCategoryTableModel extends TableModelAbstract {
 
@@ -12,6 +12,7 @@ use PDOException;
 
      public function addRecord() {
          try {
+             $this->setUserIdForDB();
              $query = $this->db->prepare("INSERT INTO $this->table (`subcategory_name`,`published`, `category_id`) VALUES (:subcategory_name, :published, :category_id)");
              $query->execute([':subcategory_name' => $this->subCategory_name, ':published' => $this->published, ':category_id' => $this->category_id]);
          } catch (PDOException $e) {
@@ -20,9 +21,10 @@ use PDOException;
      }
 
      public function updateRecord() {
-         if ($this->id == NULL)
-             throw new Exception('укажите id записи для её обновления');
          try {
+             if ($this->id == NULL)
+                 throw new Exception('укажите id записи для её обновления');
+             $this->setUserIdForDB();
              $query = $this->db->prepare("UPDATE $this->table SET `subcategory_name` = :subcategory_name, `published` = :published WHERE `id` = :id");
              $query->execute([':subcategory_name' => $this->subCategory_name, ':published' => $this->published, ':id' => $this->id]);
          } catch (PDOException $e) {

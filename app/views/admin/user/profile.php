@@ -102,32 +102,34 @@ $user                    = $this->getData()[1]['userProfile'][0];
                         <!-- The timeline -->
                         <ul class="timeline timeline-inverse">
                             <!-- timeline time label -->
-                            <? foreach ($userActivityGroupByDate as $d): ?>
-                                 <li class="time-label">
-                                     <span class="bg-red">
-                                         <? $dat = $d['dat'] ?>
-                                         <? list($y, $m, $d) = explode('-', $dat) ?>
-                                         <?= "$d-$m-$y" ?>
-                                     </span>
-                                 </li>
-                                 <!-- /.timeline-label -->
+                            <? if (is_array($userActivityGroupByDate) && !empty($userActivityGroupByDate)): ?>
+                                 <? foreach ($userActivityGroupByDate as $d): ?>
+                                     <li class="time-label">
+                                         <span class="bg-red">
+                                             <? $dat = $d['dat'] ?>
+                                             <? list($y, $m, $d) = explode('-', $dat) ?>
+                                             <?= "$d-$m-$y" ?>
+                                         </span>
+                                     </li>
+                                     <!-- /.timeline-label -->
 
-                                 <? foreach ($userActivity as $activ): ?>
-                                     <? if ($activ['dat'] === $dat): ?>
-                                         <? list($activDate, $ativTime) = explode(' ', $activ['time']) ?>
-                                         <!-- timeline item -->
-                                         <li>
-                                             <i class="<?= Helper::getIconForUserProfileBYAdmin($activ['operation']) ?>"></i>
-                                             <div class="timeline-item">
-                                                 <span class="time"><i class="fa fa-clock-o"></i> <?= $ativTime ?></span>
-                                                 <? $link   = "" ?>
-                                                 <? $string = "{$translate[$activ['operation']]} {$translate[$activ['table_name']]['name']} <a href='{$translate[$activ['table_name']]['link']}{$activ['object_id']}'>«{$activ['object_title']}»</a>" ?>
-                                                 <h3 class="timeline-header"><a href="#"><?= $username ?></a> <?= $string ?></h3>
-                                             </div>
-                                         </li>
-                                     <? endif; ?>
+                                     <? foreach ($userActivity as $activ): ?>
+                                         <? if ($activ['dat'] === $dat): ?>
+                                             <? list($activDate, $ativTime) = explode(' ', $activ['time']) ?>
+                                             <!-- timeline item -->
+                                             <li>
+                                                 <i class="<?= Helper::getIconForUserProfileBYAdmin($activ['operation']) ?>"></i>
+                                                 <div class="timeline-item">
+                                                     <span class="time"><i class="fa fa-clock-o"></i> <?= $ativTime ?></span>
+                                                     <? $link   = "" ?>
+                                                     <? $string = "{$translate[$activ['operation']]} {$translate[$activ['table_name']]['name']} <a href='{$translate[$activ['table_name']]['link']}{$activ['object_id']}'>«{$activ['object_title']}»</a>" ?>
+                                                     <h3 class="timeline-header"><a href="#"><?= $username ?></a> <?= $string ?></h3>
+                                                 </div>
+                                             </li>
+                                         <? endif; ?>
+                                     <? endforeach; ?>
                                  <? endforeach; ?>
-                             <? endforeach; ?>
+                             <? endif; ?>
                             <!-- END timeline item -->
                             <!--                            <li>
                                                             <i class="fa fa-clock-o bg-gray"></i>

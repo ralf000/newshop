@@ -2,9 +2,11 @@
 
  namespace app\widgets;
 
-use app\models\ProductTableModel;
-use Exception;
-use PDO;
+ use app\models\ArticleTableModel;
+ use app\models\ProductTableModel;
+ use app\models\UserTableModel;
+ use Exception;
+ use PDO;
 
  class AdminWidgets extends WidgetAbstract {
 
@@ -47,6 +49,47 @@ use PDO;
      public function getAllProductsWidget($fields = '*', $condition = '') {
          $model = new ProductTableModel();
          return $model->getAllProducts($fields, $condition);
+     }
+
+     public function getAllArticlesWidget($fields = '*', $condition = '') {
+         $model     = new ArticleTableModel();
+         $model->setTable('article');
+         $model->readAllRecords($fields, $condition);
+         $records = $model->getAllRecords();
+         $userModel = new UserTableModel;
+         foreach ($records as $key => $record) {
+             $userModel->setId($record['author']);
+             $userModel->setTable('user');
+             $records[$key]['author_name'] = $userModel->readRecordsById('id', 'username')[0]['username'];
+         }
+         return $records;
+     }
+
+     public function getUserActivity($limit = FALSE) {
+         $output       = [];
+         if ($limit)
+             $limit = 'LIMIT ' . $limit;
+         $model        = new UserTableModel();
+         $model->setTable('operation_log');
+         $model->readAllRecords('*', 'ORDER BY time DESC LIMIT 30');
+         $records      = $model->getAllRecords();
+         $model->readAllRecords("DISTINCT DATE_FORMAT(`time`, '%Y-%m-%d') as time", "GROUP BY time ORDER BY time DESC $limit");
+         $groupRecords = $model->getAllRecords();
+         foreach ($groupRecords as $key => $record) {
+             $date    = explode(' ', $record['time'])[0];
+             $model->readAllRecords("*", "WHERE DATE_FORMAT(`time`, '%Y-%m-%d') = '$date'");
+             $records = $model->getAllRecords();
+             foreach ($records as $key2 => $record) {
+                 if (!empty($record['manager'])) {
+                     $model->setTable('user');
+                     $model->setId($record['manager']);
+                     $records[$key2]['manager_name'] = $model->readRecordsById('id', 'username')[0]['username'];
+                 }
+             }
+             $model->setTable('operation_log');
+             $groupRecords[$key]['records'] = $records;
+         }
+         return $groupRecords;
      }
 
  }

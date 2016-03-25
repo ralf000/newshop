@@ -2,22 +2,22 @@
 
  namespace app\controllers;
 
-use app\helpers\SiteConfigurator;
-use app\models\AdminModel;
-use app\models\ArticleTableModel;
-use app\models\CategoryTableModel;
-use app\models\ImageTableModel;
-use app\models\ProductTableModel;
-use app\models\SliderTableModel;
-use app\models\SubCategoryTableModel;
-use app\models\UserTableModel;
-use app\models\UserUpdateTableModel;
-use app\services\DB;
-use app\services\PrivilegedUser;
-use app\services\Role;
-use app\services\Session;
-use app\widgets\AdminWidgets;
-use app\widgets\IndexWidgets;
+ use app\helpers\SiteConfigurator;
+ use app\models\AdminModel;
+ use app\models\ArticleTableModel;
+ use app\models\CategoryTableModel;
+ use app\models\ImageTableModel;
+ use app\models\ProductTableModel;
+ use app\models\SliderTableModel;
+ use app\models\SubCategoryTableModel;
+ use app\models\UserTableModel;
+ use app\models\UserUpdateTableModel;
+ use app\services\DB;
+ use app\services\PrivilegedUser;
+ use app\services\Role;
+ use app\services\Session;
+ use app\widgets\AdminWidgets;
+ use app\widgets\IndexWidgets;
 
  class AdminController extends AbstractController {
 
@@ -46,10 +46,12 @@ use app\widgets\IndexWidgets;
          $model        = new AdminModel('Административная панель', 'управление сайтом');
          $adminWidgets = new AdminWidgets();
          $model->setWidgetsData([
-             'cntWidgets'     => $adminWidgets->getCntWidgets(),
-             'clientsWidget'  => $adminWidgets->getUsersForRoleWidget(4, 'WHERE user_role.role_id = ? AND deleted != 1', 10),
-             'managersWidget' => $adminWidgets->getUsersForRoleWidget(4, 'WHERE user_role.role_id < ? AND deleted != 1', 8),
-             'productsWidget' => $adminWidgets->getAllProductsWidget($fields          = '*', 'WHERE image.main = 1 ORDER BY product.created_time DESC LIMIT 5')
+             'cntWidgets'        => $adminWidgets->getCntWidgets(),
+             'clientsWidget'     => $adminWidgets->getUsersForRoleWidget(4, 'WHERE user_role.role_id = ? AND deleted != 1', 10),
+             'managersWidget'    => $adminWidgets->getUsersForRoleWidget(4, 'WHERE user_role.role_id < ? AND deleted != 1', 8),
+             'productsWidget'    => $adminWidgets->getAllProductsWidget('*', 'WHERE image.main = 1 ORDER BY product.created_time DESC LIMIT 5'),
+             'articles' => $adminWidgets->getAllArticlesWidget('id, title, main_image, author, created_time, updated_time', 'LIMIT 5'),
+             'usersActivityLine' => $adminWidgets->getUserActivity(3)
          ]);
          $output       = $model->render('../views/admin/index.php', 'admin');
          $fc->setPage($output);
@@ -152,6 +154,16 @@ use app\widgets\IndexWidgets;
              'author'  => $userModel->readRecordsById('id', 'id, username')
          ]);
          $output = $model->render('../views/admin/blog/view.php', 'admin');
+         $fc->setPage($output);
+     }
+     
+     public function activityAction() {
+         $fc    = FrontController::getInstance();
+         $model        = new AdminModel('Вся активность пользователей');
+         $model->setWidgetsData([
+             'activity' => (new AdminWidgets())->getUserActivity()
+         ]);
+         $output = $model->render('../views/admin/activity.php', 'admin');
          $fc->setPage($output);
      }
 
@@ -447,7 +459,7 @@ use app\widgets\IndexWidgets;
              $articleModel->updateRecord();
 
              Session::setMsg('Статья успешно обновлена', 'success');
-             header('Location: /admin/viewArticle/id/'.$articleModel->getArticle()->getData()['id']);
+             header('Location: /admin/viewArticle/id/' . $articleModel->getArticle()->getData()['id']);
              exit;
          } else {
 

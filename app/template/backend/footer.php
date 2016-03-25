@@ -32,7 +32,7 @@
  <!--FastClick--> 
 <script src="/app/template/backend/plugins/fastclick/fastclick.min.js"></script>
  <!--AdminLTE App--> 
-<!--<script src="/app/template/backend/js/app.min.js"></script>-->
+<script src="/app/template/backend/js/app.min.js"></script>
  <!--AdminLTE dashboard demo (This is only for demo purposes)--> 
 <!--<script src="/app/template/backend/js/pages/dashboard.js"></script>-->
 

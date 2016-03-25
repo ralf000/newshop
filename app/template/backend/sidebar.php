@@ -25,6 +25,11 @@
         <!-- sidebar menu: : style can be found in sidebar.less -->
         <ul class="sidebar-menu">
             <li class="header">Главное меню</li>
+            <li>
+                <a href="#">
+                <i class="fa fa-dashboard"></i> <span>Настройки сайта</span>
+            </a>
+            </li>
             <li class="active treeview">
                 <a href="#">
                     <i class="fa fa-dashboard"></i> <span>Товары</span> <i class="fa fa-angle-left pull-right"></i>
@@ -34,7 +39,7 @@
                     <li><a href="/admin/add"><i class="fa fa-circle-o"></i> Добавить товар</a></li>
                 </ul>
             </li>
-            <li class="active treeview">
+            <li class="treeview">
                 <a href="#">
                     <i class="fa fa-dashboard"></i> <span>Заказы</span> <i class="fa fa-angle-left pull-right"></i>
                 </a>
@@ -42,12 +47,30 @@
                     <li class="active"><a href="/admin/allProducts"><i class="fa fa-circle-o"></i> Все заказы</a></li>
                 </ul>
             </li>
-            <li class="active treeview">
+            <li class="treeview">
                 <a href="#">
                     <i class="fa fa-dashboard"></i> <span>Пользователи</span> <i class="fa fa-angle-left pull-right"></i>
                 </a>
                 <ul class="treeview-menu">
-                    <li class="active"><a href="index.html"><i class="fa fa-circle-o"></i> Все пользователи</a></li>
+                    <li class="active"><a href="/admin/allUsers"><i class="fa fa-circle-o"></i> Все пользователи</a></li>
+                </ul>
+            </li>
+            <li class="active treeview">
+                <a href="#">
+                    <i class="fa fa-dashboard"></i> <span>Блог</span> <i class="fa fa-angle-left pull-right"></i>
+                </a>
+                <ul class="treeview-menu">
+                    <li class="active"><a href="/admin/allProducts"><i class="fa fa-circle-o"></i> Все статьи</a></li>
+                    <li><a href="/admin/add"><i class="fa fa-circle-o"></i> Добавить статью</a></li>
+                </ul>
+            </li>
+            <li class="active treeview">
+                <a href="#">
+                    <i class="fa fa-dashboard"></i> <span>Слайдер</span> <i class="fa fa-angle-left pull-right"></i>
+                </a>
+                <ul class="treeview-menu">
+                    <li class="active"><a href="/admin/allProducts"><i class="fa fa-circle-o"></i> Все слайды</a></li>
+                    <li><a href="/admin/add"><i class="fa fa-circle-o"></i> Добавить слайд</a></li>
                 </ul>
             </li>
         </ul>
