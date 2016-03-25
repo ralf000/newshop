@@ -17,6 +17,7 @@ use app\services\PrivilegedUser;
 use app\services\Role;
 use app\services\Session;
 use app\widgets\AdminWidgets;
+use app\widgets\IndexWidgets;
 
  class AdminController extends AbstractController {
 
@@ -75,8 +76,7 @@ use app\widgets\AdminWidgets;
              exit;
          } else {
              $adminModel                  = new AdminModel('Добавление новых товаров');
-             $catsAndSub                  = [];
-             $catsAndSub                  = $this->getCatsAndSubCats();
+             $catsAndSub                  = IndexWidgets::getCatsAndSubCats();
              $adminModel->categoryList    = $catsAndSub['cats']; //used magic __set
              $adminModel->subCategoryList = $catsAndSub['subcats']; //used magic __set
              $output                      = $adminModel->render('../views/admin/product/add.php', 'admin');
@@ -133,7 +133,7 @@ use app\widgets\AdminWidgets;
          $fc           = FrontController::getInstance();
          $model        = new AdminModel('Просмотр статьи');
          $articleModel = new ArticleTableModel();
-         $userModel = new UserTableModel;
+         $userModel    = new UserTableModel;
          $id           = filter_var($fc->getParams()['id'], FILTER_SANITIZE_NUMBER_INT);
          if (!$id) {
              header('Location: /admin/notFound');
@@ -141,15 +141,15 @@ use app\widgets\AdminWidgets;
          }
          $articleModel->setId($id);
          $articleModel->setTable('article');
-         
+
          $article = $articleModel->readRecordsById();
-         
+
          $userModel->setId($article[0]['author']);
          $userModel->setTable('user');
 
          $model->setData([
              'article' => $article,
-             'author' => $userModel->readRecordsById('id', 'id, username')
+             'author'  => $userModel->readRecordsById('id', 'id, username')
          ]);
          $output = $model->render('../views/admin/blog/view.php', 'admin');
          $fc->setPage($output);
@@ -307,8 +307,7 @@ use app\widgets\AdminWidgets;
                  ]);
              }
 
-             $catsAndSub             = [];
-             $catsAndSub             = $this->getCatsAndSubCats();
+             $catsAndSub             = IndexWidgets::getCatsAndSubCats();
              $model->categoryList    = $catsAndSub['cats']; //used magic __set
              $model->subCategoryList = $catsAndSub['subcats']; //used magic __set
 
@@ -429,6 +428,39 @@ use app\widgets\AdminWidgets;
                  'slide' => $sliderModel->getRecordsById()
              ]);
              $output = $model->render('../views/admin/slider/editslide.php', 'admin');
+             $fc->setPage($output);
+         }
+     }
+
+     public function editArticleAction() {
+         $fc           = FrontController::getInstance();
+         $model        = new AdminModel('Редактирование статьи');
+         $articleModel = new ArticleTableModel();
+         $userModel    = new UserTableModel;
+
+         $id = filter_var($fc->getParams()['id'], FILTER_SANITIZE_NUMBER_INT);
+         $articleModel->setId($id);
+         $articleModel->setTable('article');
+
+         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+             $articleModel->setData();
+             $articleModel->updateRecord();
+
+             Session::setMsg('Статья успешно обновлена', 'success');
+             header('Location: /admin/viewArticle/id/'.$articleModel->getArticle()->getData()['id']);
+             exit;
+         } else {
+
+             $article = $articleModel->readRecordsById();
+
+             $userModel->setId($article[0]['author']);
+             $userModel->setTable('user');
+
+             $model->setData([
+                 'article' => $article,
+                 'author'  => $userModel->readRecordsById('id', 'id, username')
+             ]);
+             $output = $model->render('../views/admin/blog/editArticle.php', 'admin');
              $fc->setPage($output);
          }
      }

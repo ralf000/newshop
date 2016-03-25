@@ -68,7 +68,7 @@
                     </div>
                     <div class="mainmenu pull-left">
                         <ul class="nav navbar-nav collapse navbar-collapse">
-                            <li><a href="index.html" class="active">Главная</a></li>
+                            <li><a href="/" class="active">Главная</a></li>
                             <li class="dropdown"><a href="#">Магазин<i class="fa fa-angle-down"></i></a>
                                 <ul role="menu" class="sub-menu">
                                     <li><a href="shop.html">Products</a></li>
@@ -78,11 +78,7 @@
                                     <li><a href="login.html">Login</a></li> 
                                 </ul>
                             </li> 
-                            <li class="dropdown"><a href="#">Блог<i class="fa fa-angle-down"></i></a>
-                                <ul role="menu" class="sub-menu">
-                                    <li><a href="blog.html">Blog List</a></li>
-                                    <li><a href="blog-single.html">Blog Single</a></li>
-                                </ul>
+                            <li class="dropdown"><a href="/blog">Блог</a>
                             </li> 
                             <li><a href="404.html">404</a></li>
                             <li><a href="contact-us.html">Контакты</a></li>

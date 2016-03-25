@@ -2,10 +2,10 @@
 
  namespace app\models;
 
- use app\controllers\FrontController;
- use app\services\Session;
+use app\controllers\FrontController;
+use app\services\Session;
 
- class AdminModel extends IndexPageModel {
+ class AdminModel extends FrontModel {
 
      private $title = '';
 

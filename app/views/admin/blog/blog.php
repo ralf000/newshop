@@ -1,8 +1,6 @@
 <?
-
  use app\helpers\Helper; ?>
 <? $articles = $this->getData()[1]['articles'] ?>
-<? Helper::g($articles)?>
 <? $limit    = $this->getData()[1]['limit'] ?>
 <? $page     = $this->getData()[1]['page'] ?>
 <? $numArticles  = $this->getData()[1]['num'] ?>
@@ -65,7 +63,7 @@
                                              <? foreach ($articles as $a): ?>
                                                  <tr role="row">
                                                      <td><?= $a['id']?></td>
-                                                     <td><img width="100px" src="<?= $a['main_image'] ?>" alt="" /></td>
+                                                     <td><img width="100px" src="/<?= $a['main_image'] ?>" alt="" /></td>
                                                      <td><?= $a['title']?></td>
                                                      <td><?= Helper::strSplitter($a['description'], 200) ?></td>
                                                      <td><a href="/admin/profile/id/<?= $a['user_id']?>"><?= $a['username']?></a></td>
@@ -73,8 +71,8 @@
                                                      <td><?= Helper::dateConverter($a['updated_time']) ?></td>
                                                      <td>
                                                          <a href="/admin/viewArticle/id/<?= $a['id'] ?>" class="admin-data-control"><span class="glyphicon glyphicon-eye-open"></span></a>
-                                                         <a href="/admin/editUser/id/<?= $a['id'] ?>" class="admin-data-control"><span class="glyphicon glyphicon-pencil"></span></a>
-                                                         <a href="<?= $a['id'] ?>" class="deleteUser admin-data-control"><span class="glyphicon glyphicon-minus"></span></a>
+                                                         <a href="/admin/editArticle/id/<?= $a['id'] ?>" class="admin-data-control"><span class="glyphicon glyphicon-pencil"></span></a>
+                                                         <a href="#" data-id="<?= $a['id'] ?>" class="deleteArticle admin-data-control"><span class="glyphicon glyphicon-minus"></span></a>
                                                      </td>
                                                  </tr>
                                              <? endforeach; ?>
@@ -108,4 +106,4 @@
         </div><!-- /.col -->
     </div><!-- /.row -->
 </section>
-<script type="text/javascript" src="/app/template/backend/js/user/allusers.js"></script>
+<script type="text/javascript" src="/app/template/backend/js/blog/articles.js"></script>

@@ -6,6 +6,7 @@ use app\helpers\Helper;
 use app\helpers\Path;
 use app\helpers\Validate;
 use app\models\AddressTableModel;
+use app\models\ArticleTableModel;
 use app\models\CategoryTableModel;
 use app\models\ImageTableModel;
 use app\models\PhoneTableModel;
@@ -316,6 +317,20 @@ use Exception;
          $model = new PhoneTableModel();
          $model->setId($id);
          $model->setTable('phone');
+         echo $model->deleteRecord();
+     }
+     
+     public function deleteArticleAction() {
+         header('Content-type: text/plain; charset=utf-8');
+         header('Cache-Control: no-store, no-cache');
+         header('Expires: ' . date('r'));
+
+         if (filter_has_var(INPUT_POST, 'id'))
+             $id = filter_input(INPUT_POST, 'id', FILTER_SANITIZE_NUMBER_INT);
+
+         $model = new ArticleTableModel();
+         $model->setId($id);
+         $model->setTable('article');
          echo $model->deleteRecord();
      }
 

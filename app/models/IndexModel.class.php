@@ -2,7 +2,7 @@
 
  namespace app\models;
 
- class IndexModel extends IndexPageModel {
+ class IndexModel extends FrontModel {
 
  }
  

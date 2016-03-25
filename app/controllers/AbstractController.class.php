@@ -2,12 +2,12 @@
 
  namespace app\controllers;
 
-use app\models\CategoryTableModel;
-use app\models\SubCategoryTableModel;
-use app\models\UserTableModel;
-use app\services\DB;
-use app\services\PrivilegedUser;
-use app\services\Session;
+ use app\models\CategoryTableModel;
+ use app\models\SubCategoryTableModel;
+ use app\models\UserTableModel;
+ use app\services\DB;
+ use app\services\PrivilegedUser;
+ use app\services\Session;
 
  abstract class AbstractController implements IController {
 
@@ -56,7 +56,7 @@ use app\services\Session;
      }
 
      protected function getCatsAndSubCats($flag = FALSE) {
-         $condition = '';
+         $condition        = '';
          $categoryModel    = new CategoryTableModel();
          $categoryModel->setTable('category');
          $categoryModel->readAllRecords();
@@ -90,6 +90,5 @@ use app\services\Session;
 //             throw new Exception('Action not found');
 //         }
 //     }
-     
  }
  

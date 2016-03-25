@@ -3,7 +3,9 @@
  namespace app\widgets;
 
 use app\helpers\Generator;
+use app\models\CategoryTableModel;
 use app\models\SliderTableModel;
+use app\models\SubCategoryTableModel;
 use Exception;
 use PDO;
 
@@ -17,21 +19,22 @@ use PDO;
          return Generator::sliderGenerator($slides);
      }
 
-     public static function sideBarMenuWidget(array $catsNsubs) {
+     public static function sideBarMenuWidget() {
+         $catsNsubs = IndexWidgets::getCatsAndSubCats(TRUE);
          if (count($catsNsubs) !== 2)
              throw new Exception('Передан неверный массив категорий и подкатегорий');
          $cats = current($catsNsubs);
          $subs = end($catsNsubs);
-         foreach ($cats as $key => $c){
-             foreach ($subs as $s){
+         foreach ($cats as $key => $c) {
+             foreach ($subs as $s) {
                  if ($c['id'] === $s['category_id'])
                      $cats[$key]['subcategories'][] = $s;
              }
          }
          return $cats;
      }
-     
-     public function currentCategoryWidget($id){
+
+     public function currentCategoryWidget($id) {
          try {
              $st = $this->db->prepare("SELECT * FROM category as c LEFT JOIN subcategory as s ON c.id = s.category_id WHERE c.id = ? ORDER BY c.id LIMIT 4");
              $st->execute([$id]);
@@ -40,5 +43,22 @@ use PDO;
              $ex->getMessage();
          }
      }
+
+     public static function getCatsAndSubCats($flag = FALSE) {
+         $condition        = '';
+         $categoryModel    = new CategoryTableModel();
+         $categoryModel->setTable('category');
+         $categoryModel->readAllRecords();
+         $subCategoryModel = new SubCategoryTableModel();
+         $subCategoryModel->setTable('subcategory');
+         if (!$flag)
+             $condition .= "WHERE subcategory.category_id = " . end($categoryModel->getAllRecords())['id'];
+         $subCategoryModel->readAllRecords('*', $condition);
+         return [
+             'cats'    => array_reverse($categoryModel->getAllRecords()),
+             'subcats' => array_reverse($subCategoryModel->getAllRecords())
+         ];
+     }
+
  }
  

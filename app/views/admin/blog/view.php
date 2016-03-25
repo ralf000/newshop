@@ -5,7 +5,7 @@
         <div class="box-header with-border">
             <h3 class="box-title"><?= $article['title'] ?>
             </h3>
-            <a href="/admin/updateArticle/id/<?= $article['id'] ?>" class="btn btn-warning pull-right">Редактировать</a>
+            <a href="/admin/editArticle/id/<?= $article['id'] ?>" class="btn btn-warning pull-right">Редактировать</a>
         </div>
     </div>
     <div class="box box-default">
@@ -33,7 +33,7 @@
     </div>
     <div class="box">
         <div class="box-body">
-            <a href="/admin/updateArticle/id/<?= $article['id'] ?>" class="btn btn-warning">Редактировать</a>
+            <a href="/admin/editArticle/id/<?= $article['id'] ?>" class="btn btn-warning pull-right">Редактировать</a>
         </div>
     </div>
 </section>
