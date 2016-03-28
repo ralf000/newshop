@@ -2,6 +2,8 @@
 
  namespace app\controllers;
 
+use app\dataContainers\Product;
+use app\helpers\Basket;
 use app\helpers\Helper;
 use app\helpers\Path;
 use app\helpers\Validate;
@@ -73,6 +75,17 @@ use Exception;
              $model = new PhoneTableModel($userId, [$number], [$numtype]);
              echo $model->addRecord();
          }
+     }
+     
+     public function addToBasketAction() {
+         header('Content-type: text/plain; charset=utf-8');
+         header('Cache-Control: no-store, no-cache');
+         header('Expires: ' . date('r'));
+
+         $id = Validate::validateInputVar('id', 'INPUT_GET', 'int');
+         if (empty($id))
+             die ('Не задан id товара');
+         Basket::addProduct(new Product($id));
      }
 
      public function getCategoriesAction() {

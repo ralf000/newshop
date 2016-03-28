@@ -1,10 +1,30 @@
 <?php
- 
-   namespace app\services;
+
+ namespace app\services;
+
+use app\helpers\Helper;
+use app\helpers\Validate;
+use Exception;
 
  class Mailer {
 
-     static public function emailSender($mail, $subject = '', $content = '', $message = '') {
+     static private $data = [];
+
+     static public function emailHandler($to = FALSE) {
+         try {
+             if (!$to)
+                 $to = Helper::getSiteConfig()->contactinfo->siteMail->value;
+             if (empty(self::$data))
+                 throw new Exception('Класс не инициализирован должным образом');
+             self::emailSender((string) $to, self::$data['subject'], self::$data['message'], self::$data['email']);
+             return TRUE;
+         } catch (Exception $ex) {
+             Session::setUserMsg('Пожалуйста, заполните все поля формы', 'danger');
+             header('Location: ' . $_SERVER['REQUEST_URI']);
+         }
+     }
+
+     static public function emailSender($mail, $subject = '', $content = '', $from = '', $message = '') {
          if (empty($message)) {
              $message = <<<_HTML_
                 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -113,6 +133,17 @@ _HTML_;
 
          if (mail($mail, $subject, $message, $headers))
              return TRUE;
+     }
+
+     public static function setData(array $data, $method = 'POST') {
+         foreach ($data as $k => $v) {
+             $filter         = ($k === 'email') ? 'email' : 'str';
+             self::$data[$k] = Validate::validateInputVar($k, $method, $filter);
+         }
+     }
+
+     public function getData() {
+         return self::$data;
      }
 
  }

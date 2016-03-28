@@ -42,6 +42,7 @@
              case 'main':
                  require Path::PATH_TO_TEMPLATE . 'head.php';
                  require(Path::PATH_TO_INC . 'message.inc.php');
+                 require(Path::PATH_TO_INC . 'basket.inc.php');
                  require Path::PATH_TO_TEMPLATE . 'header.php';
                  require Path::PATH_TO_TEMPLATE . 'slider.php';
                  require Path::PATH_TO_TEMPLATE . 'sidebar.php';
@@ -53,8 +54,19 @@
              case 'withoutSlider':
                  require Path::PATH_TO_TEMPLATE . 'head.php';
                  require(Path::PATH_TO_INC . 'message.inc.php');
+                 require(Path::PATH_TO_INC . 'basket.inc.php');
                  require Path::PATH_TO_TEMPLATE . 'header.php';
                  require Path::PATH_TO_TEMPLATE . 'sidebar.php';
+                 require(dirname(__FILE__)
+                         . DIRECTORY_SEPARATOR
+                         . $file);
+                 require Path::PATH_TO_TEMPLATE . 'footer.php';
+                 break;
+             case 'withoutSliderAndSidebar':
+                 require Path::PATH_TO_TEMPLATE . 'head.php';
+                 require(Path::PATH_TO_INC . 'message.inc.php');
+                 require(Path::PATH_TO_INC . 'basket.inc.php');
+                 require Path::PATH_TO_TEMPLATE . 'header.php';
                  require(dirname(__FILE__)
                          . DIRECTORY_SEPARATOR
                          . $file);

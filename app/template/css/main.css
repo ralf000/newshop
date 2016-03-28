@@ -2520,9 +2520,18 @@ h2.title {
     color: #FE980F;
 }
 //=========================== MY ======================
+
+.category-tab{
+    min-height: 470px;
+}
+
+.category-tab .productinfo p{
+    min-height: 60px;
+}
+
 .panel-default>.panel-heading .badge{
-    color: #696763;
     background: none;
+    color: #696763;
 }
 
 .subCatTitle{
@@ -2534,12 +2543,4 @@ h2.title {
     font-family: 'Roboto', sans-serif;
     font-size: 12px;
     text-transform: uppercase;
-}
-
-.category-tab{
-    min-height: 470px;
-}
-
-.category-tab .productinfo p{
-    min-height: 60px;
 }

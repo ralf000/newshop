@@ -25,6 +25,21 @@
          ]);
      }
 
+     public static function setUserMsg($body, $type = 'info') {
+         Session::set('userMsg', [
+             'type' => $type,
+             'body' => $body
+         ]);
+     }
+
+     public static function showUserMsg() {
+         if (isset($_SESSION['userMsg']) && !empty($_SESSION['userMsg'])) {
+             $userMsg = self::get('userMsg');
+             self::delete('userMsg');
+             return '<div class="status alert alert-' . $userMsg['type'] . '" style="display: block">' . $userMsg['body'] . '</div>';
+         }
+     }
+
      public static function get($key) {
          if (isset($_SESSION[$key]))
              return $_SESSION[$key];
