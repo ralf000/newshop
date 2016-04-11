@@ -2,22 +2,23 @@
 
  namespace app\controllers;
 
- use app\helpers\SiteConfigurator;
- use app\models\AdminModel;
- use app\models\ArticleTableModel;
- use app\models\CategoryTableModel;
- use app\models\ImageTableModel;
- use app\models\ProductTableModel;
- use app\models\SliderTableModel;
- use app\models\SubCategoryTableModel;
- use app\models\UserTableModel;
- use app\models\UserUpdateTableModel;
- use app\services\DB;
- use app\services\PrivilegedUser;
- use app\services\Role;
- use app\services\Session;
- use app\widgets\AdminWidgets;
- use app\widgets\IndexWidgets;
+use app\helpers\SiteConfigurator;
+use app\models\AdminModel;
+use app\models\ArticleTableModel;
+use app\models\CategoryTableModel;
+use app\models\ImageTableModel;
+use app\models\OrderTableModel;
+use app\models\ProductTableModel;
+use app\models\SliderTableModel;
+use app\models\SubCategoryTableModel;
+use app\models\UserTableModel;
+use app\models\UserUpdateTableModel;
+use app\services\DB;
+use app\services\PrivilegedUser;
+use app\services\Role;
+use app\services\Session;
+use app\widgets\AdminWidgets;
+use app\widgets\IndexWidgets;
 
  class AdminController extends AbstractController {
 
@@ -50,7 +51,8 @@
              'clientsWidget'     => $adminWidgets->getUsersForRoleWidget(4, 'WHERE user_role.role_id = ? AND deleted != 1', 10),
              'managersWidget'    => $adminWidgets->getUsersForRoleWidget(4, 'WHERE user_role.role_id < ? AND deleted != 1', 8),
              'productsWidget'    => $adminWidgets->getAllProductsWidget('*', 'WHERE image.main = 1 ORDER BY product.created_time DESC LIMIT 5'),
-             'articles' => $adminWidgets->getAllArticlesWidget('id, title, main_image, author, created_time, updated_time', 'LIMIT 5'),
+             'articles'          => $adminWidgets->getAllArticlesWidget('id, title, main_image, author, created_time, updated_time', 'ORDER BY created_time DESC LIMIT 5'),
+             'orders'          => $adminWidgets->getAllOrders('id, body, user_id, delivery_type, delivery_date, delivery_time, status_id, created_time', 'ORDER BY created_time DESC LIMIT 2'),
              'usersActivityLine' => $adminWidgets->getUserActivity(3)
          ]);
          $output       = $model->render('../views/admin/index.php', 'admin');
@@ -156,10 +158,10 @@
          $output = $model->render('../views/admin/blog/view.php', 'admin');
          $fc->setPage($output);
      }
-     
+
      public function activityAction() {
-         $fc    = FrontController::getInstance();
-         $model        = new AdminModel('Вся активность пользователей');
+         $fc     = FrontController::getInstance();
+         $model  = new AdminModel('Вся активность пользователей');
          $model->setWidgetsData([
              'activity' => (new AdminWidgets())->getUserActivity()
          ]);
@@ -173,15 +175,11 @@
          if ($_SERVER['REQUEST_METHOD'] === 'POST') {
              $model->setTable('user');
              $model->setData();
-             if ($model->login()) {
-                 header('Location: /admin');
-             } else {
-                 header('Location: ' . $_SERVER['REQUEST_URI']);
-                 exit;
-             }
+             $model->login();
+             header('Location: /admin');
          } else {
              if ($_SESSION['user_id'])
-                 header('Location: /');
+                 header('Location: /admin');
              $output = $model->render('../views/admin/login.php', 'other');
              $fc->setPage($output);
          }
@@ -196,15 +194,10 @@
 
      public function logoutAction() {
          $fc    = FrontController::getInstance();
-         $model = new UserTableModel();
-         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-             $model->logout();
-             header('Location: /admin/login');
-             exit;
-         } else {
-             $output = $model->render('../views/admin/login.php');
-             $fc->setPage($output);
-         }
+         $model = new UserTableModel;
+         $model->logout();
+         header('Location: /admin/login');
+         exit;
      }
 
      public function siteConfigAction() {
@@ -501,6 +494,30 @@
              'offset'    => $offset
          ]);
          $output = $model->render('../views/admin/blog/blog.php', 'admin');
+         $fc->setPage($output);
+     }
+     
+     public function ordersAction() {
+         $fc           = FrontController::getInstance();
+         $model        = new AdminModel('Заказы', 'просмотр всех заказов');
+         $orderModel = new OrderTableModel();
+         
+         $page         = $fc->getParams()['page'] ? filter_var($fc->getParams()['page'], FILTER_SANITIZE_NUMBER_INT) : 1;
+         $limit        = $fc->getParams()['limit'] ? filter_var($fc->getParams()['limit'], FILTER_SANITIZE_NUMBER_INT) : 10;
+         $orderBy      = $fc->getParams()['orderBy'] ? filter_var($fc->getParams()['orderBy'], FILTER_SANITIZE_STRING) : 'id';
+         $direction    = $fc->getParams()['direction'] ? filter_var($fc->getParams()['direction'], FILTER_SANITIZE_STRING) : 'asc';
+         $offset       = $limit * $page - $limit;
+         
+         $model->setData([
+             'orders'  => $orderModel->getAllRecords('product.id, product.title, product.price, product.quantity, product.published, category.category_name, subcategory.subcategory_name, product.created_time, product.updated_time, image.image', "GROUP BY product.id ORDER BY product.$orderBy " . strtoupper($direction) . " LIMIT $limit OFFSET $offset"),
+             'limit'     => $limit,
+             'orderBy'   => $orderBy,
+             'direction' => $direction,
+             'page'      => $page,
+             'num'       => (new AdminWidgets)->getNum('product'),
+             'offset'    => $offset
+         ]);
+         $output       = $model->render('../views/admin/product/allProducts.php', 'admin');
          $fc->setPage($output);
      }
 

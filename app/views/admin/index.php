@@ -1,14 +1,17 @@
 <?
 
+ use app\helpers\Basket;
  use app\helpers\Helper;
  use app\helpers\Path;
 ?>
-<? $cntWidgets         = $this->getWidgetsData()['cntWidgets']; ?>
-<? $clientsWidget      = $this->getWidgetsData()['clientsWidget']; ?>
-<? $managersWidget     = $this->getWidgetsData()['managersWidget']; ?>
-<? $productsWidget     = $this->getWidgetsData()['productsWidget']; ?>
-<? $usersActivity      = $this->getWidgetsData()['usersActivityLine'] ?>
-<? $articles = $this->getWidgetsData()['articles']?>
+<? $cntWidgets     = $this->getWidgetsData()['cntWidgets']; ?>
+<? $clientsWidget  = $this->getWidgetsData()['clientsWidget']; ?>
+<? $managersWidget = $this->getWidgetsData()['managersWidget']; ?>
+<? $productsWidget = $this->getWidgetsData()['productsWidget']; ?>
+<? $usersActivity  = $this->getWidgetsData()['usersActivityLine'] ?>
+<? $articles       = $this->getWidgetsData()['articles'] ?>
+<? $orders         = $this->getWidgetsData()['orders']; ?>
+<? Helper::g($orders)?>
 <?
  $translate      = [
      'insert'      => 'добавил',
@@ -105,7 +108,7 @@
     <div class="row">
         <!-- Left col -->
         <section class="col-lg-7 connectedSortable">
-            
+
             <div class="box box-danger">
                 <div class="box-header with-border">
                     <h3 class="box-title">Активность</h3>
@@ -168,55 +171,48 @@
                         <table class="table no-margin">
                             <thead>
                                 <tr>
-                                    <th>Order ID</th>
-                                    <th>Item</th>
-                                    <th>Status</th>
-                                    <th>Popularity</th>
+                                    <th>ID заказа</th>
+                                    <th>ID корзины</th>
+                                    <th>Содержание</th>
+                                    <th>Тип доставки</th>
+                                    <th>Заказчик</th>
+                                    <th>Желаемая дата доставки</th>
+                                    <th>Статус</th>
+                                    <th>Добавлен</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td><a href="pages/examples/invoice.html">OR9842</a></td>
-                                    <td>Call of Duty IV</td>
-                                    <td><span class="label label-success">Shipped</span></td>
-                                    <td><div class="sparkbar" data-color="#00a65a" data-height="20"><canvas width="34" height="20" style="display: inline-block; width: 34px; height: 20px; vertical-align: top;"></canvas></div></td>
-                                </tr>
-                                <tr>
-                                    <td><a href="pages/examples/invoice.html">OR1848</a></td>
-                                    <td>Samsung Smart TV</td>
-                                    <td><span class="label label-warning">Pending</span></td>
-                                    <td><div class="sparkbar" data-color="#f39c12" data-height="20"><canvas width="34" height="20" style="display: inline-block; width: 34px; height: 20px; vertical-align: top;"></canvas></div></td>
-                                </tr>
-                                <tr>
-                                    <td><a href="pages/examples/invoice.html">OR7429</a></td>
-                                    <td>iPhone 6 Plus</td>
-                                    <td><span class="label label-danger">Delivered</span></td>
-                                    <td><div class="sparkbar" data-color="#f56954" data-height="20"><canvas width="34" height="20" style="display: inline-block; width: 34px; height: 20px; vertical-align: top;"></canvas></div></td>
-                                </tr>
-                                <tr>
-                                    <td><a href="pages/examples/invoice.html">OR7429</a></td>
-                                    <td>Samsung Smart TV</td>
-                                    <td><span class="label label-info">Processing</span></td>
-                                    <td><div class="sparkbar" data-color="#00c0ef" data-height="20"><canvas width="34" height="20" style="display: inline-block; width: 34px; height: 20px; vertical-align: top;"></canvas></div></td>
-                                </tr>
-                                <tr>
-                                    <td><a href="pages/examples/invoice.html">OR1848</a></td>
-                                    <td>Samsung Smart TV</td>
-                                    <td><span class="label label-warning">Pending</span></td>
-                                    <td><div class="sparkbar" data-color="#f39c12" data-height="20"><canvas width="34" height="20" style="display: inline-block; width: 34px; height: 20px; vertical-align: top;"></canvas></div></td>
-                                </tr>
-                                <tr>
-                                    <td><a href="pages/examples/invoice.html">OR7429</a></td>
-                                    <td>iPhone 6 Plus</td>
-                                    <td><span class="label label-danger">Delivered</span></td>
-                                    <td><div class="sparkbar" data-color="#f56954" data-height="20"><canvas width="34" height="20" style="display: inline-block; width: 34px; height: 20px; vertical-align: top;"></canvas></div></td>
-                                </tr>
-                                <tr>
-                                    <td><a href="pages/examples/invoice.html">OR9842</a></td>
-                                    <td>Call of Duty IV</td>
-                                    <td><span class="label label-success">Shipped</span></td>
-                                    <td><div class="sparkbar" data-color="#00a65a" data-height="20"><canvas width="34" height="20" style="display: inline-block; width: 34px; height: 20px; vertical-align: top;"></canvas></div></td>
-                                </tr>
+                                <? if ($orders && is_array($orders)): ?>
+                                     <? foreach ($orders as $order): ?>
+                                         <tr>
+                                             <td><?= $order['id'] ?></td>
+                                             <td><?= Basket::getBasketId($order['body']) ?></td>
+                                             <td>
+                                                 <table class="table table-bordered table-striped">
+                                                     <tr>
+                                                         <th>Название</th>
+                                                         <th>Количество</th>
+                                                     </tr>
+                                                 <? $prodList = Basket::getProductsList($order['body']) ?>
+                                                 <? if ($prodList && is_array($prodList)): ?>
+                                                 <? foreach ($prodList as $key => $p):?>
+                                                 <tr>
+                                                     <td><a href="/admin/view/product/<?=$key?>"><?= $p['title']?></a></td>
+                                                     <td><?= $p['quantity']?></td>
+                                                 </tr>
+                                                 <? endforeach;?>
+                                                 <? endif; ?>
+                                                 </table>
+                                             </td>
+                                             <td><?= $order['delivery'] ?></td>
+                                             <td><?= $order['user_name'] ?></td>
+                                             <? $delDate = (!empty($order['delivery_date']) ? $order['delivery_date'] : 'Дата не указана')?>
+                                             <td><?=$delDate ?><br><?= $order['delivery_time'] ?></td>
+                                             <td><?= $order['status']['type']?><br><span class="text-muted"><?= $order['status']['status']?></span></td>
+                                             <td><?= Helper::dateConverter($order['created_time']) ?></td>
+                                         </tr>
+                                     <? endforeach; ?>
+                                 <? endif; ?>
                             </tbody>
                         </table>
                     </div><!-- /.table-responsive -->
@@ -227,44 +223,6 @@
                 </div><!-- /.box-footer -->
             </div>
 
-            <div class="box box-warning">
-                <div class="box-header">
-                    <h3 class="box-title">Новые клиенты</h3>
-                    <div class="box-tools">
-                        <div class="input-group" style="width: 150px;">
-                            <input type="text" name="table_search" class="form-control input-sm pull-right" placeholder="Search">
-                            <div class="input-group-btn">
-                                <button class="btn btn-sm btn-default"><i class="fa fa-search"></i></button>
-                            </div>
-                        </div>
-                    </div>
-                </div><!-- /.box-header -->
-                <div class="box-body table-responsive no-padding">
-                    <table class="table table-hover">
-                        <tbody><tr>
-                                <th>ID</th>
-                                <th>Логин</th>
-                                <th>Имя</th>
-                                <th>Email</th>
-                                <th>Дата</th>
-                            </tr>
-                            <? foreach ($clientsWidget as $client): ?>
-                                 <tr>
-                                     <td><?= $client['id'] ?></td>
-                                     <td><?= $client['username'] ?></td>
-                                     <td><?= $client['full_name'] ?></td>
-                                     <td><?= $client['email'] ?></td>
-                                     <td><?= date('d-m-Y H:i:s', strtotime($client['create_time'])) ?></td>
-                                 </tr>
-                             <? endforeach; ?>
-                        </tbody></table>
-                </div><!-- /.box-body -->
-                <div class="box-footer clearfix">
-                    <a href="/admin/allUsers" class="btn btn-sm btn-warning btn-flat pull-left">Все клиенты</a>
-                    <!--<a href="javascript::;" class="btn btn-sm btn-default btn-flat pull-right">View All Orders</a>-->
-                </div><!-- /.box-footer -->
-            </div>
-            
         </section><!-- /.Left col -->
         <!-- right col (We are only adding the ID to make the widgets sortable)-->
         <section class="col-lg-5 connectedSortable">
@@ -297,8 +255,8 @@
                     <a href="/admin/allProducts" class="uppercase">Все товары</a>
                 </div><!-- /.box-footer -->
             </div>
-            
-            
+
+
             <div class="box box-warning">
                 <div class="box-header with-border">
                     <h3 class="box-title">Новые статьи</h3>
@@ -316,10 +274,10 @@
                                  </div>
                                  <div class="product-info">
                                      <a href="/admin/viewArticle/id/<?= $a['id'] ?>" class="product-title"><?= $a['title'] ?> <a href="/admin/profile/id/<?= $a['author'] ?>"><span class="label label-primary pull-right"> Автор: <?= $a['author_name'] ?></span></a>
-                                     <span class="product-description">
-                                         Создана: <?= Helper::dateConverter($a['created_time'])?><br>
-                                         Обновлена: <?= Helper::dateConverter($a['updated_time'])?>
-                                     </span>
+                                         <span class="product-description">
+                                             Создана: <?= Helper::dateConverter($a['created_time']) ?><br>
+                                             Обновлена: <?= Helper::dateConverter($a['updated_time']) ?>
+                                         </span>
                                  </div>
                              </li><!-- /.item -->
                          <? endforeach; ?>
@@ -360,6 +318,44 @@
                 </div><!-- /.box-body -->
                 <div class="box-footer text-center">
                     <a href="/admin/allUsers" class="uppercase">Все менеджеры</a>
+                </div><!-- /.box-footer -->
+            </div>
+            
+            <div class="box box-warning">
+                <div class="box-header">
+                    <h3 class="box-title">Новые клиенты</h3>
+                    <div class="box-tools">
+                        <div class="input-group" style="width: 150px;">
+                            <input type="text" name="table_search" class="form-control input-sm pull-right" placeholder="Search">
+                            <div class="input-group-btn">
+                                <button class="btn btn-sm btn-default"><i class="fa fa-search"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div><!-- /.box-header -->
+                <div class="box-body table-responsive no-padding">
+                    <table class="table table-hover">
+                        <tbody><tr>
+                                <th>ID</th>
+                                <th>Логин</th>
+                                <th>Имя</th>
+                                <th>Email</th>
+                                <th>Дата</th>
+                            </tr>
+                            <? foreach ($clientsWidget as $client): ?>
+                                 <tr>
+                                     <td><?= $client['id'] ?></td>
+                                     <td><?= $client['username'] ?></td>
+                                     <td><?= $client['full_name'] ?></td>
+                                     <td><?= $client['email'] ?></td>
+                                     <td><?= date('d-m-Y H:i:s', strtotime($client['create_time'])) ?></td>
+                                 </tr>
+                             <? endforeach; ?>
+                        </tbody></table>
+                </div><!-- /.box-body -->
+                <div class="box-footer clearfix">
+                    <a href="/admin/allUsers" class="btn btn-sm btn-warning btn-flat pull-left">Все клиенты</a>
+                    <!--<a href="javascript::;" class="btn btn-sm btn-default btn-flat pull-right">View All Orders</a>-->
                 </div><!-- /.box-footer -->
             </div>
         </section><!-- right col -->

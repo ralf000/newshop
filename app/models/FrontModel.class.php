@@ -3,6 +3,7 @@
  namespace app\models;
 
 use app\widgets\IndexWidgets;
+use app\helpers\Helper;
 
  class FrontModel extends Model {
 
@@ -13,6 +14,7 @@ use app\widgets\IndexWidgets;
          $this->setData([
              'catsAndSubCats' => IndexWidgets::sideBarMenuWidget(),
          ]);
+         Helper::redirectChecker();
      }
 
      function getWidgetsData() {

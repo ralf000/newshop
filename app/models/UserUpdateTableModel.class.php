@@ -10,7 +10,7 @@ use Exception;
 
  class UserUpdateTableModel extends UserTableModel {
 
-     public $roleId, $addresses, $phones;
+     public $roleId;
 
      public function updateRecord() {
          if (!$this->id)
@@ -47,13 +47,7 @@ use Exception;
              $this->id       = Validate::validateInputVar('id', $method, 'int');
              $this->roleId   = Validate::validateInputVar('roles', $method, 'int');
              $this->fullName = Validate::validateInputVar('fullName', $method, 'str');
-
-             $addressModel    = new AddressTableModel($this->id);
-             $addressModel->setData();
-             $this->addresses = $addressModel;
-             $phoneModel      = new PhoneTableModel($this->id);
-             $phoneModel->setData();
-             $this->phones    = $phoneModel;
+             $this->setAddressesAndPhones();
          }
      }
 

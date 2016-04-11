@@ -24,6 +24,7 @@
                  $st = $this->db->prepare("INSERT INTO phone (user_id, number, number_type) VALUES (?, ?, ?)");
                  $st->execute([$this->id, $number, $this->types[$key]]);
              }
+             return $this->db->lastInsertId();
          } catch (Exception $ex) {
              $ex->getMessage();
          }
@@ -52,6 +53,16 @@
              foreach ($_POST['numtype'] as $id => $type) {
                  $this->types[(int) $id] = filter_var($type, FILTER_SANITIZE_STRING);
              }
+         }
+     }
+     
+     public function checkPhone($number) {
+         try {
+             $st = $this->db->prepare("SELECT id FROM phone WHERE number LIKE ?");
+             $st->execute([$number]);
+             return (count($st->fetchAll(\PDO::FETCH_ASSOC)) > 0) ? TRUE : FALSE;
+         } catch (Exception $ex) {
+             $ex->getMessage();
          }
      }
 

@@ -2,19 +2,21 @@
 
  namespace app\models;
 
-use app\helpers\Generator;
-use app\helpers\Helper;
-use app\helpers\Path;
-use app\helpers\Validate;
-use app\services\Mailer;
-use app\services\Role;
-use app\services\Session;
-use Exception;
-use PDO;
+ use app\helpers\Generator;
+ use app\helpers\Helper;
+ use app\helpers\Path;
+ use app\helpers\User;
+ use app\helpers\Validate;
+ use app\services\Cookie;
+ use app\services\Mailer;
+ use app\services\Role;
+ use app\services\Session;
+ use Exception;
+ use PDO;
 
  class UserTableModel extends TableModelAbstract {
 
-     protected $login, $password, $dpassword, $remember, $fullName, $email, $photo, $validateKey, $path, $userContacts;
+     protected $login, $password, $dpassword, $remember, $fullName, $email, $photo, $validateKey, $path, $userContacts, $addresses, $phones;
      protected $user, $id;
 
      public function __construct($login = '', $password = '') {
@@ -28,7 +30,7 @@ use PDO;
          if ($user) {
              $this->user = $user;
              $this->auth($this->user['id']);
-             if (self::checkUser()) {
+             if (User::checkUser()) {
                  if (!empty($this->remember) && $this->remember > 0) {
                      $this->setRememberCookie($this->user['id']);
                  }
@@ -43,7 +45,7 @@ use PDO;
          $this->setTable('user');
          $this->readRecordsById('id', 'password_hash');
          $hash = $this->getRecordsById()[0]['password_hash'];
-         setcookie('remember', $this->user['id'] . '-' . md5($this->user['id'] . $_SERVER['REMOTE_ADDR'] . crypt($this->password, $hash)), time() + 3600 * 24 * 7, '/admin');
+         Cookie::set('remember', $this->user['id'] . '-' . md5($this->user['id'] . $_SERVER['REMOTE_ADDR'] . crypt($this->password, $hash)), time() + 3600 * 24 * 7, '/admin');
      }
 
      public function auth($userId) {
@@ -53,8 +55,10 @@ use PDO;
      }
 
      public function logout() {
+         Cookie::delete('remember');
+         Cookie::delete('generated');
          Session::destroy();
-         setcookie('remember', '', -3600);
+//         Session::unseted(['user_id', 'generated', 'username']);
          unset($this->user);
      }
 
@@ -62,6 +66,8 @@ use PDO;
          try {
              if ($this->checkUniq()) {
                  $this->addRecord();
+                 if (!empty($this->id))
+                     $this->addAddressesAndPhones();
                  if ($this->photo)
                      $this->updatePhoto();
                  //send mail for check user's email
@@ -75,54 +81,54 @@ use PDO;
          }
      }
 
-     public static function checkUser() {
-         // Предотвращение перехвата сеанса
-         $sessUserId = Session::get('user_id');
-         if (!(isset($sessUserId))) {
-             Session::destroy();
-             unset($this->user);
-             Session::setMsg('Произошла ошибка. Пожалуйста авторизуйтесь заново', 'warning');
-             return FALSE;
-         }
-         // Предотвращение фиксации сеанса (включая ini_set('session.use_only_cookies', true);)
-         $sessGenerated = Session::get('generated');
-         if (!isset($sessGenerated) || $sessGenerated < (time() - 30)) {
-             session_regenerate_id();
-             $_SESSION['generated'] = time();
-         }
-         return TRUE;
-     }
-
      public function addRecord() {
          try {
              $this->setUserIdForDB();
              $st       = $this->db->prepare("INSERT INTO $this->table (`username`, `full_name`, `email`, `password_hash`, `validate_key`, `create_time`) VALUES (:username, :full_name, :email, :password_hash, :validate_key, :create_time)");
-             $st->execute([':username' => $this->login, ':full_name' => $this->fullName, ':email' => $this->email, ':password_hash' => $this->hs($this->password), ':validate_key' => $this->validateKey, ':create_time' => date('Y-m-d H:i:s')]);
+             $st->execute([
+                 ':username' => $this->login, 
+                 ':full_name' => $this->fullName, 
+                 ':email' => $this->email, 
+                 ':password_hash' => User::hs($this->password),
+                 ':validate_key' => $this->validateKey, 
+                 ':create_time' => date('Y-m-d H:i:s')
+                 ]);
              $this->id = $this->db->lastInsertId();
          } catch (Exception $ex) {
              $ex->getMessage();
          }
      }
+     
+     protected function addAddressesAndPhones(){
+         if (!empty($this->addresses) && !empty($this->phones)){
+             $this->addresses->setId($this->id);
+             $this->addresses->addRecord();
+             $this->phones->setId($this->id);
+             $this->phones->addRecord();
+         }
+     }
 
-     public function readUserAddress() {
+     public function readUserAddress($condField = 'user_id') {
          if (empty($this->id))
              throw new Exception('Не задан id пользователя');
          try {
-             $st                            = $this->db->prepare("SELECT `id`, `address`, `postal_code` FROM address WHERE `user_id` = ?");
+             $st                            = $this->db->prepare("SELECT `id`, `address`, `postal_code` FROM address WHERE `{$condField}` = ?");
              $st->execute([$this->id]);
              $this->userContacts['address'] = $st->fetchAll(PDO::FETCH_ASSOC);
+             return $this->userContacts['address'];
          } catch (Exception $ex) {
              $ex->getMessage();
          }
      }
 
-     public function readUserPhones() {
+     public function readUserPhones($condField = 'user_id') {
          if (empty($this->id))
              throw new Exception('Не задан id пользователя');
          try {
-             $st                           = $this->db->prepare("SELECT `id`, `number`, `number_type` FROM `phone` WHERE `user_id` = ?");
+             $st                           = $this->db->prepare("SELECT `id`, `number`, `number_type` FROM `phone` WHERE `{$condField}` = ?");
              $st->execute([$this->id]);
              $this->userContacts['phones'] = $st->fetchAll(PDO::FETCH_ASSOC);
+             return $this->userContacts['phones'];
          } catch (Exception $ex) {
              $ex->getMessage();
          }
@@ -164,17 +170,6 @@ use PDO;
 //         $_SESSION['token'] = $token;
 //         output_add_rewrite_var('token', $token);
 //     }
-     //Современный способ солить и хешировать пароль
-     /*      * Функция солит и хеширует пароль
-      * @param  string $password
-      * @return string хеш пароля
-      */
-     public function hs($password) {
-         if (defined('CRYPT_BLOWFISH') && CRYPT_BLOWFISH) {
-             $salt = '$2y$11$' . substr(md5(uniqid(rand(), true)), 0, 22); //$2y$11$ - специальный ключ
-             return crypt($password, $salt);
-         }
-     }
 
      private function checkCreds() {
          try {
@@ -186,7 +181,7 @@ use PDO;
                      Session::setMsg('Для входа необходимо активировать ваш аккаунт при помощи письма, отправленного на ваш электронный ящик ранее', 'warning');
                      return FALSE;
                  }
-                 if ($this->confirmPassword($user['password_hash'], $this->password))
+                 if (User::confirmPassword($user['password_hash'], $this->password))
                      return $user;
              }
              Session::setMsg('Неверный логин или пароль', 'danger');
@@ -210,10 +205,6 @@ use PDO;
          }
      }
 
-     private function confirmPassword($hash, $password) {
-         return crypt($password, $hash) === $hash;
-     }
-
      public function setData($formType = '', $method = 'INPUT_POST') {
          $this->login    = Validate::validateInputVar('username', $method, 'str');
          $this->password = Validate::validateInputVar('pass', $method, 'str');
@@ -225,6 +216,9 @@ use PDO;
              $this->validateKey = Generator::generate(10);
              $this->path        = Path::USERIMG_UPLOAD_DIR;
              $this->dpassword   = Validate::validateInputVar('dpass', $method, 'str');
+             
+             $this->setAddressesAndPhones();
+             
              return $this->password === $this->dpassword ? TRUE : FALSE;
          }
      }
@@ -238,11 +232,9 @@ use PDO;
          if (!(empty($this->email) && empty($this->validateKey))) {
              $user = $this->getUserEmail('id, username, email, validate_key, create_time');
              if ($user['validate_key'] && $user['validate_key'] === $this->validateKey && $user['create_time'] && time() <= strtotime($user['create_time'] . ' + 2 week'))
-                 $this->userActivate();
+                 return $this->userActivate();
              else {
-                 Session::setMsg('Невозможность активировать данный аккаунт. Пожалуйста зарегистрируйтесь заново', 'warning');
-                 header('Location: user/registration');
-                 exit;
+                 return FALSE;
              }
          }
      }
@@ -259,6 +251,15 @@ use PDO;
          } catch (Exception $ex) {
              $ex->getMessage();
          }
+     }
+
+     protected function setAddressesAndPhones() {
+         $addressModel    = new AddressTableModel($this->id);
+         $addressModel->setData();
+         $this->addresses = $addressModel;
+         $phoneModel      = new PhoneTableModel($this->id);
+         $phoneModel->setData();
+         $this->phones    = $phoneModel;
      }
 
      private function getUserEmail($fields = '*') {
@@ -282,6 +283,7 @@ use PDO;
              $st = $this->db->prepare("UPDATE $this->table SET `validated` = ?, `validate_key` = ?, `update_time` = ? WHERE id = ?");
              $st->execute([1, NULL, date('Y-m-d H:i:s'), $this->user['id']]);
              Role::setRoleForUser($this->db, $this->user['id']);
+             return TRUE;
          } catch (Exception $ex) {
              $ex->getMessage();
          }
@@ -297,7 +299,7 @@ use PDO;
                          <a href="' . $siteHost . '/user/validate/email/' . $this->email . '/key/' . $this->validateKey . '">Подтвердить email</a>';
          Mailer::emailSender($this->email, $subject, $content);
      }
-
+     
      public function setPath($path) {
          $this->path = $path;
      }

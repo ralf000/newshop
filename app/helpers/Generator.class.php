@@ -3,6 +3,7 @@
  namespace app\helpers;
 
  use app\controllers\FrontController;
+ use app\services\Session;
  use app\widgets\AdminWidgets;
 
  class Generator {
@@ -142,7 +143,7 @@
              $item .= '<h1><span>' . mb_substr($slide['title_h1'], 0, 1) . '</span>' . mb_substr($slide['title_h1'], 1) . '</h1>' . "\n"; //первый символ другого цвета
              $item .= '<h2>' . $slide['title_h2'] . '</h2>' . "\n";
              $item .= '<p>' . $slide['content'] . '</p>' . "\n";
-             $item .= '<a href="'.$slide['link'].'" class = "btn btn-default get">Подробнее</a>' . "\n";
+             $item .= '<a href="' . $slide['link'] . '" class = "btn btn-default get">Подробнее</a>' . "\n";
              $item .= '</div>' . "\n";
 
              $item .= '<div class="col-sm-6">' . "\n";
@@ -158,7 +159,28 @@
          $output .= '<a href="#slider-carousel" class="right control-carousel hidden-xs" data-slide="next"><i class="fa fa-angle-right"></i></a>' . "\n";
 
          $output .= '</div>';
-         
+
+         return $output;
+     }
+
+     public static function topMenu($menu, $user) {
+         $output = '';
+         if (empty($menu) || !is_array($menu))
+             return FALSE;
+         foreach ($menu as $v) {
+             if ($user) {
+                 if (strstr($v->link, strtolower('login')))
+                     $output .= ' <li><a href = "/user/profile/id/'
+                             . Session::get('user_id') . '"><i class = "' . $v->icon . '"></i>' . $user
+                             . '</a></li>' . "\n";
+                 else
+                     $output .= ' <li><a href = "' . $v->link . '"><i class = "' . $v->icon . '"></i>' . $v->value . '</a></li>' . "\n";
+             }else {
+                 if (!strstr($v->link, strtolower('logout')))
+                     $output .= ' <li><a href = "' . $v->link . '"><i class = "' . $v->icon . '"></i>' . $v->value . '</a></li>' . "\n";
+             }
+         }
+
          return $output;
      }
 

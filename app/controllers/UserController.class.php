@@ -1,10 +1,12 @@
 <?php
- 
+
  namespace app\controllers;
 
-use app\models\UserTableModel;
-use app\services\Session;
- 
+ use app\helpers\Helper;
+ use app\models\FrontModel;
+ use app\models\UserTableModel;
+ use app\services\Session;
+
  class UserController extends AbstractController {
 
      protected function requiredRoles() {
@@ -26,14 +28,13 @@ use app\services\Session;
          if ($_SERVER['REQUEST_METHOD'] === 'POST') {
              $model->setTable('user');
              if ($model->setData('reg')) {
-                 $model->registration();
-//                 if ($model->login()) {
-                 Session::setMsg('На ваш электронный ящик отправлено письмо, содержащее ссылку для активации аккаунта', 'info');
-                 header('Location: /');
+                 if ($model->registration()) {
+                     Session::setMsg('На ваш электронный ящик отправлено письмо, содержащее ссылку для активации аккаунта', 'info');
+                     header('Location: /');
+                 } else {
+                     header('Location: /user/login');
+                 }
                  exit;
-//                 }
-//                 else
-//                     header('Location: /user/login');
              }
          } else {
              if ($_SESSION['user_id'])
@@ -44,48 +45,59 @@ use app\services\Session;
      }
 
      public function loginAction() {
-         $fc    = FrontController::getInstance();
-         $model = new UserTableModel();
+         $fc        = FrontController::getInstance();
+         $model     = new FrontModel();
+         $userModel = new UserTableModel();
+
          if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-             $model->setTable('user');
-             $model->setData();
-             if ($model->login()) {
-                 $ref = Session::get('referer');
-                 Session::delete('referer');
-                 header('Location: ' . $ref ? $ref : '/admin');
-             } else {
-                 header('Location: ' . $_SERVER['REQUEST_URI']);
+             $userModel->setTable('user');
+             $userModel->setData();
+             $userModel->login();
+
+             $redirect = Helper::getRedirect();
+             if (is_array($redirect) && !empty($redirect['url'])) {
+                 $redirect = implode('#', $redirect);
+                 header('Location: ' . $redirect);
+                 exit;
              }
+
+             if ($fc->getAction() !== 'loginAction')
+                 header('Location: ' . $_SERVER['REQUEST_URI']);
+             else
+                 header('Location: ' . '/');
              exit;
          } else {
              if ($_SESSION['user_id'])
                  header('Location: /');
-             $output = $model->render('../views/user/login.php');
+             $output = $model->render('../views/user/login.php', 'withoutSliderAndSidebar');
              $fc->setPage($output);
          }
      }
 
      public function logoutAction() {
-         $fc    = FrontController::getInstance();
          $model = new UserTableModel();
-         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-             $model->logout();
-             header('Location: /user');
-             exit;
-         } else {
-             $output = $model->render('../views/user/index.php');
-             $fc->setPage($output);
-         }
+         $model->logout();
+         header('Location: ' . '/');
+         exit;
      }
 
      public function validateAction() {
          $fc     = FrontController::getInstance();
          $model  = new UserTableModel();
-         $model->setTable('user');
-         $model->setValidateUserData($fc->getParams());
-         $model->checkValidKey();
-         $output = $model->render('../views/user/validate.php');
+//         $model->setTable('user');
+//         if (empty($fc->getParams()['email']) && empty($fc->getParams()['key'])){
+//             header('Location: /');
+//             exit;
+//         }
+//         $model->setValidateUserData($fc->getParams());
+//         if ($model->checkValidKey()) {
+         $output = $model->render('../views/user/validate.php', 'withoutSliderAndSidebar');
          $fc->setPage($output);
+//         } else {
+//             Session::setMsg('Невозможно активировать данный аккаунт. Пожалуйста зарегистрируйтесь заново', 'warning');
+//             header('Location: user/registration');
+//             exit;
+//         }
      }
 
  }

@@ -1,6 +1,6 @@
-<? $title = $this->getData()[0]['title'] ? $this->getData()[0]['title'] : ''; ?>
+<? $title    = $this->getData()[0]['title'] ? $this->getData()[0]['title'] : ''; ?>
 <? $subTitle = $this->getData()[0]['subTitle'] ? $this->getData()[0]['subTitle'] : ''; ?>
-<? $user = $this->getData()[0]['user']; ?>
+<? $user     = $this->getData()[0]['user']; ?>
 <body class="hold-transition skin-blue sidebar-mini">
     <div class="wrapper">
         <header class="main-header">
@@ -21,7 +21,7 @@
                     <ul class="nav navbar-nav">
                         <li class="dropdown user user-menu">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                <img src="/<?=$user['photo'] ?>" class="user-image" alt="User Image">
+                                <img src="/<?= $user['photo'] ?>" class="user-image" alt="User Image">
                                 <span class="hidden-xs"><?= $user['full_name'] ?></span>
                             </a>
                             <ul class="dropdown-menu">
@@ -48,12 +48,10 @@
                                 <!-- Menu Footer-->
                                 <li class="user-footer">
                                     <div class="pull-left">
-                                        <a href="/admin/profile/id/<?= $user['id']?>" class="btn btn-default btn-flat">Профиль</a>
+                                        <a href="/admin/profile/id/<?= $user['id'] ?>" class="btn btn-default btn-flat">Профиль</a>
                                     </div>
                                     <div class="pull-right">
-                                        <form action="/admin/logout" method="post">
-                                            <button type="submit" class="btn btn-default btn-flat">Выйти</button>
-                                        </form>
+                                        <a href="/admin/logout" class="btn btn-default btn-flat">Выйти</a>
                                     </div>
                                 </li>
                             </ul>
@@ -71,12 +69,12 @@
             <!-- Content Header (Page header) -->
             <section class="content-header">
                 <h1>
-                    <?=$title?>
-                    <small><?=$subTitle?></small>
+                    <?= $title ?>
+                    <small><?= $subTitle ?></small>
                 </h1>
-                <?=$this->breadCrumbs()?>
-<!--                <ol class="breadcrumb">
-                    <li><a href="/admin"><i class="fa fa-dashboard"></i> Главная</a></li>
-                    <li class="active"></li>
-                </ol>-->
+                <?= $this->breadCrumbs() ?>
+                <!--                <ol class="breadcrumb">
+                                    <li><a href="/admin"><i class="fa fa-dashboard"></i> Главная</a></li>
+                                    <li class="active"></li>
+                                </ol>-->
             </section>

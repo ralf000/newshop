@@ -12,12 +12,12 @@ function getProductsBySubcategory(id) {
                                         <div class="product-image-wrapper">\n\
                                             <div class="single-products">\n\
                                                 <div class="productinfo text-center">\n\
-                                                <a href="/product/view/id/' + v['id'] + '">\n\
+                                                <a href="/product/view/id/' + v['product_id'] + '">\n\
                                                     <img src="/' + v['image'] + '" alt="' + v['title'] + '" />\n\
                                                 </a>\n\
                                                 <h2>' + v['price'] + ' <i class="fa fa-rub"></i></h2>\n\
                                                 <p>' + v['title'] + '</p>\n\
-                                                <a href="' + v['id'] + '" class="btn btn-default add-to-cart">\n\
+                                                <a href="' + v['product_id'] + '" class="btn btn-default add-to-cart current">\n\
                                                     <i class="fa fa-shopping-cart"></i>\n\
                                                     В корзину\n\
                                                 </a>\n\
@@ -33,16 +33,15 @@ function getProductsBySubcategory(id) {
                 html: items.join('')
             }).appendTo(box);
             box.fadeIn();
-            
-            $('.add-to-cart').on('click', function (e) {
-                console.log(111111111);
+
+            $('.add-to-cart.current').on('click', function (e) {
                 e.preventDefault();
                 var t = $(this);
                 var id = Number(t.attr('href'));
                 var url = '/ajax/addToBasket';
                 $.get(url, {id: id}, function (data, status, jqXHR) {
                     if (status === 'success') {
-                        console.log(data);
+                        initBasket();//main.js
                     }
                 });
             });
@@ -55,7 +54,7 @@ function initIndex() {
     getProductsBySubcategory(id);
 }
 
-function addHandlersForIndex() {  
+function addHandlersForIndex() {
     $('.showSubsProducts').on('click', function (e) {
         e.preventDefault();
         var t = $(this);

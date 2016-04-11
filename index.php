@@ -22,10 +22,10 @@ use app\services\Session;
 
   //классы composer
  require_once '/app/extensions/vendor/autoload.php';
-
+ 
  Session::init();
  Basket::init();
-
+ 
  /* Инициализация и запуск FrontController */
  $controller = FrontController::getInstance();
  $controller->route();

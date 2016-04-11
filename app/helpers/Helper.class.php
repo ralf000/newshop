@@ -2,8 +2,10 @@
 
  namespace app\helpers;
 
+ use app\services\Session;
  use Reflection;
  use ReflectionClass;
+ use function mb_substr;
 
  Class Helper {
 
@@ -138,6 +140,23 @@
      static function strSplitter($str, $length = 21) {
          $dots = (strlen($str) > $length) ? '...' : '';
          return mb_substr($str, 0, $length) . $dots;
+     }
+
+     static function redirectChecker() {
+         if (filter_has_var(INPUT_GET, 'redirect')) {
+             Session::set('redirect', filter_input(INPUT_GET, 'redirect', FILTER_SANITIZE_URL));
+             if (filter_has_var(INPUT_GET, 'hash'))
+                 Session::set('redirectHash', filter_input(INPUT_GET, 'hash', FILTER_SANITIZE_STRING));
+         }else {
+             return FALSE;
+         }
+     }
+
+     static function getRedirect() {
+         $redirect['url'] = Session::get('redirect');
+         $redirect['hash'] = Session::get('redirectHash');
+         Session::unseted(['redirect', 'redirectHash']);
+         return $redirect;
      }
 
  }

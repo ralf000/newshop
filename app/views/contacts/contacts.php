@@ -44,7 +44,7 @@
                         <p>Email: info@newshop.ru</p>
                     </address>
                     <div class="social-networks">
-                        <h2 class="title text-center">Социальные сети</h2>
+                        <h2 class="title text-center">Мы в социальных сетях</h2>
                         <ul>
                             <? if (isset($cfg->social) && !empty($cfg->social)): ?>
                                  <? foreach ($cfg->social as $v): ?>

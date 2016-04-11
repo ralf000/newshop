@@ -2,22 +2,23 @@
 
  namespace app\widgets;
 
- use app\models\ArticleTableModel;
- use app\models\ProductTableModel;
- use app\models\UserTableModel;
- use Exception;
- use PDO;
+use app\models\ArticleTableModel;
+use app\models\OrderTableModel;
+use app\models\ProductTableModel;
+use app\models\UserTableModel;
+use Exception;
+use PDO;
 
  class AdminWidgets extends WidgetAbstract {
 
      public function getCntWidgets() {
          $products = $this->getNum('product');
-         $orders   = $this->getNum('order');
+         $orders   = $this->getNum('order_body');
          $clients  = $this->getNum('user', 'INNER JOIN user_role ON user.id = user_role.user_id WHERE role_id = 4');
          $comments = $this->getNum('comment');
 
          $productsPerMonts = $this->getNum('product', 'where created_time > LAST_DAY(DATE_SUB(CURDATE(), INTERVAL 1 MONTH)) AND created_time < DATE_ADD(LAST_DAY(CURDATE()), INTERVAL 1 DAY)');
-         $ordersPerMonth   = $this->getNum('order', 'where create_time > LAST_DAY(DATE_SUB(CURDATE(), INTERVAL 1 MONTH)) AND create_time < DATE_ADD(LAST_DAY(CURDATE()), INTERVAL 1 DAY)');
+         $ordersPerMonth   = $this->getNum('order_body', 'where created_time > LAST_DAY(DATE_SUB(CURDATE(), INTERVAL 1 MONTH)) AND created_time < DATE_ADD(LAST_DAY(CURDATE()), INTERVAL 1 DAY)');
          $clientsPerMonth  = $this->getNum('user', 'INNER JOIN user_role ON user.id = user_role.user_id where role_id = 4 AND user.create_time > LAST_DAY(DATE_SUB(CURDATE(), INTERVAL 1 MONTH)) AND user.create_time < DATE_ADD(LAST_DAY(CURDATE()), INTERVAL 1 DAY)');
          $commentsPerMonth = $this->getNum('comment', 'where create_time > LAST_DAY(DATE_SUB(CURDATE(), INTERVAL 1 MONTH)) AND create_time < DATE_ADD(LAST_DAY(CURDATE()), INTERVAL 1 DAY)');
          return [
@@ -61,6 +62,22 @@
              $userModel->setId($record['author']);
              $userModel->setTable('user');
              $records[$key]['author_name'] = $userModel->readRecordsById('id', 'username')[0]['username'];
+         }
+         return $records;
+     }
+     
+     public function getAllOrders($fields = '*', $condition = '') {
+         $model = new OrderTableModel();
+         $model->setTable('order_body');
+         $model->readAllRecords($fields, $condition);
+         $records = $model->getAllRecords();
+         $userModel = new UserTableModel;
+         foreach ($records as $key => $record) {
+             $userModel->setId((int) $record['user_id']);
+             $userModel->setTable('user');
+             $records[$key]['user_name'] = $userModel->readRecordsById('id', 'username')[0]['username'];
+             $records[$key]['delivery'] = $model->getDeliveryForId((int) $record['delivery_type']);
+             $records[$key]['status'] = $model->getStatusForId((int) $record['status_id']);
          }
          return $records;
      }

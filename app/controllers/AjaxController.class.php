@@ -2,26 +2,27 @@
 
  namespace app\controllers;
 
-use app\dataContainers\Product;
-use app\helpers\Basket;
-use app\helpers\Helper;
-use app\helpers\Path;
-use app\helpers\Validate;
-use app\models\AddressTableModel;
-use app\models\ArticleTableModel;
-use app\models\CategoryTableModel;
-use app\models\ImageTableModel;
-use app\models\PhoneTableModel;
-use app\models\ProductTableModel;
-use app\models\SliderTableModel;
-use app\models\SubCategoryTableModel;
-use app\models\UserTableModel;
-use app\models\UserUpdateTableModel;
-use app\services\DB;
-use app\services\Role;
-use app\services\Session;
-use app\services\UploadHandler;
-use Exception;
+ use app\dataContainers\Product;
+ use app\helpers\Basket;
+ use app\helpers\Helper;
+ use app\helpers\Path;
+ use app\helpers\User;
+ use app\helpers\Validate;
+ use app\models\AddressTableModel;
+ use app\models\ArticleTableModel;
+ use app\models\CategoryTableModel;
+ use app\models\ImageTableModel;
+ use app\models\PhoneTableModel;
+ use app\models\ProductTableModel;
+ use app\models\SliderTableModel;
+ use app\models\SubCategoryTableModel;
+ use app\models\UserTableModel;
+ use app\models\UserUpdateTableModel;
+ use app\services\DB;
+ use app\services\Role;
+ use app\services\Session;
+ use app\services\UploadHandler;
+ use Exception;
 
  class AjaxController extends AbstractController {
 
@@ -54,7 +55,7 @@ use Exception;
          header('Cache-Control: no-store, no-cache');
          header('Expires: ' . date('r'));
 
-         $userId = Validate::validateInputVar('userid', 'INPUT_POST', 'int');
+         $userId  = Validate::validateInputVar('userid', 'INPUT_POST', 'int');
          $address = Validate::validateInputVar('address', 'INPUT_POST', 'str');
          $postal  = Validate::validateInputVar('postal', 'INPUT_POST', 'str');
          if (!(empty($address) && $userId)) {
@@ -62,21 +63,21 @@ use Exception;
              echo $model->addRecord();
          }
      }
-     
+
      public function addUserPhoneAction() {
          header('Content-type: text/plain; charset=utf-8');
          header('Cache-Control: no-store, no-cache');
          header('Expires: ' . date('r'));
 
-         $userId = Validate::validateInputVar('userid', 'INPUT_POST', 'int');
-         $number = Validate::validateInputVar('number', 'INPUT_POST', 'int');
-         $numtype  = Validate::validateInputVar('numtype', 'INPUT_POST', 'str');
+         $userId  = Validate::validateInputVar('userid', 'INPUT_POST', 'int');
+         $number  = Validate::validateInputVar('number', 'INPUT_POST', 'int');
+         $numtype = Validate::validateInputVar('numtype', 'INPUT_POST', 'str');
          if (!(empty($number) && $userId)) {
              $model = new PhoneTableModel($userId, [$number], [$numtype]);
              echo $model->addRecord();
          }
      }
-     
+
      public function addToBasketAction() {
          header('Content-type: text/plain; charset=utf-8');
          header('Cache-Control: no-store, no-cache');
@@ -84,7 +85,7 @@ use Exception;
 
          $id = Validate::validateInputVar('id', 'INPUT_GET', 'int');
          if (empty($id))
-             die ('Не задан id товара');
+             die('Не задан id товара');
          Basket::addProduct(new Product($id));
      }
 
@@ -173,6 +174,30 @@ use Exception;
              $this->getCategoriesAction();
      }
 
+     public function getUserAddressesAction() {
+         header('Content-type: application/json; charset=utf-8');
+         header('Cache-Control: no-store, no-cache');
+         header('Expires: ' . date('r'));
+
+         $id = Validate::validateInputVar('id', 'INPUT_GET', 'int');
+
+         $model = new UserTableModel();
+         $model->setId($id);
+         echo json_encode($model->readUserAddress());
+     }
+
+     public function getUserPhonesAction() {
+         header('Content-type: application/json; charset=utf-8');
+         header('Cache-Control: no-store, no-cache');
+         header('Expires: ' . date('r'));
+
+         $id = Validate::validateInputVar('id', 'INPUT_GET', 'int');
+
+         $model = new UserTableModel();
+         $model->setId($id);
+         echo json_encode($model->readUserPhones());
+     }
+
      public function deleteSubCategoryAction($field = 'category_id', $id = NULL) {
          header('Content-type: text/plain; charset=utf-8');
          header('Cache-Control: no-store, no-cache');
@@ -217,7 +242,7 @@ use Exception;
          $model->setId($id);
          echo $model->deleteProduct();
      }
-     
+
      public function deleteSlideAction() {
          header('Content-type: text/plain; charset=utf-8');
          header('Cache-Control: no-store, no-cache');
@@ -274,12 +299,24 @@ use Exception;
          ]);
      }
 
+     public function getProductsFromBasketAction() {
+         header('Content-Type: application/json; charset=utf-8');
+         header('Cache-Control: no-store, no-cache');
+         header('Expires: ' . date('r'));
+
+         $mode = FALSE;
+         if (filter_has_var(INPUT_GET, 'mode'))
+             $mode = (bool) filter_input(INPUT_GET, 'mode', FILTER_SANITIZE_NUMBER_INT);
+
+         echo json_encode(Basket::getProductsFromBasket($mode));
+     }
+
      public function getProductsBySubcategoryIdAction() {
          header('Content-Type: application/json; charset=utf-8');
          header('Cache-Control: no-store, no-cache');
          header('Expires: ' . date('r'));
-         
-         $id = Validate::validateInputVar('id', 'INPUT_GET', 'int');
+
+         $id    = Validate::validateInputVar('id', 'INPUT_GET', 'int');
          $model = new ProductTableModel();
          $model->setTable('product AS p, image AS i');
          $model->setId($id);
@@ -295,6 +332,14 @@ use Exception;
          exit;
      }
 
+     public function getNumProductsFromBasketAction() {
+         header('Content-Type: text/plain; charset=utf-8');
+         header('Cache-Control: no-store, no-cache');
+         header('Expires: ' . date('r'));
+
+         echo Basket::getNumProducts();
+     }
+
      public function deleteUserAction() {
          header('Content-Type: application/json; charset=utf-8');
          header('Cache-Control: no-store, no-cache');
@@ -308,31 +353,31 @@ use Exception;
          $userModel->deleteUser($id);
          echo TRUE;
      }
-     
+
      public function deleteUserAddressAction() {
          header('Content-Type: application/json; charset=utf-8');
          header('Cache-Control: no-store, no-cache');
          header('Expires: ' . date('r'));
-         
-         $id = Validate::validateInputVar('id', 'INPUT_GET', 'int');
+
+         $id    = Validate::validateInputVar('id', 'INPUT_GET', 'int');
          $model = new AddressTableModel();
          $model->setId($id);
          $model->setTable('address');
          echo $model->deleteRecord();
      }
-     
+
      public function deleteUserPhoneAction() {
          header('Content-Type: application/json; charset=utf-8');
          header('Cache-Control: no-store, no-cache');
          header('Expires: ' . date('r'));
-         
-         $id = Validate::validateInputVar('id', 'INPUT_GET', 'int');
+
+         $id    = Validate::validateInputVar('id', 'INPUT_GET', 'int');
          $model = new PhoneTableModel();
          $model->setId($id);
          $model->setTable('phone');
          echo $model->deleteRecord();
      }
-     
+
      public function deleteArticleAction() {
          header('Content-type: text/plain; charset=utf-8');
          header('Cache-Control: no-store, no-cache');
@@ -346,6 +391,82 @@ use Exception;
          $model->setTable('article');
          echo $model->deleteRecord();
      }
+
+     public function deleteProductFromBasketAction() {
+         header('Content-type: text/plain; charset=utf-8');
+         header('Cache-Control: no-store, no-cache');
+         header('Expires: ' . date('r'));
+
+         if (filter_has_var(INPUT_GET, 'id'))
+             $id = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
+
+         echo Basket::deleteProduct(new Product($id));
+     }
+
+     public function incrementProductFromBasketAction() {
+         header('Content-type: text/plain; charset=utf-8');
+         header('Cache-Control: no-store, no-cache');
+         header('Expires: ' . date('r'));
+
+         if (filter_has_var(INPUT_GET, 'id'))
+             $id = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
+
+         echo Basket::addProduct(new Product($id));
+     }
+
+     public function reduseProductFromBasketAction() {
+         header('Content-type: text/plain; charset=utf-8');
+         header('Cache-Control: no-store, no-cache');
+         header('Expires: ' . date('r'));
+
+         if (filter_has_var(INPUT_GET, 'id'))
+             $id = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
+
+         echo Basket::redusProduct(new Product($id));
+     }
+
+     public function cleanBasketAction() {
+         header('Content-type: text/plain; charset=utf-8');
+         header('Cache-Control: no-store, no-cache');
+         header('Expires: ' . date('r'));
+
+         echo Basket::cleanBasket();
+     }
+
+     public function checkUserAction() {
+         header('Content-type: text/plain; charset=utf-8');
+         header('Cache-Control: no-store, no-cache');
+         header('Expires: ' . date('r'));
+
+         echo User::checkUser();
+     }
+
+     public function setUserMsgAction() {
+         header('Content-type: text/plain; charset=utf-8');
+         header('Cache-Control: no-store, no-cache');
+         header('Expires: ' . date('r'));
+         
+         $msg = Validate::validateInputVar('msg', 'INPUT_GET', 'str');
+
+         if ($msg)
+             Session::setMsg ($msg);
+         else
+             echo FALSE;
+     }
+
+//     public function sessionGetAction() {
+//         header('Content-type: text/plain; charset=utf-8');
+//         header('Cache-Control: no-store, no-cache');
+//         header('Expires: ' . date('r'));
+//         
+//         if (filter_has_var(INPUT_POST, 'key') && filter_has_var(INPUT_POST, 'value'))
+//             $key = filter_input(INPUT_GET, 'key', FILTER_SANITIZE_STRING);
+//             $value = filter_input(INPUT_GET, 'value', FILTER_SANITIZE_STRING);
+//             
+////             echo Session::set($key, $value);
+//             echo $key;
+//             echo $value;
+//     }
 
      private function clearAvatarAction() {
          $dir = Path::USERIMG_UPLOAD_DIR . Session::get('user_id');
