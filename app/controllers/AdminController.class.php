@@ -2,23 +2,23 @@
 
  namespace app\controllers;
 
-use app\helpers\SiteConfigurator;
-use app\models\AdminModel;
-use app\models\ArticleTableModel;
-use app\models\CategoryTableModel;
-use app\models\ImageTableModel;
-use app\models\OrderTableModel;
-use app\models\ProductTableModel;
-use app\models\SliderTableModel;
-use app\models\SubCategoryTableModel;
-use app\models\UserTableModel;
-use app\models\UserUpdateTableModel;
-use app\services\DB;
-use app\services\PrivilegedUser;
-use app\services\Role;
-use app\services\Session;
-use app\widgets\AdminWidgets;
-use app\widgets\IndexWidgets;
+ use app\helpers\SiteConfigurator;
+ use app\models\AdminModel;
+ use app\models\ArticleTableModel;
+ use app\models\CategoryTableModel;
+ use app\models\ImageTableModel;
+ use app\models\OrderTableModel;
+ use app\models\ProductTableModel;
+ use app\models\SliderTableModel;
+ use app\models\SubCategoryTableModel;
+ use app\models\UserTableModel;
+ use app\models\UserUpdateTableModel;
+ use app\services\DB;
+ use app\services\PrivilegedUser;
+ use app\services\Role;
+ use app\services\Session;
+ use app\widgets\AdminWidgets;
+ use app\widgets\IndexWidgets;
 
  class AdminController extends AbstractController {
 
@@ -51,8 +51,8 @@ use app\widgets\IndexWidgets;
              'clientsWidget'     => $adminWidgets->getUsersForRoleWidget(4, 'WHERE user_role.role_id = ? AND deleted != 1', 10),
              'managersWidget'    => $adminWidgets->getUsersForRoleWidget(4, 'WHERE user_role.role_id < ? AND deleted != 1', 8),
              'productsWidget'    => $adminWidgets->getAllProductsWidget('*', 'WHERE image.main = 1 ORDER BY product.created_time DESC LIMIT 5'),
-             'articles'          => $adminWidgets->getAllArticlesWidget('id, title, main_image, author, created_time, updated_time', 'ORDER BY created_time DESC LIMIT 5'),
-             'orders'          => $adminWidgets->getAllOrders('id, body, user_id, delivery_type, delivery_date, delivery_time, status_id, created_time', 'ORDER BY created_time DESC LIMIT 2'),
+             'articles'          => $adminWidgets->getAllArticlesWidget('id, title, main_image, author, created_time, updated_time', 'ORDER BY created_time DESC LIMIT 10'),
+             'orders'            => $adminWidgets->getAllOrders('id, body, user_id, delivery_type, delivery_date, delivery_time, status_id, created_time', 'ORDER BY created_time DESC LIMIT 3'),
              'usersActivityLine' => $adminWidgets->getUserActivity(3)
          ]);
          $output       = $model->render('../views/admin/index.php', 'admin');
@@ -437,6 +437,30 @@ use app\widgets\IndexWidgets;
          }
      }
 
+     public function editOrderAction() {
+         $fc         = FrontController::getInstance();
+         $model      = new AdminModel('Редактирование заказа', 'управление заказами');
+         $orderModel = new AdminWidgets();
+
+         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+             Session::setMsg('Заказ успешно обновлен', 'success');
+             header('Location: /admin/orders');
+             exit;
+         } else {
+             $id = filter_var($fc->getParams()['id'], FILTER_SANITIZE_NUMBER_INT);
+             if (!$id) {
+                 header('Location: /admin/notFound');
+                 exit;
+             }
+             $model->setData([
+                 'order' => $orderModel->getAllOrders('*', "WHERE id = $id")
+             ]);
+             $output = $model->render('../views/admin/order/editorder.php', 'admin');
+             $fc->setPage($output);
+         }
+     }
+
      public function editArticleAction() {
          $fc           = FrontController::getInstance();
          $model        = new AdminModel('Редактирование статьи');
@@ -496,20 +520,19 @@ use app\widgets\IndexWidgets;
          $output = $model->render('../views/admin/blog/blog.php', 'admin');
          $fc->setPage($output);
      }
-     
+
      public function ordersAction() {
-         $fc           = FrontController::getInstance();
-         $model        = new AdminModel('Заказы', 'просмотр всех заказов');
-         $orderModel = new OrderTableModel();
-         
-         $page         = $fc->getParams()['page'] ? filter_var($fc->getParams()['page'], FILTER_SANITIZE_NUMBER_INT) : 1;
-         $limit        = $fc->getParams()['limit'] ? filter_var($fc->getParams()['limit'], FILTER_SANITIZE_NUMBER_INT) : 10;
-         $orderBy      = $fc->getParams()['orderBy'] ? filter_var($fc->getParams()['orderBy'], FILTER_SANITIZE_STRING) : 'id';
-         $direction    = $fc->getParams()['direction'] ? filter_var($fc->getParams()['direction'], FILTER_SANITIZE_STRING) : 'asc';
-         $offset       = $limit * $page - $limit;
-         
+         $fc    = FrontController::getInstance();
+         $model = new AdminModel('Заказы', 'просмотр всех заказов');
+
+         $page      = $fc->getParams()['page'] ? filter_var($fc->getParams()['page'], FILTER_SANITIZE_NUMBER_INT) : 1;
+         $limit     = $fc->getParams()['limit'] ? filter_var($fc->getParams()['limit'], FILTER_SANITIZE_NUMBER_INT) : 10;
+         $orderBy   = $fc->getParams()['orderBy'] ? filter_var($fc->getParams()['orderBy'], FILTER_SANITIZE_STRING) : 'id';
+         $direction = $fc->getParams()['direction'] ? filter_var($fc->getParams()['direction'], FILTER_SANITIZE_STRING) : 'asc';
+         $offset    = $limit * $page - $limit;
+
          $model->setData([
-             'orders'  => $orderModel->getAllRecords('product.id, product.title, product.price, product.quantity, product.published, category.category_name, subcategory.subcategory_name, product.created_time, product.updated_time, image.image', "GROUP BY product.id ORDER BY product.$orderBy " . strtoupper($direction) . " LIMIT $limit OFFSET $offset"),
+             'orders'    => (new AdminWidgets)->getAllOrders('*', "GROUP BY order_body.id ORDER BY order_body.$orderBy " . strtoupper($direction) . " LIMIT $limit OFFSET $offset"),
              'limit'     => $limit,
              'orderBy'   => $orderBy,
              'direction' => $direction,
@@ -517,7 +540,7 @@ use app\widgets\IndexWidgets;
              'num'       => (new AdminWidgets)->getNum('product'),
              'offset'    => $offset
          ]);
-         $output       = $model->render('../views/admin/product/allProducts.php', 'admin');
+         $output = $model->render('../views/admin/order/orders.php', 'admin');
          $fc->setPage($output);
      }
 

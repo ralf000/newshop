@@ -1,6 +1,7 @@
-<? 
-use app\helpers\Generator;
-use app\helpers\Helper;
+<?
+
+ use app\helpers\Generator;
+ use app\helpers\Helper;
 ?>
 <? $products    = $this->getData()[1]['products'] ?>
 <? $limit       = $this->getData()[1]['limit'] ?>
@@ -65,25 +66,29 @@ use app\helpers\Helper;
                                         </tr>
                                     </thead>
                                     <tbody>
-<? foreach ($products as $product): ?>
-                                             <tr role="row">
-                                                 <td><?= $product['id'] ?></td>
-                                                 <td><img src="/<?= $product['image'] ?>" alt="<?= $product['title'] ?>" class="product"/></td>
-                                                 <td><?= $product['title'] ?></td>
-                                                 <td><?= $product['quantity'] ?></td>
-                                                 <td><?= $product['price'] ?></td>
-                                                 <td><?= $product['published'] ? 'Да' : 'Нет' ?></td>
-                                                 <td><?= $product['category_name'] ?></td>
-                                                 <td><?= $product['subcategory_name'] ?></td>
-                                                 <td><?= Helper::dateConverter($product['created_time']) ?></td>
-                                                 <td><?= Helper::dateConverter($product['updated_time']) ?></td>
-                                                 <td>
-                                                     <a href="/admin/view/product/<?= $product['id'] ?>" class="admin-data-control"><span class="glyphicon glyphicon-eye-open"></span></a>
-                                                     <a href="/admin/editProduct/product/<?= $product['id'] ?>" class="admin-data-control"><span class="glyphicon glyphicon-pencil"></span></a>
-                                                     <a href="<?= $product['id'] ?>" class="deleteProduct admin-data-control"><span class="glyphicon glyphicon-minus"></span></a>
-                                                 </td>
-                                             </tr>
- <? endforeach; ?>
+                                        <? if ($products && is_array($products)): ?>
+                                             <? foreach ($products as $product): ?>
+                                                 <tr role="row">
+                                                     <td><?= $product['id'] ?></td>
+                                                     <td><img src="/<?= $product['image'] ?>" alt="<?= $product['title'] ?>" class="product"/></td>
+                                                     <td><?= $product['title'] ?></td>
+                                                     <td><?= $product['quantity'] ?></td>
+                                                     <td><?= $product['price'] ?></td>
+                                                     <td><?= $product['published'] ? 'Да' : 'Нет' ?></td>
+                                                     <td><?= $product['category_name'] ?></td>
+                                                     <td><?= $product['subcategory_name'] ?></td>
+                                                     <td><?= Helper::dateConverter($product['created_time']) ?></td>
+                                                     <td><?= Helper::dateConverter($product['updated_time']) ?></td>
+                                                     <td>
+                                                         <a href="/admin/view/product/<?= $product['id'] ?>" class="admin-data-control"><span class="glyphicon glyphicon-eye-open"></span></a>
+                                                         <a href="/admin/editProduct/product/<?= $product['id'] ?>" class="admin-data-control"><span class="glyphicon glyphicon-pencil"></span></a>
+                                                         <a href="<?= $product['id'] ?>" class="deleteProduct admin-data-control"><span class="glyphicon glyphicon-minus"></span></a>
+                                                     </td>
+                                                 </tr>
+                                             <? endforeach; ?>
+                                         <? else: ?>
+                                         <h3>Нет товаров для отображения</h3>
+                                    <? endif; ?>
                                     </tbody>
                                 </table>
                             </div>
@@ -91,16 +96,16 @@ use app\helpers\Helper;
                         <div class="row">
                             <div class="col-sm-5">
                                 <div class="dataTables_info" id="example2_info" role="status" aria-live="polite">
-<? $start = $offset + 1 ?>
-<? $end   = ($limit * $page < $numProducts) ? $limit * $page : $numProducts ?>
+                                    <? $start = $offset + 1 ?>
+                                    <? $end   = ($limit * $page < $numProducts) ? $limit * $page : $numProducts ?>
                                     На странице: <b><?= $start ?> - <?= $end ?></b> из <b><?= $numProducts ?></b> товаров
                                 </div>
                             </div>
                             <div class="col-sm-7">
                                 <div class="dataTables_paginate paging_simple_numbers" id="example2_paginate">
                                     <? if ($limit < $numProducts): ?>
-     <?= Generator::pagination($limit, $page, $opt) ?>
- <? endif; ?>
+                                         <?= Generator::pagination($limit, $page, $opt) ?>
+                                     <? endif; ?>
                                 </div>
                             </div>
                         </div>

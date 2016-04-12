@@ -1,7 +1,8 @@
 <?
 
- use app\helpers\Generator;
- use app\helpers\Helper;
+use app\helpers\Basket;
+use app\helpers\Generator;
+use app\helpers\Helper;
 ?>
 <? $orders    = $this->getData()[1]['orders'] ?>
 <? $limit     = $this->getData()[1]['limit'] ?>
@@ -67,9 +68,10 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <? foreach ($products as $product): ?>
+                                        <? if ($orders && is_array($orders)):?>
+                                        <? foreach ($orders as $order): ?>
                                              <tr role="row">
-                                                 <td><?= $orders['id'] ?></td>
+                                                 <td><?= $order['id'] ?></td>
                                                  <td><?= Basket::getBasketId($order['body']) ?></td>
                                                  <td>
                                                      <table class="table table-bordered table-striped">
@@ -91,17 +93,20 @@
                                                  <td><?= $order['note']?></td>
                                                  <td><?= $order['delivery'] ?></td>
                                                  <td><?= $order['user_name'] ?></td>
-                                                 <td><?= $order['delivery_date'] ?></td>
-                                                 <td><?= $order['delivery_time'] ?></td>
-                                                 <td><?= Helper::dateConverter($product['created_time']) ?></td>
-                                                 <td><?= Helper::dateConverter($product['updated_time']) ?></td>
+                                                 <td><?= ($order['delivery_date']) ? $order['delivery_date'] : 'Желаемая дата доставки не указана' ?></td>
+                                                 <td><?= ($order['delivery_time']) ? $order['delivery_time'] : 'Желаемое время доставки не указано' ?></td>
+                                                 <td class="orderStatus">
+                                                     <select name="orderStatusList" data-status="<?=$order['status']['status']?>" class="form-control orderStatusList"></select>
+                                                 </td>
+                                                 <td><?= Helper::dateConverter($order['created_time'])?></td>
                                                  <td>
-                                                     <a href="/admin/view/product/<?= $product['id'] ?>" class="admin-data-control"><span class="glyphicon glyphicon-eye-open"></span></a>
-                                                     <a href="/admin/editProduct/product/<?= $product['id'] ?>" class="admin-data-control"><span class="glyphicon glyphicon-pencil"></span></a>
-                                                     <a href="<?= $product['id'] ?>" class="deleteProduct admin-data-control"><span class="glyphicon glyphicon-minus"></span></a>
+                                                     <a href="/admin/editOrder/id/<?= $order['id'] ?>" class="admin-data-control"><span class="glyphicon glyphicon-pencil"></span></a>
                                                  </td>
                                              </tr>
                                          <? endforeach; ?>
+                                             <? else:?>
+                                             <h3>Нет заказов для отображения</h3>
+                                             <? endif;?>
                                     </tbody>
                                 </table>
                             </div>
@@ -110,13 +115,13 @@
                             <div class="col-sm-5">
                                 <div class="dataTables_info" id="example2_info" role="status" aria-live="polite">
                                     <? $start = $offset + 1 ?>
-                                    <? $end   = ($limit * $page < $numProducts) ? $limit * $page : $numProducts ?>
-                                    На странице: <b><?= $start ?> - <?= $end ?></b> из <b><?= $numProducts ?></b> товаров
+                                    <? $end   = ($limit * $page < $numOrders) ? $limit * $page : $numOrders ?>
+                                    На странице: <b><?= $start ?> - <?= $end ?></b> из <b><?= $numOrders ?></b> заказов
                                 </div>
                             </div>
                             <div class="col-sm-7">
                                 <div class="dataTables_paginate paging_simple_numbers" id="example2_paginate">
-                                    <? if ($limit < $numProducts): ?>
+                                    <? if ($limit < $numOrders): ?>
                                          <?= Generator::pagination($limit, $page, $opt) ?>
                                      <? endif; ?>
                                 </div>
@@ -129,3 +134,4 @@
         </div><!-- /.col -->
     </div><!-- /.row -->
 </section>
+<script type="text/javascript" src="/app/template/backend/js/orders/orders.js"></script>

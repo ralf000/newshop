@@ -44,7 +44,7 @@
                     <i class="fa fa-dashboard"></i> <span>Заказы</span> <i class="fa fa-angle-left pull-right"></i>
                 </a>
                 <ul class="treeview-menu">
-                    <li><a href="/admin/allProducts"><i class="fa fa-circle-o"></i> Все заказы</a></li>
+                    <li><a href="/admin/orders"><i class="fa fa-circle-o"></i> Все заказы</a></li>
                 </ul>
             </li>
             <li class="treeview">

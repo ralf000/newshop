@@ -2,27 +2,28 @@
 
  namespace app\controllers;
 
- use app\dataContainers\Product;
- use app\helpers\Basket;
- use app\helpers\Helper;
- use app\helpers\Path;
- use app\helpers\User;
- use app\helpers\Validate;
- use app\models\AddressTableModel;
- use app\models\ArticleTableModel;
- use app\models\CategoryTableModel;
- use app\models\ImageTableModel;
- use app\models\PhoneTableModel;
- use app\models\ProductTableModel;
- use app\models\SliderTableModel;
- use app\models\SubCategoryTableModel;
- use app\models\UserTableModel;
- use app\models\UserUpdateTableModel;
- use app\services\DB;
- use app\services\Role;
- use app\services\Session;
- use app\services\UploadHandler;
- use Exception;
+use app\dataContainers\Product;
+use app\helpers\Basket;
+use app\helpers\Helper;
+use app\helpers\Path;
+use app\helpers\User;
+use app\helpers\Validate;
+use app\models\AddressTableModel;
+use app\models\ArticleTableModel;
+use app\models\CategoryTableModel;
+use app\models\ImageTableModel;
+use app\models\OrderTableModel;
+use app\models\PhoneTableModel;
+use app\models\ProductTableModel;
+use app\models\SliderTableModel;
+use app\models\SubCategoryTableModel;
+use app\models\UserTableModel;
+use app\models\UserUpdateTableModel;
+use app\services\DB;
+use app\services\Role;
+use app\services\Session;
+use app\services\UploadHandler;
+use Exception;
 
  class AjaxController extends AbstractController {
 
@@ -87,6 +88,20 @@
          if (empty($id))
              die('Не задан id товара');
          Basket::addProduct(new Product($id));
+     }
+     
+     public function addProductInOrderAction() {
+         header('Content-type: text/plain; charset=utf-8');
+         header('Cache-Control: no-store, no-cache');
+         header('Expires: ' . date('r'));
+
+         $orderId = Validate::validateInputVar('orderId', 'INPUT_GET', 'int');
+         $productId = Validate::validateInputVar('productId', 'INPUT_GET', 'int');
+         if (empty($orderId) || empty($productId))
+             die('Не задан id');
+
+         $orderBodyManager = (new OrderTableModel())->getOrderBodyManager();
+         echo $orderBodyManager->addProduct($orderId, $productId);
      }
 
      public function getCategoriesAction() {
@@ -156,6 +171,28 @@
              throw new Exception('Не удалось получить id роли');
          $perms = Role::getRolePerms(DB::init()->connect(), $id)->getPermissions();
          echo json_encode($perms);
+     }
+
+     public function getOrderStatusListAction() {
+         header('Content-type: application/json; charset=utf-8');
+         header('Cache-Control: no-store, no-cache');
+         header('Expires: ' . date('r'));
+
+         $model = new OrderTableModel();
+         $list  = $model->getOrderStatusList();
+
+         echo json_encode($list);
+     }
+     
+     public function getDeliveryTypesAction() {
+         header('Content-type: application/json; charset=utf-8');
+         header('Cache-Control: no-store, no-cache');
+         header('Expires: ' . date('r'));
+
+         $model = new OrderTableModel();
+         $list  = $model->getDeliveryTypes();
+
+         echo json_encode($list);
      }
 
      public function deleteCategoryAction($id = NULL) {
@@ -402,6 +439,48 @@
 
          echo Basket::deleteProduct(new Product($id));
      }
+     
+     public function deleteProductFromOrderAction() {
+         header('Content-type: text/plain; charset=utf-8');
+         header('Cache-Control: no-store, no-cache');
+         header('Expires: ' . date('r'));
+
+         $orderId   = Validate::validateInputVar('orderId', 'INPUT_GET', 'int');
+         $productId = Validate::validateInputVar('productId', 'INPUT_GET', 'int');
+         if (empty($orderId) || empty($productId))
+             die('Не задан id');
+
+         $orderBodyManager = (new OrderTableModel())->getOrderBodyManager();
+         echo $orderBodyManager->unsetProduct($orderId, $productId);
+     }
+     
+     public function plusProductFromOrderAction() {
+         header('Content-type: text/plain; charset=utf-8');
+         header('Cache-Control: no-store, no-cache');
+         header('Expires: ' . date('r'));
+
+         $orderId   = Validate::validateInputVar('orderId', 'INPUT_GET', 'int');
+         $productId = Validate::validateInputVar('productId', 'INPUT_GET', 'int');
+         if (empty($orderId) || empty($productId))
+             die('Не задан id');
+
+         $orderBodyManager = (new OrderTableModel())->getOrderBodyManager();
+         echo $orderBodyManager->plusProduct($orderId, $productId);
+     }
+     
+     public function minusProductFromOrderAction() {
+         header('Content-type: text/plain; charset=utf-8');
+         header('Cache-Control: no-store, no-cache');
+         header('Expires: ' . date('r'));
+
+         $orderId   = Validate::validateInputVar('orderId', 'INPUT_GET', 'int');
+         $productId = Validate::validateInputVar('productId', 'INPUT_GET', 'int');
+         if (empty($orderId) || empty($productId))
+             die('Не задан id');
+
+         $orderBodyManager = (new OrderTableModel())->getOrderBodyManager();
+         echo $orderBodyManager->minusProduct($orderId, $productId);
+     }
 
      public function incrementProductFromBasketAction() {
          header('Content-type: text/plain; charset=utf-8');
@@ -445,13 +524,55 @@
          header('Content-type: text/plain; charset=utf-8');
          header('Cache-Control: no-store, no-cache');
          header('Expires: ' . date('r'));
-         
+
          $msg = Validate::validateInputVar('msg', 'INPUT_GET', 'str');
 
          if ($msg)
-             Session::setMsg ($msg);
+             Session::setMsg($msg);
          else
              echo FALSE;
+     }
+
+     public function setOrderStatusAction() {
+         header('Content-type: text/plain; charset=utf-8');
+         header('Cache-Control: no-store, no-cache');
+         header('Expires: ' . date('r'));
+
+         $orderId  = Validate::validateInputVar('orderId', 'INPUT_GET', 'int');
+         $statusId = Validate::validateInputVar('statusId', 'INPUT_GET', 'int');
+         
+         if (!$orderId || !$statusId)
+             throw new Exception('Неверный id для смены статуса заказа');
+
+         $model = new OrderTableModel();
+         echo $model->setOrderStatus($orderId, $statusId);
+     }
+     
+     public function setDeliveryTypeAction() {
+         header('Content-type: text/plain; charset=utf-8');
+         header('Cache-Control: no-store, no-cache');
+         header('Expires: ' . date('r'));
+
+         $orderId  = Validate::validateInputVar('orderId', 'INPUT_GET', 'int');
+         $typeId = Validate::validateInputVar('typeId', 'INPUT_GET', 'int');
+         
+         if (!$orderId || !$typeId)
+             throw new Exception('Неверный id для смены типа доставки');
+
+         $model = new OrderTableModel();
+         echo $model->setDeliveryType($orderId, $typeId);
+     }
+     
+     public function SearchProductAction() {
+         header('Content-type: application/json; charset=utf-8');
+         header('Cache-Control: no-store, no-cache');
+         header('Expires: ' . date('r'));
+         
+         $text = Validate::validateInputVar('text', 'INPUT_GET', 'str');
+         $model = new ProductTableModel();
+         $model->setTable('product');
+         $model->readAllRecords('id, title', "WHERE title LIKE '%{$text}%'");
+         echo json_encode($model->getAllRecords());
      }
 
 //     public function sessionGetAction() {

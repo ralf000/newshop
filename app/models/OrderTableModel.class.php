@@ -2,14 +2,16 @@
 
  namespace app\models;
 
- use app\dataContainers\Order;
- use app\helpers\Basket;
- use app\helpers\Validate;
- use Exception;
+use app\dataContainers\Order;
+use app\helpers\Basket;
+use app\helpers\Validate;
+use Exception;
+use PDO;
 
  class OrderTableModel extends TableModelAbstract {
 
      private $order;
+     private $orderBodyManager;
 
      public function addRecord() {
          try {
@@ -32,44 +34,9 @@
          }
      }
 
-     public function addToOrder() {
-         if (!$this->id || !$this->productId)
-             throw new Exception('Не задан id заказа или товара');
-         try {
-             $st = $this->db->prepare("INSERT INTO order_content (`order_id`, `product_id`, `product_quantity`) VALUES ?, ?, ?");
-             $st->execute([$this->id, key($this->productId), current($this->productId)]);
-         } catch (Exception $ex) {
-             $ex->getMessage();
-         }
-     }
+     public function updateRecord() {}
 
-     public function updateRecord() {
-         if (!$this->id)
-             throw new Exception('Не задан id заказа');
-         $this->readRecordsById()[0];
-         if (!$this->content && $this->recordsById['content'])
-             $this->content  = $this->recordsById['content'];
-         if (!$this->statusId && $this->recordsById['status_id'])
-             $this->statusId = $this->recordsById['status_id'];
-         try {
-             $st = $this->db->prepare("UPDATE SET $this->table SET `content` = ?, `status_id` = ? WHERE id = ?");
-             $st->execute([$this->content, $this->statusId, $this->id]);
-         } catch (Exception $ex) {
-             $ex->getMessage();
-         }
-     }
-
-     public function deleteOrder() {
-         if (!$this->id)
-             throw new Exception('Не задан id заказа');
-         try {
-             $st = $this->db->prepare("DELETE FROM $this->table INNER JOIN order_content ON $this->table.id = order_content.order_id WHERE $this->table.id = ?");
-             $st->execute([$this->id]);
-         } catch (Exception $ex) {
-             $ex->getMessage();
-         }
-     }
-
+     
      public function deleteFromOrder() {
          if (!$this->id || !$this->productId)
              throw new Exception('Не задан id заказа или товара');
@@ -85,18 +52,18 @@
          try {
              $st       = $this->db->prepare("SELECT delivery_type FROM order_delivery_type WHERE id = ?");
              $st->execute([$id]);
-             $delivery = $st->fetchAll(\PDO::FETCH_ASSOC)[0]['delivery_type'];
+             $delivery = $st->fetchAll(PDO::FETCH_ASSOC)[0]['delivery_type'];
              return (!empty($delivery)) ? $delivery : FALSE;
          } catch (Exception $ex) {
              $ex->getMessage();
          }
      }
-     
+
      public function getStatusForId($id) {
          try {
-             $st = $this->db->prepare("SELECT s.id as status_id, s.status, s.note, t.id as type_id, t.type FROM order_status as s LEFT JOIN order_type as t ON s.type_id = type_id WHERE s.id = ?");
+             $st     = $this->db->prepare("SELECT s.id as status_id, s.status, s.note, t.id as type_id, t.type FROM order_status as s LEFT JOIN order_type as t ON s.type_id = type_id WHERE s.id = ?");
              $st->execute([$id]);
-             $result = $st->fetchAll(\PDO::FETCH_ASSOC)[0];
+             $result = $st->fetchAll(PDO::FETCH_ASSOC)[0];
              return $result ? $result : FALSE;
          } catch (Exception $ex) {
              $ex->getMessage();
@@ -128,12 +95,52 @@
          $this->order = new Order($data);
      }
 
-     public function setProductId($id) {
-         $this->productId = intval($id);
+     public function getOrderStatusList($mode = FALSE) {
+         try {
+             if ($mode) {
+                 $st   = $this->db->query('SELECT * FROM order_type');
+                 $list = $st->fetchAll(PDO::FETCH_ASSOC);
+                 foreach ($list as $key => $type) {
+                     $st                     = $this->db->prepare("SELECT * FROM order_status WHERE type_id = ?");
+                     $st->execute([$type['id']]);
+                     $statuses               = $st->fetchAll(PDO::FETCH_ASSOC);
+                     $list[$key]['statuses'] = $statuses;
+                 }
+             } else {
+                 $st   = $this->db->query('SELECT * FROM order_status');
+                 $list = $st->fetchAll(PDO::FETCH_ASSOC);
+             }
+             return $list;
+         } catch (Exception $ex) {
+             $ex->getMessage();
+         }
+     }
+     
+     public function getDeliveryTypes() {
+         try {
+             $st = $this->db->query("SELECT * FROM order_delivery_type");
+             return $st->fetchAll(\PDO::FETCH_ASSOC);
+         } catch (Exception $ex) {
+             $ex->getMessage();
+         }
      }
 
-     public function getProductId() {
-         return $this->productId;
+     public function setOrderStatus($orderId, $statusId) {
+         try {
+             $st = $this->db->prepare('UPDATE order_body SET status_id = ? WHERE id = ?');
+             $st->execute([$statusId, $orderId]);
+         } catch (Exception $ex) {
+             $ex->getMessage();
+         }
+     }
+     
+     public function setDeliveryType($orderId, $typeId) {
+         try {
+             $st = $this->db->prepare('UPDATE order_body SET delivery_type = ? WHERE id = ?');
+             $st->execute([$typeId, $orderId]);
+         } catch (Exception $ex) {
+             $ex->getMessage();
+         }
      }
 
      public function getAddress() {
@@ -177,6 +184,19 @@
              }
              return $this->order->getFullPhone();
          }
+     }
+     
+     public function getOrderBodyManager() {
+         $this->orderBodyManager = new OrderBodyManagerModel();
+         return $this->orderBodyManager;
+     }
+
+     public function setProductId($id) {
+         $this->productId = intval($id);
+     }
+
+     public function getProductId() {
+         return $this->productId;
      }
 
  }

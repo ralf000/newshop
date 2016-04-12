@@ -11,7 +11,6 @@
 <? $usersActivity  = $this->getWidgetsData()['usersActivityLine'] ?>
 <? $articles       = $this->getWidgetsData()['articles'] ?>
 <? $orders         = $this->getWidgetsData()['orders']; ?>
-<? Helper::g($orders)?>
 <?
  $translate      = [
      'insert'      => 'добавил',
@@ -158,7 +157,7 @@
                 </div><!-- /.box-footer -->
             </div>
 
-            <div class="box box-info">
+            <div class="box box-info ordersWidget">
                 <div class="box-header with-border">
                     <h3 class="box-title">Новые заказы</h3>
                     <div class="box-tools pull-right">
@@ -188,7 +187,7 @@
                                              <td><?= $order['id'] ?></td>
                                              <td><?= Basket::getBasketId($order['body']) ?></td>
                                              <td>
-                                                 <table class="table table-bordered table-striped">
+                                                 <table class="table table-bordered table-striped prodList">
                                                      <tr>
                                                          <th>Название</th>
                                                          <th>Количество</th>
@@ -218,7 +217,7 @@
                     </div><!-- /.table-responsive -->
                 </div><!-- /.box-body -->
                 <div class="box-footer clearfix">
-                    <a href="javascript::;" class="btn btn-sm btn-info btn-flat pull-left">Все заказы</a>
+                    <a href="/admin/orders" class="btn btn-sm btn-info btn-flat pull-left">Все заказы</a>
                     <!--<a href="javascript::;" class="btn btn-sm btn-default btn-flat pull-right">View All Orders</a>-->
                 </div><!-- /.box-footer -->
             </div>
@@ -362,3 +361,4 @@
     </div><!-- /.row (main row) -->
 
 </section><!-- /.content -->
+<script type="text/javascript" src="/app/template/backend/js/index.js"></script>
