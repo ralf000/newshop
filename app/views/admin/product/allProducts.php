@@ -57,6 +57,8 @@
                                             <th><a href="" data-name="title" class="sorting">Заголовок</a></th>
                                             <th><a href="" data-name="quantity" class="sorting">Количество</a></th>
                                             <th><a href="" data-name="price" class="sorting">Цена</a></th>
+                                            <th><a href="" data-name="recommended" class="sorting">Рекомендуемый</a></th>
+                                            <th><a href="" data-name="popular" class="sorting">«Популярный»</a></th>
                                             <th><a href="" data-name="published" class="sorting">Опубликован</a></th>
                                             <th><a href="" data-name="category_id" class="sorting">Категория</a></th>
                                             <th><a href="" data-name="subcategory_id" class="sorting">Подкатегория</a></th>
@@ -74,6 +76,22 @@
                                                      <td><?= $product['title'] ?></td>
                                                      <td><?= $product['quantity'] ?></td>
                                                      <td><?= $product['price'] ?></td>
+                                                     <? $checked  = ($product['recommended'] && $product['recommended'] != 0) ? 'checked' : '' ?>
+                                                     <td style="text-align: center;">
+                                                         <div class="checkbox">
+                                                             <label>
+                                                                 <input type="checkbox" name="recommended" class="recommended" <?= $checked ?>/>
+                                                             </label>
+                                                         </div>
+                                                     </td>
+                                                     <? $checked2 = ($product['popular'] && $product['popular'] != 0) ? 'checked' : '' ?>
+                                                     <td style="text-align: center;">
+                                                         <div class="checkbox">
+                                                             <label>
+                                                                 <input type="checkbox" name="popular" class="popular" <?= $checked2 ?>/>
+                                                             </label>
+                                                         </div>
+                                                     </td>
                                                      <td><?= $product['published'] ? 'Да' : 'Нет' ?></td>
                                                      <td><?= $product['category_name'] ?></td>
                                                      <td><?= $product['subcategory_name'] ?></td>
@@ -116,3 +134,12 @@
         </div><!-- /.col -->
     </div><!-- /.row -->
 </section>
+<script type="text/javascript">
+//    function getPopularAndRecommendedFlag() {
+//        var url = '/ajax/getPopularAndRecommendedFlagForProducts';
+//    }
+//    
+//    $(function () {
+//        getPopularAndRecommendedFlag();
+//    });
+</script>

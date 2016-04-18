@@ -158,6 +158,12 @@
          Session::unseted(['redirect', 'redirectHash']);
          return $redirect;
      }
-
- }
+     
+     static function getLastKeyOfArray(array $array){
+         end($array);
+         $lastKey = key($array);
+         reset($array);
+         return (int) $lastKey;
+     }
+  }
  

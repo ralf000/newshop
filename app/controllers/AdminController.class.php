@@ -260,7 +260,7 @@
          $direction    = $fc->getParams()['direction'] ? filter_var($fc->getParams()['direction'], FILTER_SANITIZE_STRING) : 'asc';
          $offset       = $limit * $page - $limit;
          $model->setData([
-             'products'  => $productModel->getAllProducts('product.id, product.title, product.price, product.quantity, product.published, category.category_name, subcategory.subcategory_name, product.created_time, product.updated_time, image.image', "GROUP BY product.id ORDER BY product.$orderBy " . strtoupper($direction) . " LIMIT $limit OFFSET $offset"),
+             'products'  => $productModel->getAllProducts('product.id, product.title, product.price, product.quantity, product.popular, product.recommended, product.published, category.category_name, subcategory.subcategory_name, product.created_time, product.updated_time, image.image', "GROUP BY product.id ORDER BY product.$orderBy " . strtoupper($direction) . " LIMIT $limit OFFSET $offset"),
              'limit'     => $limit,
              'orderBy'   => $orderBy,
              'direction' => $direction,

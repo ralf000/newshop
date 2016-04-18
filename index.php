@@ -25,7 +25,6 @@ use app\services\Session;
  
  Session::init();
  Basket::init();
- 
  /* Инициализация и запуск FrontController */
  $controller = FrontController::getInstance();
  $controller->route();

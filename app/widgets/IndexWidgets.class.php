@@ -43,6 +43,16 @@ use PDO;
              $ex->getMessage();
          }
      }
+     
+     public function recAndPopProductsWidget($condField = 'popular', $limit = 12) {
+         $limit = "LIMIT $limit";
+         try {
+             $st = $this->db->query("SELECT p.id, p.title, p.price, i.image FROM product as p LEFT JOIN image as i ON p.id = i.product_id WHERE i.main = 1 AND p.{$condField} = 1 $limit");
+             return $st->fetchAll(PDO::FETCH_ASSOC);
+         } catch (Exception $ex) {
+             $ex->getMessage();
+         }
+     }
 
      public static function getCatsAndSubCats($flag = FALSE) {
          $condition        = '';

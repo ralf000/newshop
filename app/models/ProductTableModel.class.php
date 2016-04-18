@@ -66,6 +66,17 @@ use PDOException;
              $ex->getMessage();
          }
      }
+     
+     public function setPopularOrRecommended($field, $value) {
+         if (empty($this->id))
+             throw new Exception('Не задан id товара для удаления');
+         try {
+             $st = $this->db->prepare("UPDATE product SET $field = ? WHERE id = ?");
+             $st->execute([$value, $this->id]);
+         } catch (Exception $ex) {
+             $ex->getMessage();
+         }
+     }
 
      public function deleteProduct() {
          if (empty($this->id))

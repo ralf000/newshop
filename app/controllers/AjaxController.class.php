@@ -563,6 +563,23 @@ use Exception;
          echo $model->setDeliveryType($orderId, $typeId);
      }
      
+     public function setPopularOrRecommendedAction() {
+         header('Content-type: text/plain; charset=utf-8');
+         header('Cache-Control: no-store, no-cache');
+         header('Expires: ' . date('r'));
+
+         $id  = Validate::validateInputVar('id', 'INPUT_GET', 'int');
+         $type = Validate::validateInputVar('type', 'INPUT_GET', 'str');
+         $mode = Validate::validateInputVar('mode', 'INPUT_GET', 'int');
+         
+         if (!$id)
+             throw new Exception('Неверный id товара');
+
+         $model = new ProductTableModel();
+         $model->setId($id);
+         echo $model->setPopularOrRecommended($type, $mode);
+     }
+     
      public function SearchProductAction() {
          header('Content-type: application/json; charset=utf-8');
          header('Cache-Control: no-store, no-cache');

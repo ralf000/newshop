@@ -184,5 +184,70 @@
          return $output;
      }
 
+     public static function popularProducts(array $products) {
+         $output = '';
+         foreach ($products as $p) {
+             if (!empty(p) && is_array($p)) {
+                 $output .= '<div class="col-sm-4">' . "\n" . '
+            <div class="product-image-wrapper">' . "\n" . '
+                <div class="single-products">' . "\n" . '
+                    <div class="productinfo text-center">' . "\n" . '
+                        <img src="/' . $p['image'] . '" alt="' . $p['title'] . '" />' . "\n" . '
+                        <h2>' . $p['price'] . ' <i class="fa fa-rub"></i></h2>' . "\n" . '
+                        <p>' . $p['title'] . '</p>' . "\n" . '
+                        <a href="#" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Добавить в корзину</a>' . "\n" . '
+                    </div>' . "\n" . '
+                    <div class="product-overlay">' . "\n" . '
+                        <div class="overlay-content">' . "\n" . '
+                            <h2>' . $p['price'] . ' <i class="fa fa-rub"></i></h2>' . "\n" . '
+                            <p>' . $p['title'] . '</p>' . "\n" . '
+                            <a href="' . $p['id'] . '" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Добавить в корзину</a>' . "\n" . '
+                        </div>' . "\n" . '
+                    </div>' . "\n" . '
+                </div>' . "\n" . '
+            </div>' . "\n" . '
+        </div>' . "\n";
+             }
+         }
+         return $output;
+     }
+
+     public static function recommendedProducts(array $products) {
+         $output = '<div id = "recommended-item-carousel" class = "carousel slide" data-ride = "carousel">' . "\n";
+         $output .= '<div class = "carousel-inner">' . "\n";
+         $row    = $slides = '';
+         foreach ($products as $key => $p) {
+             $slides .= "\n" . '<div class = "col-sm-4">' . "\n";
+             $slides .= '<div class = "product-image-wrapper">' . "\n";
+             $slides .= '<div class = "single-products">' . "\n";
+             $slides .= '<div class = "productinfo text-center">' . "\n";
+             $slides .= '<img src = "/' . $p['image'] . '" alt = "' . $p['title'] . '" />' . "\n";
+             $slides .= '<h2>' . $p['price'] . ' <i class="fa fa-rub"></i></h2>' . "\n";
+             $slides .= '<p>' . $p['title'] . '</p>' . "\n";
+             $slides .= '<a href = "' . $p['id'] . '" class = "btn btn-default add-to-cart"><i class = "fa fa-shopping-cart"></i>Добавить в корзину</a>' . "\n";
+             $slides .= '</div>' . "\n";
+             $slides .= '</div>' . "\n";
+             $slides .= '</div>' . "\n";
+             $slides .= '</div>' . "\n";
+
+             ++$key;
+             if ($key !== 0 && $key % 3 === 0 || --$key === Helper::getLastKeyOfArray($products)) {
+                 $active = (empty($row)) ? ' active' : '';
+                 $row .= '<div class = "item' . $active . '">' . $slides . '</div>' . "\n";
+                 $slides = '';
+             }
+         }
+         $output .= $row;
+         $output .= '</div>' . "\n";
+         $output .= '<a class = "left recommended-item-control" href = "#recommended-item-carousel" data-slide = "prev">
+                <i class = "fa fa-angle-left"></i>
+            </a>
+            <a class = "right recommended-item-control" href = "#recommended-item-carousel" data-slide = "next">
+                <i class = "fa fa-angle-right"></i>
+            </a>' . "\n";
+         $output .= '</div>' . "\n";
+         return $output;
+     }
+
  }
  

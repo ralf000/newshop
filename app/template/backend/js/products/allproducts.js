@@ -1,10 +1,18 @@
+function setPopularOrRecommended(id, type, mode) {
+    var url = '/ajax/setPopularOrRecommended';
+    $.get(url, {id: id, type: type, mode: mode}, function (data, status, jqXHR) {
+        if (status === 'success') {
+        }
+    });
+}
+
 function addHandlers() {
     $('.deleteProduct').on('click', function (e) {
         e.preventDefault();
         var t = $(this);
         var title = $(this).closest('tr').find('td').eq(2).text();
-        title = (title && title.length > 0) ? '<br><b>'+ title + '</b>?' : 'этот товар?';
-        var msg = 'Вы точно хотите удалить '+ title;
+        title = (title && title.length > 0) ? '<br><b>' + title + '</b>?' : 'этот товар?';
+        var msg = 'Вы точно хотите удалить ' + title;
         swal({
             title: "Вы уверены?",
             text: msg,
@@ -27,6 +35,31 @@ function addHandlers() {
                 });
             }
         });
+    });
+
+    $('input.popular').on('change', function () {
+        var id = Number($(this).closest('tr').children('td').eq(0).text()), mode;
+        var type = 'popular';
+        if ($(this).attr('checked')) {
+            $(this).removeAttr('checked');
+            mode = 0;
+        } else {
+            $(this).attr('checked', 'checked');
+            mode = 1;
+        }
+        setPopularOrRecommended(id, type, mode);
+    });
+    $('input.recommended').on('change', function () {
+        var id = Number($(this).closest('tr').children('td').eq(0).text()), mode;
+        var type = 'recommended';
+        if ($(this).attr('checked')) {
+            $(this).removeAttr('checked');
+            mode = 0;
+        } else {
+            $(this).attr('checked', 'checked');
+            mode = 1;
+        }
+        setPopularOrRecommended(id, type, mode);
     });
 }
 
