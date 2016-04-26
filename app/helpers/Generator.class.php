@@ -200,7 +200,8 @@
                     <div class="product-overlay">' . "\n" . '
                         <div class="overlay-content">' . "\n" . '
                             <h2>' . $p['price'] . ' <i class="fa fa-rub"></i></h2>' . "\n" . '
-                            <p>' . $p['title'] . '</p>' . "\n" . '
+                            <p><a href="/product/view/id/' . $p['id'] . '" style="color: #fff;">' . $p['title'] . '</a></p>' . "\n" . '
+                            <a href="/product/view/id/' . $p['id'] . '" class="btn" style="color: #fff;"><i class="fa  fa-arrow-right"></i> Подробнее</a>' . "\n" . '
                             <a href="' . $p['id'] . '" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Добавить в корзину</a>' . "\n" . '
                         </div>' . "\n" . '
                     </div>' . "\n" . '
@@ -247,6 +248,10 @@
             </a>' . "\n";
          $output .= '</div>' . "\n";
          return $output;
+     }
+
+     public static function getDeliveryDate() {
+         return '<input type="date" name="deliveryDate" class="form-control" id="deliveryDate" min="' . date('Y-m-d', strtotime('+1 day')) . '" max="' . date('Y-m-d', strtotime('+6 days')) . '"/>';
      }
 
  }

@@ -74,8 +74,8 @@ function confirmDataGenerator(form) {
         }
     });
     if (deliveryType !== 'Самовывоз') {
-        var date = ($('#deliveryDate').val().length > 0) ? $('#deliveryDate').val() : 'Дата доставки не была выбрана. Удобная дата будет согласована с вами по телефону';
-        var time = ($('#deliveryTime').val().length > 0) ? $('#deliveryTime').val() : 'Время доставки не было выбрано. Удобное время будет согласовано с вами по телефону';
+        var date = (form.find('#deliveryDate').val().length > 0) ? form.find('#deliveryDate').val() : 'Дата доставки не была выбрана. Удобная дата будет согласована с вами по телефону';
+        var time = (form.find('#deliveryTime').val().length > 0) ? form.find('#deliveryTime').val() : 'Время доставки не было выбрано. Удобное время будет согласовано с вами по телефону';
         output += '<tr><td><b>Желаемая дата доставки</b>:</td><td>' + date + '</td></tr>';
         output += '<tr><td><b>Желаемое время доставки</b>:</td><td>' + time + '</td></tr>';
     }

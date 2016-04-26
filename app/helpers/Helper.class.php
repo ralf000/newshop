@@ -153,17 +153,33 @@
      }
 
      static function getRedirect() {
-         $redirect['url'] = Session::get('redirect');
+         $redirect['url']  = Session::get('redirect');
          $redirect['hash'] = Session::get('redirectHash');
          Session::unseted(['redirect', 'redirectHash']);
          return $redirect;
      }
-     
-     static function getLastKeyOfArray(array $array){
+
+     static function getLastKeyOfArray(array $array) {
          end($array);
          $lastKey = key($array);
          reset($array);
          return (int) $lastKey;
      }
-  }
+
+     static function getInStockForClients($quantity) {
+         $result = '';
+         switch ($quantity) {
+             case $quantity > 50: $result = 'очень много';
+                 break;
+             case $quantity > 30: $result = 'много';
+                 break;
+             case $quantity > 10: $result = 'заканчивается';
+                 break;
+             default : 'в наличии';
+                 break;
+         }
+         return $result;
+     }
+
+ }
  

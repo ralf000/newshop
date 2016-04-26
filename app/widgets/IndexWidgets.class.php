@@ -2,12 +2,13 @@
 
  namespace app\widgets;
 
-use app\helpers\Generator;
-use app\models\CategoryTableModel;
-use app\models\SliderTableModel;
-use app\models\SubCategoryTableModel;
-use Exception;
-use PDO;
+ use app\helpers\Generator;
+ use app\models\CategoryTableModel;
+ use app\models\ProductTableModel;
+ use app\models\SliderTableModel;
+ use app\models\SubCategoryTableModel;
+ use Exception;
+ use PDO;
 
  class IndexWidgets extends WidgetAbstract {
 
@@ -23,15 +24,18 @@ use PDO;
          $catsNsubs = IndexWidgets::getCatsAndSubCats(TRUE);
          if (count($catsNsubs) !== 2)
              throw new Exception('Передан неверный массив категорий и подкатегорий');
-         $cats = current($catsNsubs);
-         $subs = end($catsNsubs);
+         $cats      = current($catsNsubs);
+         $subs      = end($catsNsubs);
          foreach ($cats as $key => $c) {
              foreach ($subs as $s) {
                  if ($c['id'] === $s['category_id'])
                      $cats[$key]['subcategories'][] = $s;
              }
          }
-         return $cats;
+         return [
+             'catsAndSubCats' => $cats,
+             'brands'         => (new ProductTableModel)->getBrands()
+         ];
      }
 
      public function currentCategoryWidget($id) {
@@ -43,7 +47,7 @@ use PDO;
              $ex->getMessage();
          }
      }
-     
+
      public function recAndPopProductsWidget($condField = 'popular', $limit = 12) {
          $limit = "LIMIT $limit";
          try {
@@ -69,6 +73,5 @@ use PDO;
              'subcats' => array_reverse($subCategoryModel->getAllRecords())
          ];
      }
-
  }
  

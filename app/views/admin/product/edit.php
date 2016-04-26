@@ -158,6 +158,14 @@
                             <label for="spec">Характеристики</label>
                             <textarea name="spec" id="spec" class="ckeditor form-control" rows="10" cols="80"><?= $product['spec'] ?></textarea>
                         </div>
+                        <div class="form-group">
+                            <label for="brand">Бренд</label>
+                            <input type="text" name="brand" id="brand" class="form-control" value="<?= $product['brand'] ?>"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="color">Цвет</label>
+                            <input type="text" name="color" id="color" class="form-control" value="<?= $product['color'] ?>"/>
+                        </div>
                     </div><!-- /.box-body -->
                     <div class="box-footer clearfix">
                         <!--<a href="javascript::;" class="btn btn-sm btn-primary btn-flat pull-right">Редактировать</a>-->

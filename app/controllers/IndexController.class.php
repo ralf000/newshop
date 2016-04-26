@@ -20,7 +20,6 @@ use app\widgets\IndexWidgets;
          $recProducts = (new IndexWidgets)->recAndPopProductsWidget('recommended');
          $model->setData([
              'slides' => IndexWidgets::getSliderWidget(),
-//             'catsAndSubCats' => IndexWidgets::sideBarMenuWidget($this->getCatsAndSubCats(TRUE)),
              'currentCategory' => (new IndexWidgets)->currentCategoryWidget(Helper::getSiteConfig()->currentCategoryWidget),
              'popularProducts' => Generator::popularProducts($popProducts, 6),
              'recommendedProducts' => Generator::recommendedProducts($recProducts),
@@ -28,6 +27,6 @@ use app\widgets\IndexWidgets;
          $output = $model->render('../views/index.php', 'main');
          $fc->setPage($output);
      }
-
+     
  }
  

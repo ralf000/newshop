@@ -2,24 +2,26 @@
 
  namespace app\models;
 
-use app\helpers\Helper;
-use app\helpers\Validate;
-use Exception;
-use PDO;
-use PDOException;
+ use app\helpers\Helper;
+ use app\helpers\Validate;
+ use Exception;
+ use PDO;
+ use PDOException;
 
  class ProductTableModel extends TableModelAbstract {
 
-     private $cat, $subcat, $title, $description, $spec, $price, $quantity, $published, $lastId;
+     private $cat, $subcat, $title, $description, $spec, $brand, $color, $price, $quantity, $published, $lastId;
 
      public function addRecord() {
          try {
              $this->setUserIdForDB();
-             $query        = $this->db->prepare("INSERT INTO $this->table (`category_id`, `subcategory_id`, `title`, `description`, `spec`, `price`, `quantity`, `published`, created_time) VALUES (:cat, :subcat, :title, :description, :spec, :price, :quantity, :published, :created_time)");
+             $query        = $this->db->prepare("INSERT INTO $this->table (`category_id`, `subcategory_id`, `title`, `description`, `spec`, `brand`, `color`, `price`, `quantity`, `published`, created_time) VALUES (:cat, :subcat, :title, :description, :spec, :brand, :color, :price, :quantity, :published, :created_time)");
              $query->execute([
                  ':title'        => $this->title,
                  ':description'  => $this->description,
                  ':spec'         => $this->spec,
+                 ':brand'        => $this->brand,
+                 ':color'        => $this->color,
                  ':price'        => $this->price,
                  ':quantity'     => $this->quantity,
                  ':published'    => $this->published,
@@ -50,13 +52,15 @@ use PDOException;
      public function updateProduct() {
          try {
              $this->setUserIdForDB();
-             $st = $this->db->prepare("UPDATE $this->table SET `category_id` = :cat, `subcategory_id` = :subcat, `title` = :title, `description` = :description, `spec` = :spec, `price` = :price, `quantity` = :quantity, `published` = :published WHERE `id` = :id");
+             $st = $this->db->prepare("UPDATE $this->table SET `category_id` = :cat, `subcategory_id` = :subcat, `title` = :title, `description` = :description, `spec` = :spec, `brand` = :brand, `color` = :color, `price` = :price, `quantity` = :quantity, `published` = :published WHERE `id` = :id");
              $st->execute([
                  ':cat'         => $this->cat,
                  ':subcat'      => $this->subcat,
                  ':title'       => $this->title,
                  ':description' => $this->description,
                  ':spec'        => $this->spec,
+                 ':brand'        => $this->brand,
+                 ':color'        => $this->color,
                  ':price'       => $this->price,
                  ':quantity'    => $this->quantity,
                  ':published'   => $this->published,
@@ -66,7 +70,7 @@ use PDOException;
              $ex->getMessage();
          }
      }
-     
+
      public function setPopularOrRecommended($field, $value) {
          if (empty($this->id))
              throw new Exception('Не задан id товара для удаления');
@@ -79,15 +83,32 @@ use PDOException;
      }
 
      public function deleteProduct() {
-         if (empty($this->id))
-             throw new Exception('Не задан id товара для удаления');
          try {
+             if (empty($this->id))
+                 throw new Exception('Не задан id товара для удаления');
              $this->setUserIdForDB();
              $st = $this->db->prepare("DELETE FROM image WHERE product_id = ?");
              $st->execute([$this->id]);
              $st = $this->db->prepare("DELETE FROM product WHERE id = ?");
              $st->execute([$this->id]);
              Helper::deleteDir($this->id);
+         } catch (Exception $ex) {
+             $ex->getMessage();
+         }
+     }
+     
+     public function getBrands() {
+         try {
+             $brands = $this->db->query('SELECT DISTINCT brand FROM product')->fetchAll(\PDO::FETCH_ASSOC);
+             if (!empty($brands) && is_array($brands)) {
+                 foreach ($brands as $b) {
+                     $st = $this->db->prepare("SELECT COUNT(*) as num FROM product WHERE brand = ?");
+                     $st->execute([$b['brand']]);
+                     $result[$b['brand']] = $st->fetchAll(\PDO::FETCH_ASSOC)[0];
+                 }
+                 return $result;
+             }
+             return NULL;
          } catch (Exception $ex) {
              $ex->getMessage();
          }
@@ -100,6 +121,8 @@ use PDOException;
          $this->title       = Validate::validateInputVar('title', $method, 'str');
          $this->description = Validate::validateInputVar('desc', $method, 'html');
          $this->spec        = Validate::validateInputVar('spec', $method, 'html');
+         $this->setBrand(Validate::validateInputVar('brand', $method, 'str'));
+         $this->setColor(Validate::validateInputVar('color', $method, 'str'));
          $this->price       = Validate::validateInputVar('price', $method, 'int');
          $this->quantity    = Validate::validateInputVar('quant', $method, 'int');
          $this->published   = Validate::validateInputVar('published', $method, 'int');
@@ -123,6 +146,19 @@ use PDOException;
      function getLastId() {
          return $this->lastId;
      }
+     
+     function setBrand($brand) {
+         $brand = ucfirst(strtolower($brand));
+         $brand = str_replace('ё', 'е', $brand);
+         $this->brand = $brand;
+     }
 
+     function setColor($color) {
+         $color = ucfirst(strtolower($color));
+         $color = str_replace('ё', 'е', $color);
+         $this->color = $color;
+     }
+
+ 
  }
  

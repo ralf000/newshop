@@ -49,6 +49,14 @@
                     <textarea name="spec" id="spec" class="ckeditor form-control" rows="10" cols="80"></textarea>
                 </div>
                 <div class="form-group">
+                    <label for="brand">Бренд</label>
+                    <input type="text" name="brand" id="brand" class="form-control" placeholder="Бренд"/>
+                </div>
+                <div class="form-group">
+                    <label for="color">Цвет</label>
+                    <input type="text" name="color" id="color" class="form-control" placeholder="Цвет"/>
+                </div>
+                <div class="form-group">
                     <label for="price">Цена руб.</label>
                     <input type="text" name="price" id="price" class="form-control" placeholder="Цена в рублях"/>
                 </div>

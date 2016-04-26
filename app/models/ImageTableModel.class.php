@@ -20,6 +20,13 @@ use Exception;
      public function addRecord() {
          
      }
+     
+     public static function getMainImage(array $images){
+         foreach ($images as $i){
+             if (is_array($i) && array_key_exists('main', $i) && $i['main'] == 1)
+                 return $i;
+         }
+     }
 
      private function addImage($image, $primary = FALSE) {
          if (empty($this->productId))

@@ -86,7 +86,7 @@
             <div class="chose_area" style="padding: 30px 20px; margin-bottom: 20px;">
                 <div class="form-group">
                     <label for="deliveryDate">Выберите желаемую дату доставки</label>
-                    <input type="date" name="deliveryDate" class="form-control" id="deliveryDate" min="<?= date('Y-m-d', strtotime('+1 day')); ?>" max="<?= date('Y-m-d', strtotime('+2 weeks')); ?>"/>
+                    <input type="date" name="deliveryDate" class="form-control" id="deliveryDate"/>
                 </div>
                 <div class="form-group">
                     <label for="deliveryTime">Выберите желаемое время доставки в 24 часовом формате</label>

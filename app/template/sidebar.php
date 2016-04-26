@@ -1,5 +1,8 @@
-<? use app\helpers\Path; ?>
-<? $sideBarMenu = $this->getData()[0]['catsAndSubCats']; ?>
+<?
+
+ use app\helpers\Path; ?>
+<? $sideBarMenu = $this->getData()[0]['sideBarData']['catsAndSubCats']; ?>
+<? $brands      = $this->getData()[0]['sideBarData']['brands']; ?>
 <section>
     <div class="container">
         <div class="row">
@@ -22,9 +25,9 @@
                                          <div id="<?= $c['id'] ?>" class="panel-collapse collapse">
                                              <div class="panel-body">
                                                  <ul>
-                                                         <? foreach ($c['subcategories'] as $s): ?>
-                                                             <li><a href="<?= $s['id']?>"><?= $s['subcategory_name']?> </a></li>
-                                                         <? endforeach; ?>
+                                                     <? foreach ($c['subcategories'] as $s): ?>
+                                                         <li><a href="/product/all?subcategory_id=<?= $s['id'] ?>"><?= $s['subcategory_name'] ?> </a></li>
+                                                     <? endforeach; ?>
                                                  </ul>
                                              </div>
                                          </div>
@@ -32,29 +35,27 @@
                                  <? else: ?>
                                      <div class="panel panel-default">
                                          <div class="panel-heading">
-                                             <h4 class="panel-title"><a href="<?= $c['id']?>"><?= $c['category_name']?></a></h4>
+                                             <h4 class="panel-title"><a href="<?= $c['id'] ?>"><?= $c['category_name'] ?></a></h4>
                                          </div>
                                      </div>
                                  <? endif; ?>
                              <? endforeach; ?>
                          <? endif; ?>
-                        
+
                     </div><!--/category-products-->
 
-                    <div class="brands_products"><!--brands_products-->
-                        <h2>Бренды</h2>
-                        <div class="brands-name">
-                            <ul class="nav nav-pills nav-stacked">
-                                <li><a href="#"> <span class="pull-right">(50)</span>Acne</a></li>
-                                <li><a href="#"> <span class="pull-right">(56)</span>Grüne Erde</a></li>
-                                <li><a href="#"> <span class="pull-right">(27)</span>Albiro</a></li>
-                                <li><a href="#"> <span class="pull-right">(32)</span>Ronhill</a></li>
-                                <li><a href="#"> <span class="pull-right">(5)</span>Oddmolly</a></li>
-                                <li><a href="#"> <span class="pull-right">(9)</span>Boudestijn</a></li>
-                                <li><a href="#"> <span class="pull-right">(4)</span>Rösch creative culture</a></li>
-                            </ul>
-                        </div>
-                    </div><!--/brands_products-->
+                    <? if (!empty($brands) && is_array($brands)): ?>
+                         <div class="brands_products"><!--brands_products-->
+                             <h2>Бренды</h2>
+                             <div class="brands-name">
+                                 <ul class="nav nav-pills nav-stacked">
+                                     <? foreach ($brands as $key => $b): ?>
+                                         <li><a href="/product/all?brand=<?= $key ?>"> <span class="pull-right">(<?= $b['num'] ?>)</span><?= $key ?></a></li>
+                                     <? endforeach; ?>
+                                 </ul>
+                             </div>
+                         </div><!--/brands_products-->
+                     <? endif; ?>
 
                     <div class="price-range"><!--price-range-->
                         <h2>Сортировать по цене</h2>
@@ -65,7 +66,7 @@
                     </div><!--/price-range-->
 
                     <div class="shipping text-center"><!--shipping-->
-                        <img src="<?= Path::PATH_TO_TEMPLATE ?>images/home/shipping.jpg" alt="" />
+                        <img src="https://im2-tub-ru.yandex.net/i?id=1f9f20a65759b50dad6ab26782f48ea8&n=33&h=215&w=324" alt="" />
                     </div><!--/shipping-->
 
                 </div>

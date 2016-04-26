@@ -54,6 +54,12 @@
 
                     <ul class="list-group list-group-unbordered">
                         <li class="list-group-item">
+                            <b>Бренд</b> <span class="pull-right"><b><?= $product['brand'] ?></b></span>
+                        </li>
+                        <li class="list-group-item">
+                            <b>Цвет</b> <span class="pull-right"><b><?= $product['color'] ?></b></span>
+                        </li>
+                        <li class="list-group-item">
                             <b>Цена (руб.)</b> <span class="pull-right"><b><?= $product['price'] ?></b></span>
                         </li>
                         <li class="list-group-item">

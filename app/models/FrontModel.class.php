@@ -2,8 +2,8 @@
 
  namespace app\models;
 
-use app\widgets\IndexWidgets;
-use app\helpers\Helper;
+ use app\widgets\IndexWidgets;
+ use app\helpers\Helper;
 
  class FrontModel extends Model {
 
@@ -12,7 +12,7 @@ use app\helpers\Helper;
      function __construct() {
          parent::__construct();
          $this->setData([
-             'catsAndSubCats' => IndexWidgets::sideBarMenuWidget(),
+             'sideBarData' => IndexWidgets::sideBarMenuWidget()
          ]);
          Helper::redirectChecker();
      }

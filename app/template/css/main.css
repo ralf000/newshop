@@ -2680,3 +2680,11 @@ h4.title {
 .checkout_area{
     cursor: pointer;
 }
+
+/*.tab-content *{
+    padding: 10px;
+}*/
+
+.features_items{
+    min-height: 100px;
+}
