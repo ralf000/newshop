@@ -12,8 +12,10 @@
      protected function requiredRoles() {
          return [
              'index'        => [1, 2, 3, 4],
+             'profile'      => [1, 2, 3, 4],
              'registration' => [5],
              'login'        => [5],
+             'logout'        => [1,2,3,4],
              'validate'     => [5]
          ];
      }
@@ -36,10 +38,26 @@
                  }
                  exit;
              }
+         }
+     }
+
+     public function profileAction() {
+         $fc        = FrontController::getInstance();
+         $model     = new FrontModel();
+         $userModel = new UserTableModel();
+         $userModel->setTable('user');
+         $id        = filter_var($fc->getParams()['id'], FILTER_SANITIZE_NUMBER_INT);
+         if (!$id || $id !== Session::get('user_id')) {
+             header('Location: /');
+             exit;
+         }
+         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+             
          } else {
-             if ($_SESSION['user_id'])
-                 header('Location: /');
-             $output = $model->render('../views/user/registration.php');
+             $manager     = $userModel->getUserProfileManager($id);
+             $userProfile = $manager->getFullUserProfile();
+             $model->setData(['profile' => $userProfile]);
+             $output      = $model->render('../views/user/profile.php', 'withoutSliderAndSidebar');
              $fc->setPage($output);
          }
      }
@@ -82,22 +100,22 @@
      }
 
      public function validateAction() {
-         $fc     = FrontController::getInstance();
-         $model  = new UserTableModel();
-//         $model->setTable('user');
-//         if (empty($fc->getParams()['email']) && empty($fc->getParams()['key'])){
-//             header('Location: /');
-//             exit;
-//         }
-//         $model->setValidateUserData($fc->getParams());
-//         if ($model->checkValidKey()) {
-         $output = $model->render('../views/user/validate.php', 'withoutSliderAndSidebar');
-         $fc->setPage($output);
-//         } else {
-//             Session::setMsg('Невозможно активировать данный аккаунт. Пожалуйста зарегистрируйтесь заново', 'warning');
-//             header('Location: user/registration');
-//             exit;
-//         }
+         $fc    = FrontController::getInstance();
+         $model = new UserTableModel();
+         $model->setTable('user');
+         if (empty($fc->getParams()['email']) && empty($fc->getParams()['key'])) {
+             header('Location: /');
+             exit;
+         }
+         $model->setValidateUserData($fc->getParams());
+         if ($model->checkValidKey()) {
+             $output = $model->render('../views/user/validate.php', 'withoutSliderAndSidebarAndFooter');
+             $fc->setPage($output);
+         } else {
+             Session::setMsg('Невозможно активировать данный аккаунт. Пожалуйста зарегистрируйтесь заново', 'warning');
+             header('Location: /user/login');
+             exit;
+         }
      }
 
  }

@@ -14,7 +14,7 @@
                     <h2 class="title text-center">Напишите нам!</h2>
                     <!--                    <div class="status alert alert-success" style="display: none"></div>-->
                     <?= app\services\Session::showUserMsg() ?>
-                    <form id="main-contact-form" class="contact-form row" name="contact-form" method="post">
+                    <form action="/contacts" id="main-contact-form" class="contact-form row" name="contact-form" method="post">
                         <div class="form-group col-md-6">
                             <input type="text" name="name" class="form-control" required="required" placeholder="Имя">
                         </div>
@@ -28,7 +28,7 @@
                             <textarea name="message" id="message" required="required" class="form-control" rows="8" placeholder="Ваше сообщение"></textarea>
                         </div>                        
                         <div class="form-group col-md-12">
-                            <input type="submit" name="submit" class="btn btn-primary pull-right" value="Отрравить">
+                            <input type="submit" name="submit" class="btn btn-primary pull-right" value="Отправить">
                         </div>
                     </form>
                 </div>

@@ -75,6 +75,10 @@
          }
          self::_searchDir($rootDir, $dir);
      }
+     
+     static function mb_ucfirst($str, $enc = 'utf-8') {
+         return mb_strtoupper(mb_substr($str, 0, 1, $enc), $enc) . mb_substr($str, 1, mb_strlen($str, $enc), $enc);
+     }
 
      private static function _searchDir($rootDir, $dir) {
          foreach (scandir($rootDir) as $d) {

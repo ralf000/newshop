@@ -2,17 +2,17 @@
 
  namespace app\models;
 
- use app\helpers\Generator;
- use app\helpers\Helper;
- use app\helpers\Path;
- use app\helpers\User;
- use app\helpers\Validate;
- use app\services\Cookie;
- use app\services\Mailer;
- use app\services\Role;
- use app\services\Session;
- use Exception;
- use PDO;
+use app\helpers\Generator;
+use app\helpers\Helper;
+use app\helpers\Path;
+use app\helpers\User;
+use app\helpers\Validate;
+use app\services\Cookie;
+use app\services\Mailer;
+use app\services\Role;
+use app\services\Session;
+use Exception;
+use PDO;
 
  class UserTableModel extends TableModelAbstract {
 
@@ -76,6 +76,7 @@
                  Session::setMsg('Введённые логин или email уже заняты. Пожалуйста введите другие', 'warning');
                  return FALSE;
              }
+             return TRUE;
          } catch (Exception $ex) {
              $ex->getMessage();
          }
@@ -315,6 +316,10 @@
      public function getUserContacts() {
          return $this->userContacts;
      }
-
+     
+     public function getUserProfileManager($id = NULL, $table = 'user'){
+         $this->setTable($table);
+         return new UserProfileManagerModel($this, $id);
+     }
  }
  

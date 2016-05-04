@@ -3,6 +3,7 @@
  use app\helpers\Path; ?>
 <? $sideBarMenu = $this->getData()[0]['sideBarData']['catsAndSubCats']; ?>
 <? $brands      = $this->getData()[0]['sideBarData']['brands']; ?>
+<? $colors      = $this->getData()[0]['sideBarData']['colors']; ?>
 <section>
     <div class="container">
         <div class="row">
@@ -56,14 +57,27 @@
                              </div>
                          </div><!--/brands_products-->
                      <? endif; ?>
+                         
+                    <? if (!empty($colors) && is_array($colors)): ?>
+                         <div class="brands_products"><!--brands_products-->
+                             <h2>Цвета</h2>
+                             <div class="brands-name">
+                                 <ul class="nav nav-pills nav-stacked">
+                                     <? foreach ($colors as $key => $c): ?>
+                                         <li><a href="/product/all?color=<?= $key ?>"> <span class="pull-right">(<?= $c['num'] ?>)</span><?= $key ?></a></li>
+                                     <? endforeach; ?>
+                                 </ul>
+                             </div>
+                         </div><!--/brands_products-->
+                     <? endif; ?>
 
-                    <div class="price-range"><!--price-range-->
+<!--                    <div class="price-range">price-range
                         <h2>Сортировать по цене</h2>
                         <div class="well text-center">
                             <input type="text" class="span2" value="" data-slider-min="0" data-slider-max="600" data-slider-step="5" data-slider-value="[250,450]" id="sl2" ><br />
                             <b class="pull-left">0 <i class="fa fa-rub"></i></b> <b class="pull-right">600 <i class="fa fa-rub"></i></b>
                         </div>
-                    </div><!--/price-range-->
+                    </div>/price-range-->
 
                     <div class="shipping text-center"><!--shipping-->
                         <img src="https://im2-tub-ru.yandex.net/i?id=1f9f20a65759b50dad6ab26782f48ea8&n=33&h=215&w=324" alt="" />

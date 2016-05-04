@@ -28,7 +28,34 @@ use Exception;
  class AjaxController extends AbstractController {
 
      protected function requiredRoles() {
-         
+         return [
+             'SearchProduct' => [1,2,3],
+             'addCategory' => [1,2],
+             'addSubCategory' => [1,2],
+             'addProduct' => [1,2],
+             'addUserAddress' => [1],
+             'addUserPhone' => [1],
+             'changePhoto' => [1,2,3],
+             'deleteArticle' => [1,2,3],
+             'deleteCategory' => [1,2],
+             'deleteImage' => [1,2],
+             'deleteProduct' => [1,2],
+             'deleteProductFromOrder' => [1,2],
+             'deleteProducts' => [1,2],
+             'deleteSlide' => [1,2],
+             'deleteSubCategory' => [1,2],
+             'deleteUser' => [1],
+             'deleteUserAddress' => [1],
+             'deleteUserPhone' => [1],
+             'deleteCategories' => [1,2],
+             'getOrderStatus' => [1,2,3],
+             'getPermsByRoleId' => [1,2,3],
+             'getUserAddresses' => [1,2,3],
+             'getUserPhones' => [1,2,3],
+             'setDeliveryType' => [1,2],
+             'setOrderStatus' => [1,2],
+             'setPopularOrRecommended' => [1,2]
+         ];
      }
 
      public function addCategoryAction() {

@@ -29,7 +29,7 @@
              $condition .= 'WHERE';
              foreach ($params as $name => $value) {
                  if (in_array(strtolower($name), $paramsMap))
-                     $condition .= " $name = '$value' AND";
+                     $condition .= " product.$name = '$value' AND";
              }
 
              $condition .= ' main = 1';
@@ -47,6 +47,7 @@
 
          $popProducts = (new IndexWidgets)->recAndPopProductsWidget('popular', 3);
          $recProducts = (new IndexWidgets)->recAndPopProductsWidget('recommended');
+//         \app\helpers\Helper::g($condition); exit;
          $model->setData([
              'products'            => $productModel->getAllProducts('*', $condition . " ORDER BY product.$orderBy " . strtoupper($direction) . " LIMIT $limit OFFSET $offset"),
              'popularProducts'     => Generator::popularProducts($popProducts, 3),

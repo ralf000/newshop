@@ -2,43 +2,49 @@
 
  namespace app\controllers;
 
- use app\helpers\SiteConfigurator;
- use app\models\AdminModel;
- use app\models\ArticleTableModel;
- use app\models\CategoryTableModel;
- use app\models\ImageTableModel;
- use app\models\OrderTableModel;
- use app\models\ProductTableModel;
- use app\models\SliderTableModel;
- use app\models\SubCategoryTableModel;
- use app\models\UserTableModel;
- use app\models\UserUpdateTableModel;
- use app\services\DB;
- use app\services\PrivilegedUser;
- use app\services\Role;
- use app\services\Session;
- use app\widgets\AdminWidgets;
- use app\widgets\IndexWidgets;
+use app\helpers\SiteConfigurator;
+use app\models\AdminModel;
+use app\models\ArticleTableModel;
+use app\models\CategoryTableModel;
+use app\models\ImageTableModel;
+use app\models\ProductTableModel;
+use app\models\SliderTableModel;
+use app\models\SubCategoryTableModel;
+use app\models\UserTableModel;
+use app\models\UserUpdateTableModel;
+use app\services\DB;
+use app\services\PrivilegedUser;
+use app\services\Role;
+use app\services\Session;
+use app\widgets\AdminWidgets;
+use app\widgets\IndexWidgets;
 
  class AdminController extends AbstractController {
 
      protected function requiredRoles() {
          return [
              'index'       => [1, 2, 3],
+             'activity'        => [1, 2, 3],
              'add'         => [1, 2],
-             'slider'      => [1, 2, 3],
+             'addArticle'    => [1, 2],
              'addSlide'    => [1, 2],
-             'editSlide'   => [1, 2],
              'allProduct'  => [1, 2, 3],
-             'addProduct'  => [1, 2],
-             'editProduct' => [1, 2],
-             'view'        => [1, 2, 3],
              'allUsers'    => [1, 2, 3],
-             'editUser'    => [1],
-             'profile'     => [1, 2, 3],
+             'blog'    => [1, 2, 3],
+             'editArticle' => [1, 2, 3],
+             'editOrder' => [1, 2],
+             'editProduct' => [1, 2],
+             'editSlide'   => [1, 2],
+             'editUser' => [1],
              'logout'      => [1, 2, 3, 4],
              'newCat'      => [1, 2],
-             'newSubCat'   => [1, 2]
+             'newSubCat'   => [1, 2],
+             'order'    => [1, 2, 3],
+             'profile'     => [1, 2, 3],
+             'siteConfig'   => [1],
+             'slider'      => [1, 2, 3],
+             'view'        => [1, 2, 3],
+             'viewArticle'        => [1, 2, 3]
          ];
      }
 

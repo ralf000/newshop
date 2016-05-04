@@ -2,13 +2,14 @@
 
  namespace app\widgets;
 
- use app\helpers\Generator;
- use app\models\CategoryTableModel;
- use app\models\ProductTableModel;
- use app\models\SliderTableModel;
- use app\models\SubCategoryTableModel;
- use Exception;
- use PDO;
+use app\helpers\Generator;
+use app\models\ArticleTableModel;
+use app\models\CategoryTableModel;
+use app\models\ProductTableModel;
+use app\models\SliderTableModel;
+use app\models\SubCategoryTableModel;
+use Exception;
+use PDO;
 
  class IndexWidgets extends WidgetAbstract {
 
@@ -34,8 +35,16 @@
          }
          return [
              'catsAndSubCats' => $cats,
-             'brands'         => (new ProductTableModel)->getBrands()
+             'brands'         => (new ProductTableModel)->getBrandsOrColors('brand'),
+             'colors'         => (new ProductTableModel)->getBrandsOrColors('color')
          ];
+     }
+     
+     public static function footerWidget(){
+         $model = new ArticleTableModel();
+         $model->setTable('article');
+         $model->readAllRecords('id, title, main_image, created_time', 'ORDER BY created_time LIMIT 4');
+         return $model->getAllRecords();
      }
 
      public function currentCategoryWidget($id) {

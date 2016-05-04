@@ -80,7 +80,7 @@ $numFromBasket = (Basket::getNumProducts() > 0) ? Basket::getNumProducts() : fal
                     <div class="mainmenu pull-left">
                         <ul class="nav navbar-nav collapse navbar-collapse">
                             <li><a href="/" class="active">Главная</a></li>
-                            <li class="dropdown"><a href="#">Магазин<i class="fa fa-angle-down"></i></a>
+<!--                            <li class="dropdown"><a href="#">Магазин<i class="fa fa-angle-down"></i></a>
                                 <ul role="menu" class="sub-menu">
                                     <li><a href="shop.html">Products</a></li>
                                     <li><a href="product-details.html">Product Details</a></li> 
@@ -88,10 +88,10 @@ $numFromBasket = (Basket::getNumProducts() > 0) ? Basket::getNumProducts() : fal
                                     <li><a href="cart.html">Cart</a></li> 
                                     <li><a href="login.html">Login</a></li> 
                                 </ul>
+                            </li> -->
+                            <li class="dropdown"><a href="/blog">Статьи</a>
                             </li> 
-                            <li class="dropdown"><a href="/blog">Блог</a>
-                            </li> 
-                            <li><a href="404.html">404</a></li>
+                            <!--<li><a href="404.html">404</a></li>-->
                             <li><a href="/contacts">Контакты</a></li>
                         </ul>
                     </div>

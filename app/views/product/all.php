@@ -28,6 +28,7 @@
                                  <div class="overlay-content">
                                      <h2><?= $p['price'] ?> <i class="fa fa-rub"></i></h2>
                                      <p><?= $p['title'] ?></p>
+                                     <p><a href="/product/view/id/<?= $p['product_id'] ?>" class="btn" style="color: #fff;"><i class="fa  fa-arrow-right"></i> Подробнее</a></p>
                                      <a href="<?= $p['product_id'] ?>" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Добавить в корзину</a>
                                  </div>
                              </div>

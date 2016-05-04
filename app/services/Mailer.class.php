@@ -51,15 +51,11 @@ use Exception;
                 <table>
                     <tr>
                         <td>
-                            <a href="http://investmoscow.ru"><img style="float: left;" src="http://investmoscow.ru/media/2350142/logoleft.png" alt="">
-                            </a>
-
                         </td>
                         <td>
                             <div class="title" style="height: 100px;float: left;padding: 10px;color: white;font-size: 14px;">
-                                <p>Единый информационный</p>
-                                <p style="text-transform: uppercase;">Инвестиционный портал</p>
-                                <p style="text-transform: uppercase;">Города Москвы</p>
+                                <p style="text-transform: uppercase;">Магазин</p>
+                                <p style="text-transform: uppercase;">NewShop</p>
                             </div>
                         </td>
                     </tr>
@@ -69,15 +65,8 @@ use Exception;
                 <table>
                     <tr>
                         <td>
-                            <a href="http://investmoscow.ru"><img style="float: left;" src="http://investmoscow.ru/media/2350143/logoright.png" alt="">
-                            </a>
-
                         </td>
                         <td>
-                            <div class="title" style="height: 100px;float: left;padding: 10px;color: white;font-size: 14px;">
-                                <p style="text-transform: uppercase;">Официальный ресурс</p>
-                                <p style="text-transform: uppercase;">Правительства Москвы</p>
-                            </div>
                         </td>
                     </tr>
                 </table>
@@ -94,25 +83,18 @@ use Exception;
         <tr style="background: #42718f">
             <td valign="center" style="padding-left: 30px; padding-bottom: 40px;">
                 <div class="title" style="height: 100px;float: left;padding: 10px;color: white;font-size: 12px;">
-                    <p style="text-transform: uppercase;">адрес: 119019, Москва, ул.Новый Арбат, д.11, стр.1 (м. Арбатская)</p>
-                    <p style="text-transform: uppercase;">Единый телефон: +7 (495) 690-00-00</p>
-                    <p style="text-transform: uppercase;">Факс: +7 (495) 691-05-06</p>
-                    <p style="text-transform: uppercase;">Электронная почта: investmoscow@mos.ru</p>
+                    <p style="text-transform: uppercase;">адрес: Химки, ул. Пролетарская д. 23</p>
+                    <p style="text-transform: uppercase;">Телефон: +2346 17 38 93</p>
+                    <p style="text-transform: uppercase;">Факс: 1-714-252-0026</p>
+                    <p style="text-transform: uppercase;">Электронная почта: info@newshop.ru</p>
                 </div>
             </td>
             <td valign="center" style="float: right; padding-right: 30px;">
                 <table>
                     <tr>
                         <td>
-                            <a href="http://investmoscow.ru"><img style="float: left;" src="http://investmoscow.ru/media/2350141/bottomright.png" alt="">
-                            </a>
-
                         </td>
                         <td>
-                            <div class="title" style="height: 100px;float: left;padding: 10px;color: white;font-size: 14px;">
-                                <p style="text-transform: uppercase;">Городское агентство</p>
-                                <p style="text-transform: uppercase;">Управления инвестициями</p>
-                            </div>
                         </td>
                     </tr>
                 </table>

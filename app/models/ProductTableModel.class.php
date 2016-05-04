@@ -59,8 +59,8 @@
                  ':title'       => $this->title,
                  ':description' => $this->description,
                  ':spec'        => $this->spec,
-                 ':brand'        => $this->brand,
-                 ':color'        => $this->color,
+                 ':brand'       => $this->brand,
+                 ':color'       => $this->color,
                  ':price'       => $this->price,
                  ':quantity'    => $this->quantity,
                  ':published'   => $this->published,
@@ -96,15 +96,18 @@
              $ex->getMessage();
          }
      }
-     
-     public function getBrands() {
+
+     public function getBrandsOrColors($field) {
          try {
-             $brands = $this->db->query('SELECT DISTINCT brand FROM product')->fetchAll(\PDO::FETCH_ASSOC);
-             if (!empty($brands) && is_array($brands)) {
-                 foreach ($brands as $b) {
-                     $st = $this->db->prepare("SELECT COUNT(*) as num FROM product WHERE brand = ?");
-                     $st->execute([$b['brand']]);
-                     $result[$b['brand']] = $st->fetchAll(\PDO::FETCH_ASSOC)[0];
+             $fieldMap = ['brand', 'color'];
+             if (!in_array($field, $fieldMap))
+                 throw new \Exception('Недопустимое поле');
+             $fetch   = $this->db->query("SELECT DISTINCT $field FROM product")->fetchAll(\PDO::FETCH_ASSOC);
+             if (!empty($fetch) && is_array($fetch)) {
+                 foreach ($fetch as $item) {
+                     $st                  = $this->db->prepare("SELECT COUNT(*) as num FROM product WHERE $field = ?");
+                     $st->execute([$item[$field]]);
+                     $result[$item[$field]] = $st->fetchAll(\PDO::FETCH_ASSOC)[0];
                  }
                  return $result;
              }
@@ -146,19 +149,18 @@
      function getLastId() {
          return $this->lastId;
      }
-     
+
      function setBrand($brand) {
-         $brand = ucfirst(strtolower($brand));
-         $brand = str_replace('ё', 'е', $brand);
+         $brand       = Helper::mb_ucfirst(mb_strtolower($brand));
+         $brand       = str_replace('ё', 'е', $brand);
          $this->brand = $brand;
      }
 
      function setColor($color) {
-         $color = ucfirst(strtolower($color));
-         $color = str_replace('ё', 'е', $color);
+         $color       = Helper::mb_ucfirst(mb_strtolower($color));
+         $color       = str_replace('ё', 'е', $color);
          $this->color = $color;
      }
 
- 
  }
  

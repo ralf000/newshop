@@ -9,7 +9,6 @@
  class BlogController extends AbstractController {
 
      protected function requiredRoles() {
-         
      }
 
      function indexAction() {

@@ -2,8 +2,8 @@
 
  namespace app\models;
 
- use app\widgets\IndexWidgets;
- use app\helpers\Helper;
+use app\helpers\Helper;
+use app\widgets\IndexWidgets;
 
  class FrontModel extends Model {
 
@@ -12,7 +12,8 @@
      function __construct() {
          parent::__construct();
          $this->setData([
-             'sideBarData' => IndexWidgets::sideBarMenuWidget()
+             'sideBarData' => IndexWidgets::sideBarMenuWidget(),
+             'footerData' => IndexWidgets::footerWidget()
          ]);
          Helper::redirectChecker();
      }
